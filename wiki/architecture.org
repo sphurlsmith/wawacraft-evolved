@@ -1,0 +1,92 @@
+* Architecture Overview
+** Introduction
+
+This document details the programming architecture of Wawacraft:Evolved. It contains some small
+details about how the project is programmed, and other information important details.
+
+** Basic details
+
+Wawacraft:Evolved is a game programmed in C++ using the OpenGL Graphics API. It uses the GLFW
+library to interface with OpenGL, as well as GLAD for setting up the window.
+
+    * Here is a short list for the libraries and resources used to create this project:
+      - Programming Language       :: C++
+      - Version Control System     :: git
+      - Graphics API               :: OpenGL
+      - Windowing System           :: GLAD
+      - Interfacing library        :: GLFW
+      - Image library              :: stb-image
+      - Editor/IDE                 :: GNU Emacs
+      - Image manipulation program :: GIMP
+      - Compiler                   :: GCC G++
+      - Make System                :: GNU Make
+
+** Code architecture
+
+WCEV is written in C++, a language that allows for the use of classes and namespaces. In such
+possibilities, the game has the programming philosophy that everything must work independently of
+each other as much as possible, and last as long as possible, as most software should.
+
+*** Paradigms
+
+In such light, a majority of the way the game works is by employing the object oriented programming
+paradigm, wherein each feature with extensive functionality is encased into a class, and any
+instance of its use is accessed either through an object or through the methods of the class made
+available statically[i.e. static public functions for different utilities].
+
+There is also another, more useful concept within the ideas of avoiding making a messy codebase, and
+that is that any functionality that has no use in having access to sister functionalities in a
+class, is instead encased within a namespace, a simple encapsulation wherein this functionality is
+kept for general utility use and none else.
+
+This may not be the most elegant way to do it, but it works and it isn't completely awful.
+
+*** Practices
+
+Whenever setting up a class, we may also set up a namespace that works alongside the class. I've
+thought before of placing the class within its respective namespace, but then again, it's not
+exactly all that beautiful to call /namespace::class::member()/. It's just way too talkative. 
+
+** Render Pipeline
+
+This part discusses in short some of the ways that the render pipeline works in the game so far.
+
+*** Windows
+
+In Wawacraft:Evolved, the game has a class called /wc_Window/ that you can use to create and manage
+windows, There is also a small namespace called /nswcwindow/ that keeps some small functionalities
+that the class uses. Right now, there isn't much in the /nswcwindow/ namespace.
+
+Firstly, a render window object is set up. It handles pretty much everything except for the render
+loop(i.e. what you'd like to do with the window), that's up to you. Once you set up a render loop,
+you will be given the ability to point to any function as the function that operates in place of the
+render function of the window. In fact, the double buffering is taken care of for you, so you can
+get to thinking about what you're rendering.
+
+In general, windows take care of themselves. You have to take care of what it can't do itself. It is
+very versatile, and can easily be changed without the overhead of the entire project.
+
+Windows also take care of resizing themselves and destroying themselves.
+
+**** Some notes about windows:
+    - So far you can edit some of the details about the window you are using, like the resolution,
+      and the clear color, but the name of the window seems permanent. If there was a way to change
+      the naming of the window, it would be very cool. But regardless, this window class works so
+      well I barely even think about it most of the time.
+
+*** Shaders
+
+In Wawacraft:Evolved, we use the /shader/ class and the /nsshader/ namespace to deal with shaders.
+
+Shaders are quite simple really. They set themselves up by reading the source, and deal with all the
+small chitter-chatter that OpenGL needs for you to set one thing up. I added some better
+functionality to it as well such as setting uniforms. A uniform function that would be useful in the
+future is the /shader::setUniformMatrix(const char* n, float* v)/ function, which will be useful in
+the future to set up projection and 3D.
+
+**** Notes
+    - Much like the [[Windows][window class]], it is the only part of the codebase that uses its respective namespace.
+
+** Footnotes
+
+    - [[file:'index.org'][Return to index]]

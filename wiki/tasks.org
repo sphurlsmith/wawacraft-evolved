@@ -1,0 +1,60 @@
+* Pending Tasks
+* Wiki Documentation
+
+** Start
+
+This document details some of the pending tasks that the project must oversee. It also contains a
+section documenting some notes that I wouldnt put in the [[https:'https://sphurlsmith.neocities.org/projects/wawacraft_evolved.html'][blog]]. It is organized into time-specific
+tasks and more general tasks(i.e. milestones).
+
+** Organization
+
+They are organized within the [[Practical Documentation]] section of this document. There are two
+sections in that area:
+
+    1. [[Immediate tasks]] :: A list of TODOs for the project, things that need doing.
+    2. [[Milestones]]      :: A milestone to reach for the project in general, such as pushing the release
+                          stage or some other thing.
+
+** Footnotes
+
+    - [[file:'index.org'][Return to the index]]
+      
+* Practical Documentation
+** Immediate tasks
+
+*** Code
+**** DONE Create a working shader class
+    - This task was finished when I saved myself weeks of headaches by using
+      *std::string* instead of *const char**. It would be possible to use C-strings
+      for code cleanliness but I'd rather have it be ugly and memory safe
+      rather than beautiful and memory unsafe.
+
+**** TODO Create a working mesh class
+    - This task requires a list of things and that is:
+    - To decide how the architecture of rendering must go.
+      If I was to choose the functional/procedural approach, I
+      would make the code architecture a namespace with structs
+      and helper functions. This would definitely make it more
+      elegant if I take the rendering approach of making a
+      render queue. If I was to choose the object oriented
+      route, not much would change, but I would be able to make
+      inheritance available for different objects handled differently,
+      like UI rendering having a different structure than in-game rendering,
+      or other things of the sort. The game will definitely have lots of
+      different rendering styles, so I'd definitely.
+    - Well after that I'd also have to choose if projection algorithms
+      must be integrated into meshes or just simply left alone? I guess its
+      required in different forms, such as rotations for sprite billboards
+      being treated as one point, and alignment simply being extrapolated
+      alone.
+
+**** TODO Write a new blog
+    - Must happen after we write a working mesh class.
+    - This will be very awesome.
+    
+** Milestones
+
+**** DONE Rebuild codebase for more organization.           :: [26/8/24]
+**** DONE Create a wiki to document the game's development. :: [25/8/24]
+**** TODO Add more code documentation.

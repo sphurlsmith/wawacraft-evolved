@@ -1,0 +1,22 @@
+* Architecture Overview
+** Introduction
+
+This document details the programming architecture of Wawacraft:Evolved. It contains some small
+details about how the project is programmed, and other information important details.
+
+** Basic details
+
+Wawacraft:Evolved is a game programmed in C++ using the OpenGL Graphics API. It uses the GLFW
+library to interface with OpenGL, as well as GLAD for setting up the window.
+
+    * Here is a short list for the libraries and resources used to create this project:
+      - Programming Language       :: C++
+      - Version Control System     :: git
+      - Graphics API               :: OpenGL
+      - Windowing System           :: GLAD
+      - Interfacing library        :: GLFW
+      - Image library              :: stb-image
+      - Editor/IDE                 :: GNU Emacs
+      - Image manipulation program :: GIMP
+      - Compiler                   :: GCC G++
+      - Make System                :: GNU Make
