@@ -24,13 +24,13 @@ sections in that area:
 ** Immediate tasks
 
 *** Code
-**** DONE Create a working shader class
+**** DONE Create a working shader class :: [25/8/24]
     - This task was finished when I saved myself weeks of headaches by using
       *std::string* instead of *const char**. It would be possible to use C-strings
       for code cleanliness but I'd rather have it be ugly and memory safe
       rather than beautiful and memory unsafe.
 
-**** DONE Create a working mesh class
+**** DONE Create a working mesh class :: [27/8/24]
     - This task requires a list of things and that is:
     - To decide how the architecture of rendering must go.
       If I was to choose the functional/procedural approach, I
@@ -53,12 +53,12 @@ sections in that area:
     - Must happen after we write a working mesh class.
     - This will be very awesome.
 
-**** TODO Integrate textures into the project [0/0]
-    - [] Include the stb-image header into the project successfully.
-    - [] Create a set of utilities(class or namespace) to read in the textures.
-    - [] Integrate the texture usage in with the mesh class in a way that does not require the user
+**** TODO Integrate textures into the project :: [1/4]
+    - [X] Include the stb-image header into the project successfully.
+    - [ ] Create a set of utilities(class or namespace) to read in the textures.
+    - [ ] Integrate the texture usage in with the mesh class in a way that does not require the user
       to specifically use the texture class
-    - [] Test run that baby.
+    - [ ] Test run that baby.
     
 ** Milestones
 

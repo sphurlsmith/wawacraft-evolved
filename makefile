@@ -10,12 +10,29 @@ BINDIR=bin
 SHDDIR=shd
 TEXDIR=tex
 
-OBJS=$(SRCDIR)/main.cpp $(LIBDIR)/glad.c $(LIBDIR)/stb_image.cpp $(SRCDIR)/windowdef.cpp $(SRCDIR)/shader.cpp $(SRCDIR)/mesh.cpp
-OBJH=$(SRCDIR)/libs.h $(LIBDIR)/stb_image.h $(SRCDIR)/windowdef.h $(SRCDIR)/shader.h $(SRCDIR)/mesh.h
+OBJO=$(SRCDIR)/main.o $(LIBDIR)/glad.o $(LIBDIR)/stb_image.o $(SRCDIR)/windowdef.o $(SRCDIR)/shader.o $(SRCDIR)/mesh.o
 
 TARGET=$(BINDIR)/wawacraft_evolved.elf
 
-wawacraft_evolved: $(OBJH) $(OBJS)
+wawacraft_evolved: glad stb_image windowdef shader mesh main
 	cp -r $(SHDDIR) $(BINDIR)
 	cp -r $(TEXDIR) $(BINDIR)
-	$(CC) $(OBJS) -o $(TARGET) $(CFLAGS) $(LFLAGS)
+	$(CC) $(OBJO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
+
+main: $(SRCDIR)/main.cpp
+	$(CC) $(SRCDIR)/main.cpp -o $(SRCDIR)/main.o $(CFLAGS) $(LFLAGS) -c
+
+windowdef: $(SRCDIR)/windowdef.h $(SRCDIR)/windowdef.cpp
+	$(CC) $(SRCDIR)/windowdef.cpp -o $(SRCDIR)/windowdef.o $(CFLAGS) $(LFLAGS) -c
+
+shader: $(SRCDIR)/shader.h $(SRCDIR)/shader.cpp
+	$(CC) $(SRCDIR)/shader.cpp -o $(SRCDIR)/shader.o $(CFLAGS) $(LFLAGS) -c
+
+mesh: $(SRCDIR)/mesh.h $(SRCDIR)/mesh.cpp
+	$(CC) $(SRCDIR)/mesh.cpp -o $(SRCDIR)/mesh.o $(CFLAGS) $(LFLAGS) -c
+
+glad: $(LIBDIR)/glad.c
+	$(CC) $(LIBDIR)/glad.c -o $(LIBDIR)/glad.o $(CFLAGS) $(LFLAGS) -c
+
+stb_image: $(LIBDIR)/stb_image.h $(LIBDIR)/stb_image.cpp
+	$(CC) $(LIBDIR)/stb_image.cpp -o $(LIBDIR)/stb_image.o $(CFLAGS) $(LFLAGS) -c
