@@ -27,7 +27,7 @@ sections in that area:
       *std::string* instead of *const char**. It would be possible to use C-strings
       for code cleanliness but I'd rather have it be ugly and memory safe
       rather than beautiful and memory unsafe.
-
+      
 **** TODO Create a working mesh class
     - This task requires a list of things and that is:
     - To decide how the architecture of rendering must go.

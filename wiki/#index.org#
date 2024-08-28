@@ -15,5 +15,13 @@ This is the table of contents! Each subsection is tucked in a small section for 
 
 *** Development
 
-    1. [[file:'tasks.org'][Tasks]] :: An overview of tasks that the project needs to complete, as well as some notes or more large milestones.
-    2. [[https:'https://sphurslmith.neocities.org/projects/wawacraft_evolved.html'][Blog]]  :: The public blog about the game Wawacraft. Sometimes needs updating.
+    - [[file:tasks.org][Tasks]] :: An overview of tasks that the project needs to complete, as well as some notes or more large milestones.
+    - [[https://sphurslmith.neocities.org/projects/wawacraft_evolved.html][Blog]]  :: The public blog about the game Wawacraft. Sometimes needs updating.
+
+*** Architecture
+
+    - [[file:architecture.org][Code Architecture Overview]] :: An overview of the code architecture of the game.
+
+*** Lore
+
+    - [[file:characters.org][Characters]] :: An overview of some of the playable/non-boss characters in Wawacraft:Evolved.
