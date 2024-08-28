@@ -124,3 +124,7 @@ void shader::setUniformFloat(const char* n, float val) const{
 void shader::setUniformMatrix(const char* n, bool transpose, float *m) const{
   glUniformMatrix4fv(glGetUniformLocation(ID, n), 1, transpose, m);
 }
+
+unsigned int shader::getID(){
+  return ID;
+}

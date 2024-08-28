@@ -27,10 +27,6 @@ unsigned char* nstex::loadRawImage(int& x, int& y, int ch, std::string n){
   }
 }
 
-void nstex::useTexture(unsigned int t){
-  glBindTexture(GL_TEXTURE_2D, &t);
-}
-
 void nstex::deactivateTextures(){
   glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -48,7 +44,7 @@ wc_Texture::wc_Texture(int px, int py, std::string path):
   
   // creating a slot in the state machine for the texture
   glGenTextures(1, &(this->TID));
-  nstex::useTexture(TID); // binding to our texture
+  useTexture(); // binding to our texture
   nstex::setTextureAttributes(); // setting default attributes
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x,  y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img); // giving openGL the image data
   glGenerateMipmap(GL_TEXTURE_2D); // generating needed mipmaps
@@ -57,6 +53,10 @@ wc_Texture::wc_Texture(int px, int py, std::string path):
 
 wc_Texture::~wc_Texture(){
   
+}
+
+void wc_Texture::useTexture(){
+  glBindTexture(GL_TEXTURE_2D, &(this->TID));
 }
 
 unsigned int wc_Texture::getTex(){

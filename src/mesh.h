@@ -14,7 +14,7 @@ class wc_BasicMesh{
   void configureBufferObjects();
 
   void setupMesh();
-  void renderMesh(unsigned int t=0);
+  void renderMesh();
   
  private:
   unsigned int VAO;

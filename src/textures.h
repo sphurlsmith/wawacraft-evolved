@@ -6,7 +6,6 @@
 namespace nstex{
   void setTextureAttributes();
   
-  void useTexture(unsigned int t);
   void deactivateTextures();
   void freeTextureMemory(unsigned char* v);
   
@@ -18,6 +17,7 @@ class wc_Texture{
   wc_Texture(int px, int py, std::string path);
   ~wc_Texture();
   
+  void useTexture();
   unsigned int getTex();
   
  private:

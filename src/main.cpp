@@ -19,7 +19,8 @@ void rend(){
 
   wc_Texture shatex(32, 32, "tex/wawa.png");
   wc_BasicMesh shawa(vert, ind);
-  shawa.renderMesh(shatex.getTex());
+  shatex.useTexture();
+  shawa.renderMesh();
   
   glClear(GL_COLOR_BUFFER_BIT);
 }
