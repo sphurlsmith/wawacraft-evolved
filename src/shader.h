@@ -16,10 +16,10 @@ class shader{
   
   void activate();
   
-  void setUniformBool(const char* n, bool val);
-  void setUniformInt(const char* n, int val);
-  void setUniformFloat(const char* n, float val);
-  void setUniformMatrix(const char* n, bool transpose, float *m);
+  void setUniformBool(const char* n, bool val) const;
+  void setUniformInt(const char* n, int val) const;
+  void setUniformFloat(const char* n, float val) const;
+  void setUniformMatrix(const char* n, bool transpose, float *m) const;
   
   unsigned int getID();
 

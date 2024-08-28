@@ -9,6 +9,7 @@ uniform sampler2D tex;
 
 void main(){
      fc=texture(tex, vtx)*vec4(voc, 1);
+     /*
      if(fc.a<0.2){
 	discard;
      }
@@ -16,4 +17,5 @@ void main(){
      if(voc==vec3(0,0,0)){
 	fc=texture(tex, vtx);
      }
+     */
 }

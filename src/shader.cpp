@@ -109,18 +109,18 @@ void shader::activate(){
   glUseProgram(ID);
 }
 
-void shader::setUniformBool(const char* n, bool val){
+void shader::setUniformBool(const char* n, bool val) const{
   glUniform1i(glGetUniformLocation(ID, n), val);
 }
 
-void shader::setUniformInt(const char* n, int val){
+void shader::setUniformInt(const char* n, int val) const{
   glUniform1i(glGetUniformLocation(ID, n), val);
 }
 
-void shader::setUniformFloat(const char* n, float val){
+void shader::setUniformFloat(const char* n, float val) const{
   glUniform1f(glGetUniformLocation(ID, n), val);
 }
 
-void shader::setUniformMatrix(const char* n, bool transpose, float *m){
+void shader::setUniformMatrix(const char* n, bool transpose, float *m) const{
   glUniformMatrix4fv(glGetUniformLocation(ID, n), 1, transpose, m);
 }

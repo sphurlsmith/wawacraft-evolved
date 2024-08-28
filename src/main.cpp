@@ -1,11 +1,26 @@
 #include "libs.h"
 #include "windowdef.h"
 #include "shader.h"
+#include "textures.h"
+#include "mesh.h"
+
+std::vector<float> vert=
+  {
+    -.5, -.5, 0, 1, 0, 0, 0,  0,
+    .5,  -.5, 0, 0, 1, 0, 1,  0,
+    0,    .5, 0, 0, 0, 1, .5, 1
+  };
+
+std::vector <unsigned int> ind={0, 1, 2};
 
 // the render function
 void rend(){
   glClearColor(.5, .5, .8, 1);
 
+  wc_Texture shatex(32, 32, "tex/wawa.png");
+  wc_BasicMesh shawa(vert, ind);
+  shawa.renderMesh(shatex.getTex());
+  
   glClear(GL_COLOR_BUFFER_BIT);
 }
 

@@ -52,14 +52,18 @@ sections in that area:
 **** TODO Write a new blog
     - Must happen after we write a working mesh class.
     - This will be very awesome.
-
-**** TODO Integrate textures into the project :: [1/4]
+      
+**** DONE Integrate textures into the project :: [28/8/24]
     - [X] Include the stb-image header into the project successfully.
-    - [ ] Create a set of utilities(class or namespace) to read in the textures.
-    - [ ] Integrate the texture usage in with the mesh class in a way that does not require the user
+    - [X] Create a set of utilities(class or namespace) to read in the textures.
+      - Small note, while I am doing this, I must also find out how to return a pointer successfully,
+	which could be useful when migrating my shader loading function /nsshader::readFile(const char* path)/
+	to use *const char** type instead of *std::string*. Though the issue scared me too much to bother with
+	it. Haha :) 
+    - [X] Integrate the texture usage in with the mesh class in a way that does not require the user
       to specifically use the texture class
-    - [ ] Test run that baby.
-    
+**** TODO Run a unit test
+      
 ** Milestones
 
 **** DONE Rebuild codebase for more organization.           :: [26/8/24]
