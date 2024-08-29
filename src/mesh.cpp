@@ -46,7 +46,6 @@ void wc_BasicMesh::configureBufferObjects(){
   // feeding in EBO data
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(unsigned int), &indices.front(), GL_STATIC_DRAW);
-  glBindVertexArray(0);
 }
 
 void wc_BasicMesh::setupMesh(){

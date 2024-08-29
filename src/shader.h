@@ -11,8 +11,8 @@ class shader{
  public:
   shader(const char* vertexp, const char* fragmentp);
 
-  static void createVertexShader(unsigned int shaderet, const char* s);
-  static void createFragmentShader(unsigned int shaderet, const char* s);
+  static void createVertexShader(unsigned int& shaderet, const char* s);
+  static void createFragmentShader(unsigned int& shaderet, const char* s);
   
   void activate();
   

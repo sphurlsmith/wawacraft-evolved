@@ -31,7 +31,7 @@ std::string nsshader::readFile(const char*& path){
 shader::shader(const char* vertexp, const char* fragmentp){
   std::string vertexs=nsshader::readFile(vertexp);
   std::string fragments=nsshader::readFile(fragmentp);
-
+  
   unsigned int vertexshader=glCreateShader(GL_VERTEX_SHADER);
   createVertexShader(vertexshader, vertexs.c_str());
   
@@ -63,7 +63,7 @@ shader::shader(const char* vertexp, const char* fragmentp){
   glDeleteShader(fragmentshader);
 }
 
-static void shader::createVertexShader(unsigned int shaderet, const char* s){
+static void shader::createVertexShader(unsigned int& shaderet, const char* s){
   glShaderSource(shaderet, 1, &s, NULL);
   
   char log[512];
@@ -84,7 +84,7 @@ static void shader::createVertexShader(unsigned int shaderet, const char* s){
   }
 }
 
-static void shader::createFragmentShader(unsigned int shaderet, const char* s){
+static void shader::createFragmentShader(unsigned int& shaderet, const char* s){
   glShaderSource(shaderet, 1, &s, NULL);
 
   char log[512];

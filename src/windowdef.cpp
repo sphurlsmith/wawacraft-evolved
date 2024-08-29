@@ -104,7 +104,7 @@ void wc_Window::runWindowLoopInstance(){
     std::cout << "Exception approached: " << err << std::endl;
   }
 
-  glfwSwapBuffers(window_pointer);
+  glfwSwapBuffers(glfwGetCurrentContext());
   glfwPollEvents(); // only works when our window object is the current GLFW context.
 }
 
