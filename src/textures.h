@@ -9,7 +9,7 @@ namespace nstex{
   void deactivateTextures();
   void freeTextureMemory(unsigned char* v);
   
-  unsigned char* loadRawImage(int& x, int& y, int ch, std::string n);
+  void loadRawImage(int& x, int& y, int ch, std::string n, unsigned char*& buf);
 };
 
 class wc_Texture{
@@ -22,7 +22,8 @@ class wc_Texture{
   
  private:
   unsigned int TID;
-
+  unsigned char* img;
+  
   int x;
   int y;
 

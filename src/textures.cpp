@@ -12,14 +12,12 @@ void nstex::setTextureAttributes(){
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 }
 
-unsigned char* nstex::loadRawImage(int& x, int& y, int ch, std::string n){
+void nstex::loadRawImage(int& x, int& y, int ch, std::string n, unsigned char*& buf){
   // just a wrapper for STB-image
-  static unsigned char* ret=stbi_load(n.c_str(), &x, &y, &ch, 0);
+  buf=stbi_load(n.c_str(), &x, &y, &ch, 0);
 
   try{
-    if(ret){
-      return ret; // will this be valid data i wonder?
-    }else{
+    if(!buf){
       throw "failed-image-loading";
     }
   }catch(const char* e){
@@ -40,7 +38,7 @@ wc_Texture::wc_Texture(int px, int py, std::string path):
   y(py),
   n(path){
   // keeping the image
-  unsigned char* img=nstex::loadRawImage(x, y, 4, path);
+  nstex::loadRawImage(x, y, 4, path, img);
   
   // creating a slot in the state machine for the texture
   glGenTextures(1, &(this->TID));

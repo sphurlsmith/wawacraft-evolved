@@ -11,12 +11,13 @@ void rend(){
 
   std::vector<float> vert=
     {
-      -.5, -.5, 0, 1, 0, 0, 0,  0,
-      .5,  -.5, 0, 0, 1, 0, 1,  0,
-      0,    .5, 0, 0, 0, 1, .5, 1
+      -.5, -.5, 0, 1, 0, 0, 0, 1,
+      .5,  -.5, 0, 0, 1, 0, 1, 1,
+      .5,   .5, 0, 0, 0, 1, 1, 0,
+      -.5,  .5, 0, 1, 1, 0, 0, 0
     };
 
-  std::vector<unsigned int> ind={0, 1, 2};
+  std::vector<unsigned int> ind={0, 1, 2, 0, 2, 3};
 
   wc_Texture shatex(32, 32, "tex/wawa.png");
   wc_BasicMesh shawa(vert, ind);
