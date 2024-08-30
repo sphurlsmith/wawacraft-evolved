@@ -36,7 +36,7 @@ std::string nsshader::readFile(const char*& path){
 
 // cosntructor of the shader class. Constructs a shader given the path of its
 // source files
-shader::shader(const char* vertexp, const char* fragmentp){
+wc_Shader::wc_Shader(const char* vertexp, const char* fragmentp){
   std::string vertexs=nsshader::readFile(vertexp);     // reads in the file text
   std::string fragments=nsshader::readFile(fragmentp); // for vertex & fragment
 
@@ -89,7 +89,7 @@ shader::shader(const char* vertexp, const char* fragmentp){
 
 // function that compiles a vertex shader object given its source code
 // passed as a c string
-static void shader::createVertexShader(unsigned int& shaderet, const char* s){
+static void wc_Shader::createVertexShader(unsigned int& shaderet, const char* s){
   glShaderSource(shaderet, 1, &s, NULL); // loading in the source
 
   // this is about the exact same process we had before with the shader program
@@ -119,7 +119,7 @@ static void shader::createVertexShader(unsigned int& shaderet, const char* s){
 // as a c-string. Read the documentation of the vertex shader program, in order
 // to understand how this function operates. Both functions are essentially
 // doing the same thing but iwth variation
-static void shader::createFragmentShader(unsigned int& shaderet, const char* s){
+static void wc_Shader::createFragmentShader(unsigned int& shaderet, const char* s){
   glShaderSource(shaderet, 1, &s, NULL);
 
   char log[512];
@@ -142,31 +142,31 @@ static void shader::createFragmentShader(unsigned int& shaderet, const char* s){
 
 // binding render calls and other things that require a shader towards our
 // own shader. Instance specific
-void shader::activate(){
+void wc_Shader::activate(){
   glUseProgram(ID);
 }
 
 // from here on, the rest are setter functions that serve as wrappers
 // for the uglier glUniform calls. They need no documentation.
 
-void shader::setUniformBool(const char* n, bool val) const{
+void wc_Shader::setUniformBool(const char* n, bool val) const{
   glUniform1i(glGetUniformLocation(ID, n), val);
 }
 
-void shader::setUniformInt(const char* n, int val) const{
+void wc_Shader::setUniformInt(const char* n, int val) const{
   glUniform1i(glGetUniformLocation(ID, n), val);
 }
 
-void shader::setUniformFloat(const char* n, float val) const{
+void wc_Shader::setUniformFloat(const char* n, float val) const{
   glUniform1f(glGetUniformLocation(ID, n), val);
 }
 
-void shader::setUniformMatrix(const char* n, bool transpose, float *m) const{
+void wc_Shader::setUniformMatrix(const char* n, bool transpose, float *m) const{
   glUniformMatrix4fv(glGetUniformLocation(ID, n), 1, transpose, m);
 }
 
 // returns the reference to the shader ID. rarely needed but its here
 // just in case
-unsigned int& shader::getID(){
+unsigned int& wc_Shader::getID(){
   return ID;
 }

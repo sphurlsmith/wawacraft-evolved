@@ -34,7 +34,7 @@ int main(){
   nswcwin::wc_res WINRES={800, 600};
 
   wc_Window WIN(WINRES, "Wawacraft Evolved [OpenGL 3.3]", rpointer);
-  shader def("shd/wc_vertex_source.glsl", "shd/wc_fragment_source.glsl");
+  wc_Shader def("shd/wc_vertex_source.glsl", "shd/wc_fragment_source.glsl");
   
   def.activate();
   while(!glfwWindowShouldClose(WIN.getWinPointer())){

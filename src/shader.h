@@ -16,11 +16,11 @@ namespace nsshader{
 
 // class used to create, manage, and get rid of shaders intelligently. this class
 // allows you to also set uniforms of different variables in the shader source.
-class shader{
+class wc_Shader{
  public:
   // the constructor simply builds a shader object given the path of the vertex
   // and fragment shader
-  shader(const char* vertexp, const char* fragmentp);
+  wc_Shader(const char* vertexp, const char* fragmentp);
 
   // static functions to compile vertex and fragment shaders given the complete
   // source code of the said shaders, and the opengl object of which the compiled

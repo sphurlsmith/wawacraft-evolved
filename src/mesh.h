@@ -36,6 +36,8 @@ class wc_BasicMesh{
   void renderMesh();
   
  private:
+  bool initialized; // flag for checking if our opengl objects are registered
+
   unsigned int VAO;
   unsigned int VBO;
   unsigned int EBO;
