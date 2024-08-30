@@ -62,8 +62,8 @@ sections in that area:
 	it. Haha :) 
     - [X] Integrate the texture usage in with the mesh class in a way that does not require the user
       to specifically use the texture class
-**** TODO Run a unit test
-      
+**** DONE Run a unit test :: [29/8/24]
+
 ** Milestones
 
 **** DONE Rebuild codebase for more organization.           :: [26/8/24]

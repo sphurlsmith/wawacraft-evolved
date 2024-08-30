@@ -1,0 +1,52 @@
+* Window Code Architecture
+** Introduction
+
+Wawacraft:Evolved deals with creating windows through the *wc_Window* class. It is utilized as a
+front-end wrapper for the methods that call in GLFW and GLAD to create several different
+things. However it can also be seen as a class that provides methods to interface with a window when
+programming in a natural way. For example, it has methods that allow you to set pointers to render
+functions, creating an elegant interface within your control.
+
+** External libraries used
+
+Wawacraft uses the GLFW library to interface with the OpenGL API and GLAD to create cross-platform
+windows that work on many different operating systems.
+
+** Source code
+
+Mainly, the interfaces for window code are found within the source files *windowdef.h* and
+*windowdef.cpp*.
+
+It is found within *windowdef.h* that there is a minimal namespace: *nswcwin*, and a class:
+*wc_Window*. Each of these are discussed within their respective segments.
+
+*** wc_Window
+
+*wc_Window* is a class that is used to create and manage a window object, it contains many different
+ methods to handle itself.
+
+:Functions:
+______________________________
+| Function name                                                                        | Description                                                            |
+|--------------------------------------------------------------------------------------+------------------------------------------------------------------------|
+| wc_Window::wc_Window(nswcwin::wc_res res, std::string n, void (*p)())                | The constructor of wc_Window.                                          |
+|                                                                                      | This constructor takes in the argument of                              |
+|                                                                                      | a resolution, window name, and render callback                         |
+|                                                                                      | in order to set up a window. It uses nswcin::wc_res                    |
+|                                                                                      | as opposed to the use of 2 ints.                                       |
+|--------------------------------------------------------------------------------------+------------------------------------------------------------------------|
+| wc_Window::~wc_Window()                                                              | Kills the window, and terminates the GLFW context                      |
+|--------------------------------------------------------------------------------------+------------------------------------------------------------------------|
+| static void wc_Window::startGLFW()                                                   | Starts a GLFW context if static bool wc_Window::GLFWRunning is false.  |
+|--------------------------------------------------------------------------------------+------------------------------------------------------------------------|
+| static void wc_Window::endGLFW()                                                     | Terminates the GLFW context, and turns GLFWRunning off.                |
+|--------------------------------------------------------------------------------------+------------------------------------------------------------------------|
+| static void wc_Window::startGLAD()                                                   | Begins GLAD and gives a handle.                                        |
+|--------------------------------------------------------------------------------------+------------------------------------------------------------------------|
+| static void wc_Window::setCurrentWindow(GLFWWindow* p)                               | Sets the current GLFW context to work with a given GLFW window handle. |
+|--------------------------------------------------------------------------------------+------------------------------------------------------------------------|
+| static void wc_Window::resizeWindow(GLFWWindow* p, nswcwin::wc_win res)              | resizes the OpenGL viewport of a given window by a given resolution.   |
+|--------------------------------------------------------------------------------------+------------------------------------------------------------------------|
+| static void wc_Window::setupWindow(nswcwin::wc_res window_resolution, std::string n) |                                                                        |
+
+:END:

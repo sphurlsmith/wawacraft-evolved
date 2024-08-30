@@ -1,6 +1,7 @@
 #include "libs.h"
 #include "textures.h"
 
+// function to set generic texture attributes. this is used by wc_Texture
 void nstex::setTextureAttributes(){
   // function to set the texture attributes before doing things
   // defaulted to repeat in both axes
@@ -12,6 +13,9 @@ void nstex::setTextureAttributes(){
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 }
 
+// loading raw image data given resolution, number of color channels to
+// interpret by, the path(as std::string not c-string clutz) and the buffer
+// to load the image to.
 void nstex::loadRawImage(int& x, int& y, int ch, std::string n, unsigned char*& buf){
   // just a wrapper for STB-image
   buf=stbi_load(n.c_str(), &x, &y, &ch, 0);
@@ -25,20 +29,24 @@ void nstex::loadRawImage(int& x, int& y, int ch, std::string n, unsigned char*& 
   }
 }
 
+// wrapper to simply unbind textures to the default
 void nstex::deactivateTextures(){
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void nstex::freeTextureMemory(unsigned char* v){
+// freeing texture data off memory
+void nstex::freeTextureMemory(unsigned char*& v){
   stbi_image_free(v);
 }
 
+// constructor of wc_Texture, which initializes an instance
+// given resolution and path as a std::string.
 wc_Texture::wc_Texture(int px, int py, std::string path):
-  x(px),
+  x(px), // initializing x and y to px and py
   y(py),
   n(path){
   // keeping the image
-  nstex::loadRawImage(x, y, 4, path, img);
+  nstex::loadRawImage(x, y, 4, path, img); // loading into our img buffer
   
   // creating a slot in the state machine for the texture
   glGenTextures(1, &(this->TID));
@@ -50,13 +58,16 @@ wc_Texture::wc_Texture(int px, int py, std::string path):
 }
 
 wc_Texture::~wc_Texture(){
-  
+  // nstex::freeTextureMemory(img);
 }
 
+// instance-specific function to bind the currently used texture to the
+// instance
 void wc_Texture::useTexture(){
   glBindTexture(GL_TEXTURE_2D, &(this->TID));
 }
 
-unsigned int wc_Texture::getTex(){
+// getter function for the openGL object, by reference
+unsigned int& wc_Texture::getTex(){
   return TID;
 }
