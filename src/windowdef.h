@@ -41,7 +41,8 @@ class wc_Window{
   static void setCurrentWindow(GLFWwindow* p);
   // just resizes a given window given a resolution
   static void resizeWindow(GLFWwindow* p, nswcwin::wc_res res);
-
+  static void resizeWindow(GLFWwindow* p, int x, int y); // overloading for OpenGL 
+  
   // setup function for the window, independent of setting up the rendering frame within the window
   void setupWindow(nswcwin::wc_res window_resolution, std::string n);
   // instance-specific sister function of setCurrentWindow. cleverly named too :3

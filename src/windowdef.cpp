@@ -71,10 +71,17 @@ static void wc_Window::setCurrentWindow(GLFWwindow* p){
   glfwMakeContextCurrent(p);
 }
 
-// resizes a given GLFWWindow's render viewport. updated to use wc_res instead of its
-// more terse alternative: 2 ints!
+// resizes a given GLFWWindow's render viewport. it is intended for regular use independent
+// of openGL as it uses our nswcwin::wc_res struct instead of 2 ints. The OpenGL callback
+// is found right under it
 static void wc_Window::resizeWindow(GLFWwindow* p, nswcwin::wc_res res){
-  glViewport(0, 0, res.x, res.y); // basically just restricts the render viewport as
+  glViewport(0, 0, res.x, res.y); // basically just restricts the render viewport
+}
+
+// this is the resize callback alternative that OpenGL will use in order to resize the window
+// OpenGL was not built with structs in mind, which is sad really
+static void wc_Window::resizeWindow(GLFWwindow* p, int x, int y){
+  glViewport(0, 0, x, y);
 }
 
 // sets up an instance's real window with GLFW given a resolution wc_res, and a name in a string
