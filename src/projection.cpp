@@ -77,7 +77,7 @@ nsproj::mat4 nsproj::multiplyMatrices(nsproj::mat4 a, nsproj::mat4 b){
 
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
-      ret[x][y]=(a[0][y]*b[y][x])+(a[1][y]*b[y][x])+(a[2][y]*b[y][x])+(a[3][y]*b[y][x]);
+      ret.m[x][y]=(a.m[0][y]*b.m[y][x])+(a.m[1][y]*b.m[y][x])+(a.m[2][y]*b.m[y][x])+(a.m[3][y]*b.m[y][x]);
     }
   }
 
@@ -89,7 +89,7 @@ nsproj::mat4 nsproj::transposeMatrix(nsproj::mat4 m){
 
   for(int x=0; x<4; x++){
     for(int y=0; y<4; y++){
-      r[x][y]=m[y][x];
+      r.m[x][y]=m.m[y][x];
     }
   }
 
@@ -98,65 +98,114 @@ nsproj::mat4 nsproj::transposeMatrix(nsproj::mat4 m){
 
 nsproj::mat4 nsproj::identityMatrix(){
   return {
-    {1, 0, 0, 0},
-    {0, 1, 0, 0},
-    {0, 0, 1, 0},
-    {0, 0, 0, 1}
+    {
+      {1, 0, 0, 0},
+      {0, 1, 0, 0},
+      {0, 0, 1, 0},
+      {0, 0, 0, 1}
+    }
   };
 }
 
 nsproj::mat4 nsproj::rotateMatrixXY(float a){
   return {
-    {cos(a), -sin(a), 0, 0},
-    {sin(a),  cos(a), 0, 0},
-    {0,       0,      1, 0},
-    {0,       0,      0, 1}
+    {
+      {cos(a), -sin(a), 0, 0},
+      {sin(a),  cos(a), 0, 0},
+      {0,       0,      1, 0},
+      {0,       0,      0, 1}
+    }
   };
 }
 
 nsproj::mat4 nsproj::rotateMatrixYZ(float a){
   return {
-    {1, 0,       0,      0},
-    {0, cos(a), -sin(a), 0},
-    {0, sin(a),  cos(a), 0},
-    {0, 0,       0,      1}
+    {
+      {1, 0,       0,      0},
+      {0, cos(a), -sin(a), 0},
+      {0, sin(a),  cos(a), 0},
+      {0, 0,       0,      1}
+    }
   };
 }
 
 nsproj::mat4 nsproj::rotateMatrixXZ(float a){
   return {
-    {cos(a), 0, -sin(a),  0},
-    {0,      0,  0,       0},
-    {sin(a), 0,  cos(a),  0},
-    {0,      0,  0,       1}
+    {
+      {cos(a), 0, -sin(a),  0},
+      {0,      0,  0,       0},
+      {sin(a), 0,  cos(a),  0},
+      {0,      0,  0,       1}
+    }
   };
 }
 
 
 nsproj::mat4 nsproj::scaleMatrix(vec3 v){
   return {
-    {v.x, 0,   0,   0},
-    {0,   v.y, 0,   0},
-    {0,   0,   v.z, 0},
-    {0,   0,   0,   1}
+    {
+      {v.x, 0,   0,   0},
+      {0,   v.y, 0,   0},
+      {0,   0,   v.z, 0},
+      {0,   0,   0,   1}
+    }
   };
 }
 
 nsproj::mat4 nsproj::translationMatrix(vec3 v){
   return {
-    {1, 0, 0, v.x},
-    {0, 1, 0, v.y},
-    {0, 0, 1, v.z},
-    {0, 0, 0,   1}
+    {
+      {1, 0, 0, v.x},
+      {0, 1, 0, v.y},
+      {0, 0, 1, v.z},
+      {0, 0, 0,   1}
+    }
   };
+}
+
+// simply creates a perspective projection matrix
+// in openGL style, hence negating Z values
+nsproj::mat4 nsproj::perspectiveProjectionMatrix(float fov, float aspect, float near, float far){
+  // using the FOV from given angle
+  float tanfov=tan(fov/2);
+  
+  // defining frustum dimensions
+  float frig=near*tanfov;
+  float ftop=frig/aspect;
+  float flef=-frig;
+  float fbot=-ftop;
+
+  // defining the matrix using given frustum definitions
+  mat4 projmat;
+
+  /*
+    {2n/r-l, 0,      r+l/r-l, 0       }
+    {0,      2n/t-b, t+b/t-b, 0       }
+    {0,      0,      f+n/f-n, -2fn/f-n}
+    {0,      0,      -1,      0       }
+   */
+  
+  projmat.m[0][0]=(2*near)/(frig-flef);
+  projmat.m[2][0]=(frig+flef)/(frig-flef);
+  
+  projmat.m[1][1]=(2*near)/(ftop-fbot);
+  projmat.m[2][1]=(ftop+fbot)/(ftop-fbot);
+
+  projmat.m[2][2]=-(far+near)/(far-near);
+  projmat.m[3][2]=-(2*far*near)/(far-near);
+
+  projmat.m[2][3]=-1;
+
+  return projmat;
 }
 
 nsproj::vec4 nsproj::vec4Xmat4(nsproj::vec4 a, nsproj::mat4 m){
   nsproj::vec4 ret;
 
-  for(int x=0; x<4; x++){
-    ret[x]=(m[0][x]*a[0])+(m[1][x]*a[1])(m[2][x]*a[2])(m[3][x]*a[3]);
-  }
+  ret.x=(m.m[0][0]*a.x)+(m.m[1][0]*a.y)+(m.m[2][0]*a.z)+(m.m[3][0]*a.w);
+  ret.y=(m.m[0][1]*a.x)+(m.m[1][1]*a.y)+(m.m[2][1]*a.z)+(m.m[3][1]*a.w);
+  ret.z=(m.m[0][2]*a.x)+(m.m[1][2]*a.y)+(m.m[2][2]*a.z)+(m.m[3][2]*a.w);
+  ret.w=(m.m[0][3]*a.x)+(m.m[1][3]*a.y)+(m.m[2][3]*a.z)+(m.m[3][3]*a.w);
 
   return ret;
 }
@@ -167,4 +216,6 @@ nsproj::vec4 operator*(const nsproj::vec4& a, const nsproj::mat4& m){
 
 nsproj::vec4& operator*=(nsproj::vec4& a, const nsproj::mat4& m){
   a=nsproj::vec4Xmat4(a, m);
+
+  return a;
 }

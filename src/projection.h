@@ -22,10 +22,13 @@ namespace nsproj{
     float x=1;
     float y=1;
     float z=1;
+    float w=1;
   };
 
   // 4x4 matrix
-  typedef float[4][4] mat4;
+  typedef struct{
+    float m[4][4];
+  } mat4;
 
   // vec3 utility functions
   vec3 translateVec3(vec3 a, vec3 b);    // translating a vector by another
@@ -46,12 +49,13 @@ namespace nsproj{
   mat4 multiplyMatrices(mat4 a, mat4 b); // multiplies two matrices
   mat4 transposeMatrix(mat4 m);          // transpose a matrix from row major to column major
 
-  mat4 identityMatrix();        // classic identity matrix
-  mat4 rotateMatrixXY(float a); // creating an XY rotation matrix
-  mat4 rotateMatrixYZ(float a); // creating a YZ rotation matrix
-  mat4 rotateMatrixXZ(float a); // creating an XZ rotation matrix
-  mat4 scaleMatrix(vec3 v);       // scaling matrix
-  mat4 translationMatrix(vec3 v); // translation matrix
+  mat4 identityMatrix();                                                            // classic identity matrix
+  mat4 rotateMatrixXY(float a);                                                     // creating an XY rotation matrix
+  mat4 rotateMatrixYZ(float a);                                                     // creating a YZ rotation matrix
+  mat4 rotateMatrixXZ(float a);                                                     // creating an XZ rotation matrix
+  mat4 scaleMatrix(vec3 v);                                                         // scaling matrix
+  mat4 translationMatrix(vec3 v);                                                   // translation matrix
+  mat4 perspectiveProjectionMatrix(float fov, float aspect, float near, float far); // perspective projection matrix
   
   // misc
   vec4 vec4Xmat4(vec4 a, mat4 m);               // multiplying a vec4 by a matrix

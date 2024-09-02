@@ -10,14 +10,15 @@ BINDIR=bin
 SHDDIR=shd
 TEXDIR=tex
 
-OBJO=$(SRCDIR)/main.o $(LIBDIR)/glad.o $(LIBDIR)/stb_image.o $(SRCDIR)/windowdef.o $(SRCDIR)/shader.o $(SRCDIR)/mesh.o $(SRCDIR)/textures.o
+LIBO=$(LIBDIR)/*.o
+SRCO=$(SRCDIR)/*.o
 
 TARGET=$(BINDIR)/wawacraft_evolved.elf
 
-wawacraft_evolved: glad stb_image windowdef shader textures mesh main
+wawacraft_evolved: glad stb_image projection windowdef shader textures mesh main
 	cp -r $(SHDDIR) $(BINDIR)
 	cp -r $(TEXDIR) $(BINDIR)
-	$(CC) $(OBJO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
+	$(CC) $(LIBO) $(SRCO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
 
 main: $(SRCDIR)/main.cpp
 	$(CC) $(SRCDIR)/main.cpp -o $(SRCDIR)/main.o $(CFLAGS) $(LFLAGS) -c
@@ -33,6 +34,9 @@ mesh: $(SRCDIR)/mesh.h $(SRCDIR)/mesh.cpp
 
 textures: $(SRCDIR)/textures.h $(SRCDIR)/textures.cpp
 	$(CC) $(SRCDIR)/textures.cpp -o $(SRCDIR)/textures.o $(CFLAGS) $(LFLAGS) -c
+
+projection: $(SRCDIR)/projection.h $(SRCDIR)/projection.cpp
+	$(CC) $(SRCDIR)/projection.cpp -o $(SRCDIR)/projection.o $(CFLAGS) $(LFLAGS) -c
 
 glad: $(LIBDIR)/glad.c
 	$(CC) $(LIBDIR)/glad.c -o $(LIBDIR)/glad.o $(CFLAGS) $(LFLAGS) -c
