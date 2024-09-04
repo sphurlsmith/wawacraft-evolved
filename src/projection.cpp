@@ -210,12 +210,48 @@ nsproj::vec4 nsproj::vec4Xmat4(nsproj::vec4 a, nsproj::mat4 m){
   return ret;
 }
 
-nsproj::vec4 operator*(const nsproj::vec4& a, const nsproj::mat4& m){
+nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
+  nsproj::mat4 sc=nsproj::scaleMatrix(s);
+  
+  nsproj::mat4 roxy=nsproj::rotateMatrixXY(rot.x);
+  nsproj::mat4 royz=nsproj::rotateMatrixYZ(rot.y);
+  nsproj::mat4 roxz=nsproj::rotateMatrixXZ(rot.z);
+
+  nsproj::mat4 ro=roxy*royz*roxz;
+
+  nsproj::mat4 tr=nsproj::translationMatrix(tran);
+
+  return sc*ro*tr;
+}
+
+nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 rot, nsproj::vec3 tran){
+  rot=nsproj::subtractVector({0,0,0}, rot);
+  tran=nsproj::subtractVector({0,0,0}, tran);
+
+  nsproj::mat4 rota=nsproj::rotateMatrixXY(rot.x)*
+    nsproj::rotateMatrixYZ(rot.y)*
+    nsproj::rotateMatrixXZ(rot.z)*
+    nsproj::translationMatrix(tran);
+
+  return rota;
+}
+
+nsproj::vec4 nsproj::operator*(const nsproj::vec4& a, const nsproj::mat4& m){
   return nsproj::vec4Xmat4(a, m);
 }
 
-nsproj::vec4& operator*=(nsproj::vec4& a, const nsproj::mat4& m){
+nsproj::vec4& nsproj::operator*=(nsproj::vec4& a, const nsproj::mat4& m){
   a=nsproj::vec4Xmat4(a, m);
+
+  return a;
+}
+
+nsproj::mat4 nsproj::operator*(const nsproj::mat4& a, const nsproj::mat4& m){
+  return nsproj::multiplyMatrices(a, m);
+}
+
+nsproj::mat4& nsproj::operator*=(nsproj::mat4& a, const nsproj::mat4& m){
+  a=nsproj::multiplyMatrices(a, m);
 
   return a;
 }

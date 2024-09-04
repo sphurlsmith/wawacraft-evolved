@@ -56,11 +56,16 @@ namespace nsproj{
   mat4 scaleMatrix(vec3 v);                                                         // scaling matrix
   mat4 translationMatrix(vec3 v);                                                   // translation matrix
   mat4 perspectiveProjectionMatrix(float fov, float aspect, float near, float far); // perspective projection matrix
+  mat4 modelMatrix(vec3 rot, vec3 tran, float s);                               // scale, rotation, and translation all in 1
+  mat4 viewMatrix(vec3 rot, vec3 tran);
   
   // misc
   vec4 vec4Xmat4(vec4 a, mat4 m);               // multiplying a vec4 by a matrix
   vec4 operator*(const vec4& a, const mat4& m); // operator overloading for vec4Xmat4
   vec4& operator*=(vec4& a, const mat4& m);     // operator overloading in case somebody wants to use vec4*=mat4
+
+  mat4 operator*(const mat4& a, const mat4& m);
+  mat4& operator*=(mat4& a, const mat4& m);
 };
 
 #endif
