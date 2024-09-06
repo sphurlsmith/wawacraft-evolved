@@ -99,14 +99,14 @@ void wc_Camera::constructProjectionMatrix(){
   projection=nsproj::perspectiveProjectionMatrix(fov, ay/ax, near_p, far_p);
 }
 
-void wc_Camera::renderObject(wc_Object o, wc_Shader& sh){
-  sh.setUniformMatrix("mod", true, &(o.getModelMatrix().m[0][0]));
-  sh.setUniformMatrix("view", true, &view.m[0][0]);
-  sh.setUniformMatrix("proj", true, &projection.m[0][0]);
+void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
+  sh->setUniformMatrix("mod", true, &(o->getModelMatrix().m[0][0]));
+  sh->setUniformMatrix("view", true, &view.m[0][0]);
+  sh->setUniformMatrix("proj", true, &projection.m[0][0]);
 
-  sh.activate();
+  sh->activate();
 
-  o.render();
+  o->render();
 }
 
 void wc_Camera::setAspectRatio(float x, float y){

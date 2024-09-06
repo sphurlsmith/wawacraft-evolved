@@ -64,7 +64,7 @@ class wc_Camera{
   void constructViewMatrix();
   void constructProjectionMatrix();
 
-  void renderObject(wc_Object o, wc_Shader& sh);
+  void renderObject(wc_Object* o, wc_Shader* sh);
   
   void setAspectRatio(float x, float y);
 
