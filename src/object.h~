@@ -1,0 +1,11 @@
+#ifndef OBJECT_H
+#define OBJECT_H
+
+#include "libs.h"
+
+// this is the object.h header used in order to supply the game with the classes
+// necessary to create the contextual objects of a camera and objects to supply
+// a scene. The camera keeps the rotation, and position of every object in accordance
+// with it, as well as its own editable projection matrix.
+
+#endif
