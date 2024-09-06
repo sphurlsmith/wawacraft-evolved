@@ -16,7 +16,7 @@
 // the model matrix for the object.
 class wc_Object{
  public:
-  wc_Object(void (*r)(), float s, nsproj::vec3 p, nsproj::vec3 r, wc_BasicMesh m);
+  wc_Object(void (*rc)(), float s, nsproj::vec3 p, nsproj::vec3 r, wc_BasicMesh m);
 
   void constructModelMatrix();
   void render();
@@ -29,7 +29,7 @@ class wc_Object{
 
   void setMesh(wc_BasicMesh m);
   
-  void (*getRenderCallback)();
+  void (*getRenderCallback())();
   float getSize();
 
   nsproj::vec3 getPosition();
@@ -64,7 +64,7 @@ class wc_Camera{
   void constructViewMatrix();
   void constructProjectionMatrix();
 
-  void renderObject(wc_Object o);
+  void renderObject(wc_Object o, wc_Shader& sh);
   
   void setAspectRatio(float x, float y);
 

@@ -211,7 +211,7 @@ nsproj::vec4 nsproj::vec4Xmat4(nsproj::vec4 a, nsproj::mat4 m){
 }
 
 nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
-  nsproj::mat4 sc=nsproj::scaleMatrix(s);
+  nsproj::mat4 sc=nsproj::scaleMatrix({s,s,s});
   
   nsproj::mat4 roxy=nsproj::rotateMatrixXY(rot.x);
   nsproj::mat4 royz=nsproj::rotateMatrixYZ(rot.y);
@@ -225,8 +225,8 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
 }
 
 nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 rot, nsproj::vec3 tran){
-  rot=nsproj::subtractVector({0,0,0}, rot);
-  tran=nsproj::subtractVector({0,0,0}, tran);
+  rot=nsproj::subtractVec3({0,0,0}, rot);
+  tran=nsproj::subtractVec3({0,0,0}, tran);
 
   nsproj::mat4 rota=nsproj::rotateMatrixXY(rot.x)*
     nsproj::rotateMatrixYZ(rot.y)*

@@ -10,6 +10,13 @@
 // this is the namespace which contains a majority of the utilities for projection mathematics
 // as well as the structs and typedefs used to define mathematical structures like vectors and arrays
 namespace nsproj{
+  // for angle unit conversions
+  const float PI=3.141592653589;
+  const float DEG=180;
+
+  const float DEGTORAD=PI/180;
+  const float RADTODEG=1/DEGTORAD;
+  
   // 3-dimensional vector
   struct vec3{
     float x=1;

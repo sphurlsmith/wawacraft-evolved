@@ -8,8 +8,8 @@
 // creates for us simple classes that allow for the rendering and
 // managing of a 3d scene.
 
-wc_Object::wc_Object(void (*r)(), float s, nsproj::vec3 p, nsproj::vec3 r, wc_BasicMesh m):
-  rend_c(r),
+wc_Object::wc_Object(void (*rc)(), float s, nsproj::vec3 p, nsproj::vec3 r, wc_BasicMesh m):
+  rend_c(rc),
   size(s),
   position(p),
   rotation(r),
@@ -31,6 +31,8 @@ void wc_Object::render(){
   }catch(const char* err){
     std::cout << "Exception approached: " << err << std::endl;
   }
+
+  mesh.renderMesh();
 }
 
 void wc_Object::setRenderCallback(void (*r)()){
@@ -98,9 +100,9 @@ void wc_Camera::constructProjectionMatrix(){
 }
 
 void wc_Camera::renderObject(wc_Object o, wc_Shader& sh){
-  sh.setUniformMatrix("mod", true, o.getModelMatrix().m[0][0]);
-  sh.setUniformMatrix("view", true, view.m[0][0]);
-  sh.setUniformMatrix("proj", true, projection.m[0][0]);
+  sh.setUniformMatrix("mod", true, &(o.getModelMatrix().m[0][0]));
+  sh.setUniformMatrix("view", true, &view.m[0][0]);
+  sh.setUniformMatrix("proj", true, &projection.m[0][0]);
 
   sh.activate();
 
@@ -141,7 +143,7 @@ float wc_Camera::getFOV(){
   return fov;
 }
 
-float wc_Camera:::getNearPlane(){
+float wc_Camera::getNearPlane(){
   return near_p;
 }
 
