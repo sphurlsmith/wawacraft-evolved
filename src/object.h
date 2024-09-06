@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include "libs.h"
+#include "shader.h"
 #include "projection.h"
 #include "mesh.h"
 

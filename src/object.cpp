@@ -1,4 +1,5 @@
 #include "libs.h"
+#include "shader.h"
 #include "projection.h"
 #include "mesh.h"
 #include "object.h"
