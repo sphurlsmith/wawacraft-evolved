@@ -31,7 +31,7 @@ void rend(){
   shawa.renderMesh();
 
   wc_Object sha3d(NULL, 1, {0, 0, 3}, {0, 0, 0}, shawa);
-  wc_Camera cam(800, 600, 50*nsproj::DEGTORAD, 1, 10, {0,0,0}, {0,0,0});
+  wc_Camera cam(800, 600, 50*nsproj::DEGTORAD, 1, 10, {0,0,0}, {20*nsproj::DEGTORAD,0,0});
 
   cam.renderObject(sha3d, def3d);
 }
