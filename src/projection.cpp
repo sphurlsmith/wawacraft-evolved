@@ -194,7 +194,7 @@ nsproj::mat4 nsproj::perspectiveProjectionMatrix(float fov, float aspect, float 
   projmat.m[2][2]=(far+near)/(far-near);
   projmat.m[3][2]=(-2*far*near)/(far-near);
 
-  projmat.m[2][3]=-1;
+  projmat.m[2][3]=1;
 
   return projmat;
   //return nsproj::identityMatrix();
