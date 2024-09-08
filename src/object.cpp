@@ -118,7 +118,7 @@ void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
     std::cout << std::endl;
   }
 
-  std::cout << n.x << ' ' << n.y << std::endl;
+  std::cout << n.x << ' ' << n.y << ' ' << n.z << std::endl;
   
   o->render();
 }

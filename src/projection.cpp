@@ -133,7 +133,7 @@ nsproj::mat4 nsproj::rotateMatrixXZ(float a){
   return {
     {
       {cos(a), 0, -sin(a),  0},
-      {0,      0,  0,       0},
+      {0,      1,  0,       0},
       {sin(a), 0,  cos(a),  0},
       {0,      0,  0,       1}
     }
@@ -191,12 +191,13 @@ nsproj::mat4 nsproj::perspectiveProjectionMatrix(float fov, float aspect, float 
   projmat.m[1][1]=(2*near)/(ftop-flef);
   projmat.m[2][1]=(ftop+fbot)/(ftop-fbot);
 
-  projmat.m[2][2]=-1;
-  projmat.m[3][2]=-2*near;
+  projmat.m[2][2]=(far+near)/(far-near);
+  projmat.m[3][2]=(-2*far*near)/(far-near);
 
   projmat.m[2][3]=-1;
 
   return projmat;
+  //return nsproj::identityMatrix();
 }
 
 nsproj::vec4 nsproj::vec4Xmat4(nsproj::vec4 a, nsproj::mat4 m){
@@ -222,6 +223,7 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
   nsproj::mat4 tr=nsproj::translationMatrix(tran);
 
   return sc*ro*tr;
+  //return nsproj::identityMatrix();
 }
 
 nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 rot, nsproj::vec3 tran){
@@ -234,6 +236,7 @@ nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 rot, nsproj::vec3 tran){
     nsproj::translationMatrix(tran);
 
   return rota;
+  //return nsproj::identityMatrix();
 }
 
 nsproj::vec4 nsproj::operator*(const nsproj::vec4& a, const nsproj::mat4& m){
