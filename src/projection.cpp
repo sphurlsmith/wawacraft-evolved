@@ -171,7 +171,7 @@ nsproj::mat4 nsproj::perspectiveProjectionMatrix(float fov, float aspect, float 
   
   // defining frustum dimensions
   float frig=near*tanfov;
-  float ftop=frig/aspect;
+  float ftop=frig*aspect;
 
   // defining the matrix using given frustum definitions
   mat4 projmat;
@@ -183,18 +183,18 @@ nsproj::mat4 nsproj::perspectiveProjectionMatrix(float fov, float aspect, float 
     {0,      0,      -1,      0       }
    */
   
-  projmat.m[0][0]=near/frig;
+  //projmat.m[0][0]=2*near/frig-fleft;
   //projmat.m[2][0]=(frig+flef)/(frig-flef);
   
-  projmat.m[1][1]=near/ftop;
+  //projmat.m[1][1]=(2*near)/(ftop-fleft);
   //projmat.m[2][1]=(ftop+fbot)/(ftop-fbot);
 
-  projmat.m[2][2]=-1;
-  projmat.m[3][2]=-2*near;
+  //projmat.m[2][2]=-1;
+  //projmat.m[3][2]=-2*near;
 
-  projmat.m[2][3]=-1;
+  //projmat.m[2][3]=-1;
 
-  return projmat;
+  return nsproj::identityMatrix();
 }
 
 nsproj::vec4 nsproj::vec4Xmat4(nsproj::vec4 a, nsproj::mat4 m){
