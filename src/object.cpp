@@ -109,6 +109,7 @@ void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
   nsproj::mat4 tot=(o->getModelMatrix())*(view)*(projection);
   nsproj::vec4 p={.5, .5, 3, 1};
   p*=tot;
+  nsproj::vec3 n=normalizeVec4(p);
   
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
@@ -117,7 +118,7 @@ void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
     std::cout << std::endl;
   }
 
-  std::cout << p.x << ' ' << p.y << std::endl;
+  std::cout << n.x << ' ' << n.y << std::endl;
   
   o->render();
 }

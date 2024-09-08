@@ -16,6 +16,8 @@ void main(){
      gl_Position*=view;
      gl_Position*=proj;
 
+     gl_Position/=gl_Position.w;
+
      voc=vc;
      vtx=vt;
 }
