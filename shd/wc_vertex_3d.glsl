@@ -12,7 +12,9 @@ uniform mat4 view;
 uniform mat4 proj;
 
 void main(){
-     gl_Position=vec4(vp, 1)*mod*view*proj;
+     gl_Position=vec4(vp, 1)*mod;
+     gl_Position*=view;
+     gl_Position*=proj;
 
      voc=vc;
      vtx=vt;

@@ -25,9 +25,9 @@ void wc_Object::render(){
   try{
     if(rend_c==NULL){
       throw "invalid-wc-object-rendercallback";
+    }else{
+      (*rend_c)();
     }
-
-    (*rend_c)();
   }catch(const char* err){
     std::cout << "Exception approached: " << err << std::endl;
   }
@@ -100,12 +100,25 @@ void wc_Camera::constructProjectionMatrix(){
 }
 
 void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
+  sh->activate();
+  
   sh->setUniformMatrix("mod", true, &(o->getModelMatrix().m[0][0]));
   sh->setUniformMatrix("view", true, &view.m[0][0]);
   sh->setUniformMatrix("proj", true, &projection.m[0][0]);
 
-  sh->activate();
+  nsproj::mat4 tot=(o->getModelMatrix())*(view)*(projection);
+  nsproj::vec4 p={.5, .5, 3, 1};
+  p*=tot;
+  
+  for(int y=0; y<4; y++){
+    for(int x=0; x<4; x++){
+      std::cout << (o->getModelMatrix().m[x][y]) << ' ';
+    }
+    std::cout << std::endl;
+  }
 
+  std::cout << p.x << ' ' << p.y << std::endl;
+  
   o->render();
 }
 

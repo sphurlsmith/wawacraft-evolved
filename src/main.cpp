@@ -25,14 +25,14 @@ void rend(){
   
   wc_Texture shatex(32, 32, "tex/wawa.png");
   wc_BasicMesh shawa(vert, ind);
-
-  def3d.activate();
+  
   shatex.useTexture();
-  shawa.renderMesh();
+  //shawa.renderMesh();
 
-  wc_Object sha3d(NULL, 1, {0, 0, 3}, {0, 0, 0}, shawa);
+  wc_Object sha3d(NULL, 1, {0, 0, 3}, {10*nsproj::DEGTORAD, 0, 0}, shawa);
   wc_Camera cam(800, 600, 50*nsproj::DEGTORAD, 1, 10, {0,0,0}, {0,0,0});
 
+  def3d.activate();
   cam.renderObject(&sha3d, &def3d);
 }
 
@@ -46,8 +46,8 @@ int main(){
   wc_Window WIN(WINRES, "Wawacraft Evolved [OpenGL 3.3]", rpointer);
   wc_Shader def("shd/wc_vertex_source.glsl", "shd/wc_fragment_source.glsl");
   
-  def.activate();
   while(!glfwWindowShouldClose(WIN.getWinPointer())){
+    def.activate();
     WIN.runWindowLoopInstance();
   }
   
