@@ -111,15 +111,6 @@ void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
   p*=tot;
   nsproj::vec3 n=normalizeVec4(p);
   
-  for(int y=0; y<4; y++){
-    for(int x=0; x<4; x++){
-      std::cout << projection.m[x][y] << ' ';
-    }
-    std::cout << std::endl;
-  }
-
-  std::cout << n.x << ' ' << n.y << ' ' << n.z << std::endl;
-  
   o->render();
 }
 
