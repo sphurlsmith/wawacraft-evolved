@@ -56,6 +56,7 @@ namespace nsproj{
   mat4 multiplyMatrices(mat4 a, mat4 b); // multiplies two matrices
   mat4 transposeMatrix(mat4 m);          // transpose a matrix from row major to column major
 
+  mat4 baseMatrix();
   mat4 identityMatrix();                                                            // classic identity matrix
   mat4 rotateMatrixXY(float a);                                                     // creating an XY rotation matrix
   mat4 rotateMatrixYZ(float a);                                                     // creating a YZ rotation matrix

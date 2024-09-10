@@ -102,7 +102,7 @@ void wc_Camera::constructProjectionMatrix(){
 void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
   sh->activate();
   
-  sh->setUniformMatrix("mod", true, &(o->getModelMatrix().m[0][0]));
+  sh->setUniformMatrix("mod",  true, &(o->getModelMatrix().m[0][0]));
   sh->setUniformMatrix("view", true, &view.m[0][0]);
   sh->setUniformMatrix("proj", true, &projection.m[0][0]);
 
