@@ -29,7 +29,7 @@ void wc_Object::render(){
       (*rend_c)();
     }
   }catch(const char* err){
-    std::cout << "Exception approached: " << err << std::endl;
+    //std::cout << "Exception approached: " << err << std::endl; Right now we dont need that
   }
 
   mesh.renderMesh();

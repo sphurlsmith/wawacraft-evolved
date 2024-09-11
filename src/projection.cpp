@@ -251,12 +251,16 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
 
   nsproj::mat4 ret=ro*tr;
 
+  std::cout << "---------------" << std::endl;
+  
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
       std::cout << roxy.m[x][y] << ' ';
     }
     std::cout << std::endl;
   }
+
+  std::cout << "---------------" << std::endl;
 
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
@@ -265,6 +269,8 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
     std::cout << std::endl;
   }
 
+  std::cout << "---------------" << std::endl;
+  
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
       std::cout << royz.m[x][y] << ' ';
@@ -272,6 +278,8 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
     std::cout << std::endl;
   }
 
+  std::cout << "---------------" << std::endl;
+  
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
       std::cout << ro.m[x][y] << ' ';
@@ -279,6 +287,8 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
     std::cout << std::endl;
   }
 
+  std::cout << "---------------" << std::endl;
+  
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
       std::cout << tr.m[x][y] << ' ';
@@ -286,12 +296,16 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
     std::cout << std::endl;
   }
 
+  std::cout << "---------------" << std::endl;
+  
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
       std::cout << ret.m[x][y] << ' ';
     }
     std::cout << std::endl;
   }
+
+  std::cout << "---------------" << std::endl;
   
   return ret;
   //return nsproj::identityMatrix();
