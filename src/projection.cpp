@@ -79,7 +79,7 @@ nsproj::mat4 nsproj::multiplyMatrices(nsproj::mat4 a, nsproj::mat4 b){
     for(int x=0; x<4; x++){
       int i=0;
       for(int z=0; z<4; z++){
-	i+=(a.m[z][x]*b.m[y][z]);
+	i+=(a.m[z][y]*b.m[x][z]);
       }
       ret.m[x][y]=i;
     }
