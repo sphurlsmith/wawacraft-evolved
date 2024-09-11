@@ -273,7 +273,7 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
   
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
-      std::cout << roxz.m[x][y] << ' ';
+      std::cout << (roxy*royz).m[x][y] << ' ';
     }
     std::cout << std::endl;
   }
