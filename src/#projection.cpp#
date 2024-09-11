@@ -77,7 +77,7 @@ nsproj::mat4 nsproj::multiplyMatrices(nsproj::mat4 a, nsproj::mat4 b){
 
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
-      float i=0;
+      int i=0;
       for(int z=0; z<4; z++){
 	i+=(a.m[z][y]*b.m[x][z]);
       }
@@ -249,7 +249,7 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
 
   nsproj::mat4 tr=nsproj::translationMatrix(tran);
 
-  nsproj::mat4 ret=ro*tr;
+  nsproj::mat4 *ret=ro*tr;
 
   std::cout << "---------------" << std::endl;
   
