@@ -229,9 +229,9 @@ nsproj::vec4 nsproj::vec4Xmat4(nsproj::vec4 a, nsproj::mat4 m){
 nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
   nsproj::mat4 sc=nsproj::scaleMatrix({s,s,s});
 
-  nsproj::mat4 roxy=nsproj::identityMatrix();
-  nsproj::mat4 royz=nsproj::identityMatrix();
-  nsproj::mat4 roxz=nsproj::identityMatrix();
+  nsproj::mat4 roxy;
+  nsproj::mat4 royz;
+  nsproj::mat4 roxz;
 
   if(rot.x!=0){
     roxy=nsproj::rotateMatrixXY(rot.x);
@@ -249,46 +249,8 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
 
   nsproj::mat4 tr=nsproj::translationMatrix(tran);
 
-  nsproj::mat4 ret=ro*tr;
+  nsproj::mat4 ret=sc*ro*tr;
 
-  std::cout << "---------------" << std::endl;
-  
-  for(int y=0; y<4; y++){
-    for(int x=0; x<4; x++){
-      std::cout << roxy.m[x][y] << ' ';
-    }
-    std::cout << std::endl;
-  }
-
-  std::cout << "---------------" << std::endl;
-
-  for(int y=0; y<4; y++){
-    for(int x=0; x<4; x++){
-      std::cout << royz.m[x][y] << ' ';
-    }
-    std::cout << std::endl;
-  }
-
-  std::cout << "---------------" << std::endl;
-  
-  for(int y=0; y<4; y++){
-    for(int x=0; x<4; x++){
-      std::cout << (roxy*royz).m[x][y] << ' ';
-    }
-    std::cout << std::endl;
-  }
-
-  std::cout << "---------------" << std::endl;
-  
-  for(int y=0; y<4; y++){
-    for(int x=0; x<4; x++){
-      std::cout << ro.m[x][y] << ' ';
-    }
-    std::cout << std::endl;
-  }
-
-  std::cout << "---------------" << std::endl;
-  
   return ret;
   //return nsproj::identityMatrix();
 }

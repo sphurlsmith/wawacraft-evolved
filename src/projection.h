@@ -34,7 +34,12 @@ namespace nsproj{
 
   // 4x4 matrix
   typedef struct{
-    float m[4][4];
+    float m[4][4]={
+      {1,0,0,0},
+      {0,1,0,0},
+      {0,0,1,0},
+      {0,0,0,1}
+    };
   } mat4;
 
   // vec3 utility functions
