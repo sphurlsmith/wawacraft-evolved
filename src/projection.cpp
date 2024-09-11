@@ -249,8 +249,12 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
 
   nsproj::mat4 tr=nsproj::translationMatrix(tran);
 
-  nsproj::mat4 ret=sc*ro*tr;
+  nsproj::mat4 ret=sc*ro;
 
+  ret.m[3][0]=tr.m[3][0];
+  ret.m[3][1]=tr.m[3][1];
+  ret.m[3][2]=tr.m[3][2];
+  
   return ret;
   //return nsproj::identityMatrix();
 }
