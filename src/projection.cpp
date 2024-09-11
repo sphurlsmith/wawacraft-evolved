@@ -247,23 +247,13 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
   
   nsproj::mat4 ro=roxy*royz*roxz;
 
-  nsproj::mat4 tr=nsproj::translationMatrix(tran);
-
   nsproj::mat4 ret=sc*ro;
 
   ret.m[3][0]=tran.x;
   ret.m[3][1]=tran.y;
   ret.m[3][2]=tran.z;
-
-  for(int y=0; y<4; y++){
-    for(int x=0; x<4; x++){
-      std::cout << ret.m[x][y] << ' ';
-    }
-    std::cout << std::endl;
-  }
   
   return ret;
-  //return nsproj::identityMatrix();
 }
 
 nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 rot, nsproj::vec3 tran){
