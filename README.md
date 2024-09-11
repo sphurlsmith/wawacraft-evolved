@@ -17,6 +17,9 @@ of LAN multiplayer, or global multiplayer over the Internet?
 > [!NOTE]
 > This project and its predecessor are licensed under the GNU GPL-3.0 License, with further 
 > versions to be released also applying to it unless explicitly stated otherwise.
+> Any resources(i.e. source-code, art, music) in these projects are licensed under the GPL
+> unless it is found these resources originate elsewhere or from a different work. Under which
+> conditions, those resources are to be treated by the license of their original distribution.
 
 ## Progress with the game
 
