@@ -251,9 +251,9 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
 
   nsproj::mat4 ret=sc*ro;
 
-  ret.m[3][0]=tr.m[3][0];
-  ret.m[3][1]=tr.m[3][1];
-  ret.m[3][2]=tr.m[3][2];
+  ret.m[3][0]=tran.x;
+  ret.m[3][1]=tran.y;
+  ret.m[3][2]=tran.z;
 
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
