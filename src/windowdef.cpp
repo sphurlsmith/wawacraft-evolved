@@ -23,6 +23,9 @@ wc_Window::wc_Window(nswcwin::wc_res res, std::string n, void (*p)()){
 
   // creates a viewport to render within.
   setViewport(res.x, res.y);
+
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS);
   
   setRenderCallback(p); // sets the render callback for render loop
   setFramebufferResizeCallback(); // sets the framebuffer resize callback for resizing windows.

@@ -9,17 +9,25 @@
 // the render function
 void rend(){
   glClearColor(.5, .5, .8, 1);
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   std::vector<float> vert=
     {
-      -.5, -.5, 0, 1, 0, 0, 0, 1,
-      .5,  -.5, 0, 0, 1, 0, 1, 1,
-      .5,   .5, 0, 0, 0, 1, 1, 0,
-      -.5,  .5, 0, 1, 1, 0, 0, 0
+      -.5, -.5, 0, 0, 0, 0, 0, 1,
+      .5,  -.5, 0, 0, 0, 0, 1, 1,
+      .5,   .5, 0, 0, 0, 0, 1, 0,
+      -.5,  .5, 0, 0, 0, 0, 0, 0,
+      -.5, -.5, 1, 0, 0, 0, 0, 1,
+      .5,  -.5, 1, 0, 0, 0, 1, 1,
+      .5,   .5, 1, 0, 0, 0, 1, 0,
+      -.5,  .5, 1, 0, 0, 0, 0, 0,
     };
 
-  std::vector<unsigned int> ind={0, 1, 2, 0, 2, 3};
+  std::vector<unsigned int> ind={
+    0, 1, 2, 0, 2, 3,
+    4, 5, 6, 4, 6, 7,
+    3, 2, 6, 2, 6, 7,
+  };
 
   wc_Shader def3d("shd/wc_vertex_3d.glsl", "shd/wc_fragment_source.glsl");
   
