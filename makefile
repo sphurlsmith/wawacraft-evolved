@@ -15,7 +15,7 @@ SRCO=$(SRCDIR)/*.o
 
 TARGET=$(BINDIR)/wawacraft_evolved.elf
 
-wawacraft_evolved: glad stb_image projection windowdef shader textures mesh object main
+wawacraft_evolved: glad stb_image projection windowdef shader textures mesh object control main
 	cp -r $(SHDDIR) $(BINDIR)
 	cp -r $(TEXDIR) $(BINDIR)
 	$(CC) $(LIBO) $(SRCO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
@@ -40,6 +40,9 @@ projection: $(SRCDIR)/projection.h $(SRCDIR)/projection.cpp
 
 object: $(SRCDIR)/object.h $(SRCDIR)/object.cpp
 	$(CC) $(SRCDIR)/object.cpp -o $(SRCDIR)/object.o $(CFLAGS) $(LFLAGS) -c
+
+control: $(SRCDIR)/control.h $(SRCDIR)/control.cpp
+	$(CC) $(SRCDIR)/control.cpp -o $(SRCDIR)/control.o $(CFLAGS) $(LFLAGS) -c
 
 glad: $(LIBDIR)/glad.c
 	$(CC) $(LIBDIR)/glad.c -o $(LIBDIR)/glad.o $(CFLAGS) $(LFLAGS) -c
