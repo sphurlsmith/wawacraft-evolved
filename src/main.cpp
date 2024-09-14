@@ -13,20 +13,24 @@ void rend(){
 
   std::vector<float> vert=
     {
-      -.5, -.5, 0, 0, 0, 0, 0, 1,
-      .5,  -.5, 0, 0, 0, 0, 1, 1,
-      .5,   .5, 0, 0, 0, 0, 1, 0,
-      -.5,  .5, 0, 0, 0, 0, 0, 0,
-      -.5, -.5, 1, 0, 0, 0, 0, 1,
-      .5,  -.5, 1, 0, 0, 0, 1, 1,
-      .5,   .5, 1, 0, 0, 0, 1, 0,
-      -.5,  .5, 1, 0, 0, 0, 0, 0,
+      -1, -1, -1, 0, 0, 0, 0, 1,
+      1,  -1, -1, 0, 0, 0, 1, 1,
+      1,   1, -1, 0, 0, 0, 1, 0,
+      -1,  1, -1, 0, 0, 0, 0, 0,
+      -1, -1,  1, 0, 0, 0, 0, 1,
+      1,  -1,  1, 0, 0, 0, 1, 1,
+      1,   1,  1, 0, 0, 0, 1, 0,
+      -1,  1,  1, 0, 0, 0, 0, 0,
+      1,  -1, -1, 0, 0, 0, 0, 1,
+      1,  -1,  1, 0, 0, 0, 1, 1,
+      1,   1,  1, 0, 0, 0, 1, 0,
+      1,   1, -1, 0, 0, 0, 0, 0 
     };
 
   std::vector<unsigned int> ind={
-    0, 1, 2, 0, 2, 3,
-    4, 5, 6, 4, 6, 7,
-    3, 2, 6, 2, 6, 7,
+    0, 1, 2,  0,  2,  3,
+    4, 5, 6,  4,  6,  7,
+    8, 9, 10, 8, 10, 11,
   };
 
   wc_Shader def3d("shd/wc_vertex_3d.glsl", "shd/wc_fragment_source.glsl");
@@ -37,8 +41,8 @@ void rend(){
   shatex.useTexture();
   //shawa.renderMesh();
 
-  wc_Object sha3d(NULL, 1, {0, 0, 3}, {20*nsproj::DEGTORAD, 20*nsproj::DEGTORAD, 20*nsproj::DEGTORAD}, shawa);
-  wc_Camera cam(800, 600, 50*nsproj::DEGTORAD, 1, 10, {0,0,0}, {0,0,20*nsproj::DEGTORAD});
+  wc_Object sha3d(NULL, 1, {0, 0, 5}, {20*nsproj::DEGTORAD, 20*nsproj::DEGTORAD, 60*nsproj::DEGTORAD}, shawa);
+  wc_Camera cam(800, 600, 50*nsproj::DEGTORAD, 1, 10, {0,0,0}, {0,0,0});
 
   def3d.activate();
   cam.renderObject(&sha3d, &def3d);
