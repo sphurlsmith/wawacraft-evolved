@@ -63,7 +63,7 @@ int main(){
   wc_Texture wtx(32, 32, "tex/wawa.png");
   wc_BasicMesh wms(vert, ind);
 
-  wc_Camera cam(WINRES.x, WINRES.y, 50*nsproj::DEGTORAD, .8, 10, {0, 0, 0}, {0, 0, 0});
+  wc_Camera cam(WINRES.x, WINRES.y, 50*nsproj::DEGTORAD, .2, 10000, {0, 0, 0}, {0, 0, 0});
   wc_Object wawa(NULL, 1, {0, 0, 5}, {0, 0, 0}, wms);
 
   def.activate();

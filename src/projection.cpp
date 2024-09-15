@@ -257,7 +257,28 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
 }
 
 nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 rot, nsproj::vec3 tran){
-  return nsproj::modelMatrix({-rot.x, -rot.y, -rot.z}, {-tran.x, -tran.y, -tran.z}, 1);
+  nsproj::vec3 x={1,0,0};
+  nsproj::vec3 y={0,1,0};
+  nsproj::vec3 z={0,0,1};
+
+  nsproj::mat4 hort=nsproj::rotateMatrixXZ(tran.x);
+  nsproj::mat4 vert=nsproj::rotateMatrixYZ(tran.y);
+  nsproj::mat4 lat=nsproj::rotateMatrixXY(tran.z);
+  
+  x=nsproj::normalizeVec4(nsproj::homogenizeVector(x)*hort);
+  y=nsproj::normalizeVec4(nsproj::homogenizeVector(y));
+  z=nsproj::normalizeVec4(nsproj::homogenizeVector(z)*hort);
+
+  nsproj::mat4 view={
+    {
+      {x.x, y.x, z.x, -tran.x},
+      {x.y, y.y, z.y, -tran.y},
+      {x.z, y.z, z.z, -tran.z},
+      {0,   0,   0,         1}
+    }
+  };
+
+  return view;
 }
 
 nsproj::vec4 nsproj::operator*(const nsproj::vec4& a, const nsproj::mat4& m){
