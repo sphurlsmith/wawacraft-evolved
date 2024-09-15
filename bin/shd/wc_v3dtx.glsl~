@@ -6,6 +6,7 @@ layout (location=2) in vec2 vt;
 
 out vec3 voc;
 out vec2 vtx;
+out float p;
 
 uniform mat4 mod;
 uniform mat4 view;
@@ -18,6 +19,8 @@ void main(){
 
      gl_Position/=gl_Position.w;
 
-     voc=vc;
      vtx=vt;
+     p=1/gl_Position.w;
+
+     voc=vc;
 }

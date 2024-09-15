@@ -17,10 +17,10 @@ void main(){
      gl_Position*=view;
      gl_Position*=proj;
 
-     gl_Position/=gl_Position.w;
+     //gl_Position/=gl_Position.w;
+
+     vtx=vt;
+     p=1/1;
 
      voc=vc;
-     
-     vtx=vt/vp.z;
-     p=1/vp.z;
 }

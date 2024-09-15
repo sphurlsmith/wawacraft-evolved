@@ -48,7 +48,7 @@ void rend(){
     20, 21, 22, 20, 22, 23,
   };
 
-  wc_Shader def3d("shd/wc_v3dtx.glsl", "shd/wc_f3dtx.glsl");
+  wc_Shader def3d("shd/wc_vertex_3d.glsl", "shd/wc_fragment_source.glsl");
   
   wc_Texture shatex(32, 32, "tex/wawa.png");
   wc_BasicMesh shawa(vert, ind);
