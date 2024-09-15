@@ -13,7 +13,7 @@ TEXDIR=tex
 LIBO=$(LIBDIR)/*.o
 SRCO=$(SRCDIR)/*.o
 
-TARGET=$(BINDIR)/wawacraft_evolved.elf
+TARGET=$(BINDIR)/wawacraft_evolved
 
 wawacraft_evolved: glad stb_image projection windowdef shader textures mesh object control main
 	cp -r $(SHDDIR) $(BINDIR)
