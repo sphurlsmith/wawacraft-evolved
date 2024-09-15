@@ -5,12 +5,15 @@
 #include "textures.h"
 #include "mesh.h"
 #include "object.h"
+#include "control.h"
 
 // the render function
 void rend(){
   glClearColor(.5, .5, .8, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
 
+int main(){
   std::vector<float> vert=
     {
       -1, -1, -1, 0, 0, 0, 0, 1,
@@ -47,23 +50,7 @@ void rend(){
     17, 19, 18, 17, 18, 16,
     20, 21, 22, 20, 22, 23,
   };
-
-  wc_Shader def3d("shd/wc_vertex_3d.glsl", "shd/wc_fragment_source.glsl");
   
-  wc_Texture shatex(32, 32, "tex/wawa.png");
-  wc_BasicMesh shawa(vert, ind);
-  
-  shatex.useTexture();
-  //shawa.renderMesh();
-
-  wc_Object sha3d(NULL, 1, {0, 0, 5}, {20*nsproj::DEGTORAD, 20*nsproj::DEGTORAD, 60*nsproj::DEGTORAD}, shawa);
-  wc_Camera cam(800, 600, 50*nsproj::DEGTORAD, 1, 10, {0,0,0}, {0,0,0});
-
-  def3d.activate();
-  cam.renderObject(&sha3d, &def3d);
-}
-
-int main(){
   // getting the render function pointer
   void (*rpointer)()=&rend;
   
@@ -71,11 +58,39 @@ int main(){
   nswcwin::wc_res WINRES={800, 600};
 
   wc_Window WIN(WINRES, "Wawacraft Evolved [OpenGL 3.3]", rpointer);
-  wc_Shader def("shd/wc_vertex_source.glsl", "shd/wc_fragment_source.glsl");
-  
+
+  wc_Shader def("shd/wc_vertex_3d.glsl", "shd/wc_fragment_source.glsl");
+  wc_Texture wtx(32, 32, "tex/wawa.png");
+  wc_BasicMesh wms(vert, ind);
+
+  wc_Camera cam(WINRES.x, WINRES.y, 50*nsproj::DEGTORAD, .8, 10, {0, 0, 0}, {0, 0, 0});
+  wc_Object wawa(NULL, 1, {0, 0, 5}, {0, 0, 0}, wms);
+
+  def.activate();
   while(!glfwWindowShouldClose(WIN.getWinPointer())){
-    def.activate();
-    WIN.runWindowLoopInstance();
+    glClearColor(.5, .5, .8, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    wtx.useTexture();
+    cam.renderObject(&wawa, &def);
+
+    if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_W)==GLFW_PRESS){
+      cam.moveFront(.2);
+    }
+
+    if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_S)==GLFW_PRESS){
+      cam.moveBack(.2);
+    }
+
+    if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_A)==GLFW_PRESS){
+      cam.turnXZ(5*nsproj::DEGTORAD);
+    }
+
+    if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_D)==GLFW_PRESS){
+      cam.turnXZ(-5*nsproj::DEGTORAD);
+    }
+
+    glfwSwapBuffers(glfwGetCurrentContext());
+    glfwPollEvents();
   }
   
   return 0;

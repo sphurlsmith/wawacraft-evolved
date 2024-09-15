@@ -100,6 +100,7 @@ void wc_Camera::constructProjectionMatrix(){
 }
 
 void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
+  constructViewMatrix();
   sh->activate();
   
   sh->setUniformMatrix("mod",  true, &(o->getModelMatrix().m[0][0]));
@@ -134,6 +135,26 @@ void wc_Camera::setPosition(nsproj::vec3 pos){
 
 void wc_Camera::setRotation(nsproj::vec3 rot){
   rotation=rot;
+}
+
+void wc_Camera::moveFront(float sp){
+  position.x-=(sin(rotation.z))*sp;
+  //position.y+=(sin(rotation.x)+cos(rotation.y))*sp;
+  position.z-=(cos(rotation.z))*sp;
+}
+
+void wc_Camera::moveBack(float sp){
+  position.x+=(sin(rotation.z))*sp;
+  //position.y-=(sin(rotation.x)+cos(rotation.y))*sp;
+  position.z+=(cos(rotation.z))*sp;
+}
+
+void wc_Camera::turnXZ(float d){
+  rotation.z+=d;
+}
+
+void wc_Camera::turnYZ(float d){
+  rotation.y+=d;
 }
 
 float wc_Camera::getAspectX(){

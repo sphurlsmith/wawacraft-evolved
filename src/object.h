@@ -74,6 +74,11 @@ class wc_Camera{
   void setPosition(nsproj::vec3 pos);
   void setRotation(nsproj::vec3 rot);
 
+  void moveFront(float sp);
+  void moveBack(float sp);
+  void turnXZ(float d);
+  void turnYZ(float d);
+  
   float getAspectX();
   float getAspectY();
 
