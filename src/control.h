@@ -10,8 +10,8 @@
 namespace nswincon{
   int getKeyStatus(GLFWwindow* handle, int key);
 
-  void getCursorPosition(GLFWwindow* handle, double& x, double& y);
-  void setCursorMode(GLFWwindow* handle, bool state)
-};
+  void getCursorPosition(GLFWwindow* handle, double* x, double* y);
+  void setCursorMode(GLFWwindow* handle, bool state);
+}
 
 #endif

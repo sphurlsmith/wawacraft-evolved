@@ -5,7 +5,7 @@ int nswincon::getKeyStatus(GLFWwindow* handle, int key){
   return glfwGetKey(handle, key);
 }
 
-void getCursorPosition(GLFWwindow* handle, double& x, double& y){
+void getCursorPosition(GLFWwindow* handle, double* x, double* y){
   glfwGetCursorPos(handle, x, y);
 }
 
