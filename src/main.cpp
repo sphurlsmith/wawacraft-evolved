@@ -63,8 +63,8 @@ int main(){
   wc_Texture wtx(32, 32, "tex/wawa.png");
   wc_BasicMesh wms(vert, ind);
 
-  wc_Camera cam(WINRES.x, WINRES.y, 50*nsproj::DEGTORAD, .2, 10000, {0, 0, 0}, {0, 0, 0});
-  wc_Object wawa(NULL, 1, {0, 0, 5}, {0, 0, 0}, wms);
+  wc_Camera cam(WINRES.x, WINRES.y, 50*nsproj::DEGTORAD, .2, 10000, {0, 0, 0}, {0, 0, 1});
+  wc_Object wawa(NULL, 1, {0, 0, 5}, {20*nsproj::DEGTORAD, 0, 0}, wms);
 
   def.activate();
   while(!glfwWindowShouldClose(WIN.getWinPointer())){
@@ -82,11 +82,19 @@ int main(){
     }
 
     if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_A)==GLFW_PRESS){
-      cam.turnXZ(5*nsproj::DEGTORAD);
+      cam.strafeLeft(.2);
     }
 
     if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_D)==GLFW_PRESS){
-      cam.turnXZ(-5*nsproj::DEGTORAD);
+      cam.strafeRight(.2);
+    }
+
+    if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_PAGE_UP)==GLFW_PRESS){
+      cam.setPosition({cam.getPosition().x, cam.getPosition().y+.2, cam.getPosition().z});
+    }
+
+    if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_PAGE_DOWN)==GLFW_PRESS){
+      cam.setPosition({cam.getPosition().x, cam.getPosition().y-.2, cam.getPosition().z});
     }
 
     glfwSwapBuffers(glfwGetCurrentContext());

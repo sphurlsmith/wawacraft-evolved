@@ -7,6 +7,31 @@
 // of many different types, with its main intent being to supply utilities to create projection
 // transformations, hence the name.
 
+class quat{
+public:
+  quat(float pw, float pi, float pj, float pk);
+
+  quat conjugate();
+  quat normal();
+  quat inverse();
+  
+  static quat add(const quat& a, const quat& b);
+  static quat subtract(const quat& a, const quat& b);
+  
+  static quat product(const quat& a, const quat& b);
+
+  static float dotProduct(const quat& a, const quat& b);
+  
+  float conjugateProduct();
+
+  float norm();
+  
+  float w;
+  float i;
+  float j;
+  float k;
+};
+
 // this is the namespace which contains a majority of the utilities for projection mathematics
 // as well as the structs and typedefs used to define mathematical structures like vectors and arrays
 namespace nsproj{
@@ -47,9 +72,17 @@ namespace nsproj{
   vec3 subtractVec3(vec3 a, vec3 b);     // subtracting vectors b from a
   vec3 scaleVec3(vec3 a, float scalar);  // scaling a vector by a scalar
 
+  vec3 dot(vec3 a, vec3 b);              // dot product
+  vec3 cross(vec3 a, vec3 b);            // cross product
+  
+  vec3 rotateVec3Quat(vec3 v, vec3 axis, float a);
+  
   vec3 rotateVec3XY(vec3 v, float a);      // rotating a vector by a radian angle
   vec3 rotateVec3YZ(vec3 v, float a);      // in the yz plane
   vec3 rotateVec3XZ(vec3 v, float a);      // in the xz plane
+
+  float getMagnitude(vec3 v);            // finding the magnitude of a regular vector
+  vec3 normalizeVec3(vec3 v);            // using the magnitude to find the normalized version of a vec3
   
   vec3 normalizeVec4(vec4 v);            // normalizing a vec4 to a vec3
   vec3 vec4To3(vec4 v);                  // getting a vec3 from a vec4 without normalizing
@@ -70,7 +103,7 @@ namespace nsproj{
   mat4 translationMatrix(vec3 v);                                                   // translation matrix
   mat4 perspectiveProjectionMatrix(float fov, float aspect, float near, float far); // perspective projection matrix
   mat4 modelMatrix(vec3 rot, vec3 tran, float s);                               // scale, rotation, and translation all in 1
-  mat4 viewMatrix(vec3 rot, vec3 tran);
+  mat4 viewMatrix(vec3 up, vec3 target, vec3 tran);
   
   // misc
   vec4 vec4Xmat4(vec4 a, mat4 m);               // multiplying a vec4 by a matrix

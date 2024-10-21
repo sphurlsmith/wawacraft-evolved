@@ -23,6 +23,43 @@ nsproj::vec3 nsproj::scaleVec3(nsproj::vec3 a, float scalar){
   };
 }
 
+nsproj::vec3 nsproj::dot(nsproj::vec3 a, nsproj::vec3 b){
+  return {
+    a.x*b.x,
+    a.y*b.y,
+    a.z*b.z
+  };
+}
+
+nsproj::vec3 nsproj::cross(nsproj::vec3 a, nsproj::vec3 b){
+  float deti=(a.y*b.z-a.z*b.y);
+  float detj=(a.x*b.z-a.z*b.x);
+  float detk=(a.x*b.y-a.y*b.x);
+
+  return {
+    deti,
+    detj,
+    detk
+  };
+}
+
+nsproj::vec3 nsproj::rotateVec3Quat(nsproj::vec3 v, nsproj::vec3 axis, float a){
+  float cosha=cos(a/2);
+  float sinha=sin(a/2);
+  
+  quat rt(cosha, sinha*axis.x, sinha*axis.y, sinha*axis.z);
+  rt=rt.normal();
+
+  quat rtc=rt.conjugate();
+  quat q(1, v.x, v.y, v.z);
+  
+  quat retq=quat::product(rt, quat::product(q, rtc));
+
+  nsproj::vec3 ret={retq.i, retq.j, retq.k};
+
+  return ret;
+}
+
 nsproj::vec3 nsproj::rotateVec3XY(nsproj::vec3 v, float a){
   return {
     ((v.x*cos(a))-(v.y*sin(a))),
@@ -44,6 +81,20 @@ nsproj::vec3 nsproj::rotateVec3XZ(nsproj::vec3 v, float a){
     ((v.x*cos(a))+(v.z*sin(a))),
     v.y,
     ((v.z*cos(a))-(v.x*sin(a)))
+  };
+}
+
+float nsproj::getMagnitude(vec3 v){
+  return (sqrt(v.x*v.x+v.y*v.y+v.z*v.z));
+}
+
+nsproj::vec3 nsproj::normalizeVec3(vec3 v){
+  float m=nsproj::getMagnitude(v);
+  
+  return {
+    v.x/m,
+    v.y/m,
+    v.z/m
   };
 }
 
@@ -256,24 +307,22 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
   return ret;
 }
 
-nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 rot, nsproj::vec3 tran){
-  nsproj::vec3 x={1,0,0};
-  nsproj::vec3 y={0,1,0};
-  nsproj::vec3 z={0,0,1};
+nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 up, nsproj::vec3 target, nsproj::vec3 tran){
+  nsproj::vec3 right=nsproj::cross(up, target);
+  right=nsproj::normalizeVec3(right);
 
-  nsproj::mat4 hort=nsproj::rotateMatrixXZ(tran.x);
-  nsproj::mat4 vert=nsproj::rotateMatrixYZ(tran.y);
-  nsproj::mat4 lat=nsproj::rotateMatrixXY(tran.z);
+  target=nsproj::cross(right, up);
+  target=nsproj::normalizeVec3(target);
   
-  x=nsproj::normalizeVec4(nsproj::homogenizeVector(x)*hort);
-  y=nsproj::normalizeVec4(nsproj::homogenizeVector(y));
-  z=nsproj::normalizeVec4(nsproj::homogenizeVector(z)*hort);
-
+  nsproj::vec3 u=right;
+  nsproj::vec3 v=up;
+  nsproj::vec3 n=target;
+  
   nsproj::mat4 view={
     {
-      {x.x, y.x, z.x, -tran.x},
-      {x.y, y.y, z.y, -tran.y},
-      {x.z, y.z, z.z, -tran.z},
+      {u.x, u.y, u.z, -tran.x},
+      {v.x, v.y, v.z, -tran.y},
+      {n.x, n.y, n.z, -tran.z},
       {0,   0,   0,         1}
     }
   };
@@ -299,4 +348,54 @@ nsproj::mat4& nsproj::operator*=(nsproj::mat4& a, const nsproj::mat4& m){
   a=nsproj::multiplyMatrices(a, m);
 
   return a;
+}
+
+quat::quat(float pw, float pi, float pj, float pk):
+  w(pw),
+  i(pi),
+  j(pj),
+  k(pk){
+  
+}
+
+quat quat::conjugate(){
+  return quat(w, -i, -j, -k);
+}
+
+quat quat::normal(){
+  return quat(w/norm(), i/norm(), j/norm(), k/norm());
+}
+
+quat quat::inverse(){
+  return quat(conjugate().w/conjugateProduct(),
+	      conjugate().i/conjugateProduct(),
+	      conjugate().j/conjugateProduct(),
+	      conjugate().k/conjugateProduct());
+}
+
+static quat quat::add(const quat& a, const quat& b){
+  return quat(a.w+b.w, a.i+b.i, a.j+b.j, a.k+b.k);
+}
+
+static quat quat::subtract(const quat& a, const quat& b){
+  return quat(a.w-b.w, -(a.i-b.i), -(a.j-b.j), -(a.k-b.k));
+}
+
+static quat quat::product(const quat& a, const quat& b){
+  return quat(a.w*b.w-a.i*b.i-a.j*b.j-a.k*b.k,
+	      (a.w*b.i+a.i*b.w+a.j*b.k-a.k*b.j),
+	      (a.w*b.j+a.j*b.w+a.k*b.i-a.i*b.k),
+	      (a.w*b.k+a.k*b.w+a.i*a.j-a.j*b.i));
+}
+
+static float quat::dotProduct(const quat& a, const quat&b){
+  return (a.w*b.w+a.i*b.i+a.j*b.j+a.k*b.k);
+}
+
+float quat::conjugateProduct(){
+  return (w*w+i*i+j*j+k*k);
+}
+
+float quat::norm(){
+  return sqrt(w*w+i*i+j*j+k*k);
 }

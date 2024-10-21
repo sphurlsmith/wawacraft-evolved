@@ -79,20 +79,22 @@ wc_BasicMesh wc_Object::getMesh(){
   return mesh;
 }
 
-wc_Camera::wc_Camera(float px, float py, float fv, float n, float f, nsproj::vec3 pos, nsproj::vec3 rot):
+wc_Camera::wc_Camera(float px, float py, float fv, float n, float f, nsproj::vec3 pos, nsproj::vec3 tar):
   ax(px),
   ay(py),
   fov(fv),
   near_p(n),
   far_p(f),
   position(pos),
-  rotation(rot){
+  target(tar){
+  up={0,1,0};
+  
   constructViewMatrix();
   constructProjectionMatrix();
 }
 
 void wc_Camera::constructViewMatrix(){
-  view=nsproj::viewMatrix(rotation, position);
+  view=nsproj::viewMatrix(up, target, position);
 }
 
 void wc_Camera::constructProjectionMatrix(){
@@ -104,7 +106,7 @@ void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
   sh->activate();
   
   sh->setUniformMatrix("mod",  true, &(o->getModelMatrix().m[0][0]));
-  sh->setUniformMatrix("view", true, &view.m[0][0]);
+  sh->setUniformMatrix("view", false, &view.m[0][0]);
   sh->setUniformMatrix("proj", true, &projection.m[0][0]);
 
   nsproj::mat4 tot=(o->getModelMatrix())*(view)*(projection);
@@ -133,28 +135,34 @@ void wc_Camera::setPosition(nsproj::vec3 pos){
   position=pos;
 }
 
-void wc_Camera::setRotation(nsproj::vec3 rot){
-  rotation=rot;
+void wc_Camera::setTarget(nsproj::vec3 tar){
+  target=tar;
 }
 
 void wc_Camera::moveFront(float sp){
-  position.x-=(sin(rotation.z))*sp;
-  //position.y+=(sin(rotation.x)+cos(rotation.y))*sp;
-  position.z-=(cos(rotation.z))*sp;
+  nsproj::vec3 ttran=nsproj::scaleVec3(target, sp);
+  
+  position=nsproj::translateVec3(position, ttran);
 }
 
 void wc_Camera::moveBack(float sp){
-  position.x+=(sin(rotation.z))*sp;
-  //position.y-=(sin(rotation.x)+cos(rotation.y))*sp;
-  position.z+=(cos(rotation.z))*sp;
+  nsproj::vec3 ttran=nsproj::scaleVec3(target, sp);
+
+  position=nsproj::subtractVec3(position, ttran);
 }
 
-void wc_Camera::turnXZ(float d){
-  rotation.z+=d;
+void wc_Camera::strafeRight(float sp){
+  nsproj::vec3 tright=nsproj::cross(up, target);
+  tright=nsproj::scaleVec3(tright, sp);
+  
+  position=nsproj::translateVec3(position, tright);
 }
 
-void wc_Camera::turnYZ(float d){
-  rotation.y+=d;
+void wc_Camera::strafeLeft(float sp){
+  nsproj::vec3 tleft=nsproj::cross(target, up);
+  tleft=nsproj::scaleVec3(tleft, sp);
+  
+  position=nsproj::translateVec3(position, tleft);
 }
 
 float wc_Camera::getAspectX(){
@@ -181,8 +189,8 @@ nsproj::vec3 wc_Camera::getPosition(){
   return position;
 }
 
-nsproj::vec3 wc_Camera::getRotation(){
-  return rotation;
+nsproj::vec3 wc_Camera::getTarget(){
+  return target;
 }
 
 nsproj::mat4& wc_Camera::getViewMatrix(){

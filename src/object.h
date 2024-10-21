@@ -59,7 +59,7 @@ class wc_Object{
 // quite epic I think :3
 class wc_Camera{
  public:
-  wc_Camera(float px, float py, float fv, float n, float f, nsproj::vec3 pos, nsproj::vec3 rot);
+  wc_Camera(float px, float py, float fv, float n, float f, nsproj::vec3 pos, nsproj::vec3 tar);
   
   void constructViewMatrix();
   void constructProjectionMatrix();
@@ -72,12 +72,12 @@ class wc_Camera{
   void setPlanes(float n, float f);
 
   void setPosition(nsproj::vec3 pos);
-  void setRotation(nsproj::vec3 rot);
+  void setTarget(nsproj::vec3 tar);
 
   void moveFront(float sp);
   void moveBack(float sp);
-  void turnXZ(float d);
-  void turnYZ(float d);
+  void strafeRight(float sp);
+  void strafeLeft(float sp);
   
   float getAspectX();
   float getAspectY();
@@ -87,7 +87,7 @@ class wc_Camera{
   float getFarPlane();
 
   nsproj::vec3 getPosition();
-  nsproj::vec3 getRotation();
+  nsproj::vec3 getTarget();
 
   nsproj::mat4& getViewMatrix();
   nsproj::mat4& getProjectionMatrix();
@@ -101,7 +101,8 @@ class wc_Camera{
   float far_p;
   
   nsproj::vec3 position;
-  nsproj::vec3 rotation;
+  nsproj::vec3 target;
+  nsproj::vec3 up;
 
   nsproj::mat4 view;
   nsproj::mat4 projection;
