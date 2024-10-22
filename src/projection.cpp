@@ -353,7 +353,7 @@ nsproj::mat4& nsproj::operator*=(nsproj::mat4& a, const nsproj::mat4& m){
 void nsproj::debugOutputMatrix(mat4 m){
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){
-      std::cout << m.m[x][y] << ' ';
+      std::cout << m.m[y][x] << ' ';
     }
     std::cout << std::endl;
   }
@@ -376,10 +376,10 @@ quat quat::normal(){
 }
 
 quat quat::inverse(){
-  return quat(conjugate().w/conjugateProduct(),
-	      conjugate().i/conjugateProduct(),
-	      conjugate().j/conjugateProduct(),
-	      conjugate().k/conjugateProduct());
+  return quat(w/conjugateProduct(),
+	      -i/conjugateProduct(),
+	      -j/conjugateProduct(),
+	      -k/conjugateProduct());
 }
 
 static quat quat::add(const quat& a, const quat& b){
@@ -387,7 +387,7 @@ static quat quat::add(const quat& a, const quat& b){
 }
 
 static quat quat::subtract(const quat& a, const quat& b){
-  return quat(a.w-b.w, -(a.i-b.i), -(a.j-b.j), -(a.k-b.k));
+  return quat(a.w-b.w, a.i-b.i, a.j-b.j, a.k-b.k);
 }
 
 static quat quat::product(const quat& a, const quat& b){

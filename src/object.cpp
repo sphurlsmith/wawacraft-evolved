@@ -96,10 +96,12 @@ wc_Camera::wc_Camera(float px, float py, float fv, float n, float f, nsproj::vec
 void wc_Camera::constructViewMatrix(){
   nsproj::vec3 tr=target;
   
-  tr=nsproj::rotateVec3Quat(tr, {1,0,0}, va);
-  tr=nsproj::rotateVec3Quat(tr, {0,1,0}, ha);
+  //tr=nsproj::rotateVec3Quat(tr, {1,0,0}, va);
+  //tr=nsproj::rotateVec3Quat(tr, {0,1,0}, ha);
+
+  target=tr;
   
-  view=nsproj::viewMatrix(up, tr, position);
+  view=nsproj::viewMatrix(up, target, position);
   nsproj::debugOutputMatrix(view);
 }
 
