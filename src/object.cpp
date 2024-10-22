@@ -94,7 +94,13 @@ wc_Camera::wc_Camera(float px, float py, float fv, float n, float f, nsproj::vec
 }
 
 void wc_Camera::constructViewMatrix(){
-  view=nsproj::viewMatrix(up, target, position);
+  nsproj::vec3 tr=target;
+  
+  tr=nsproj::rotateVec3Quat(tr, {1,0,0}, va);
+  tr=nsproj::rotateVec3Quat(tr, {0,1,0}, ha);
+  
+  view=nsproj::viewMatrix(up, tr, position);
+  nsproj::debugOutputMatrix(view);
 }
 
 void wc_Camera::constructProjectionMatrix(){
@@ -120,6 +126,14 @@ void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
 void wc_Camera::setAspectRatio(float x, float y){
   ax=x;
   ay=y;
+}
+
+void wc_Camera::setAngleHorizontal(float a){
+  ha=a;
+}
+
+void wc_Camera::setAngleVertical(float a){
+  va=a;
 }
 
 void wc_Camera::setFOV(float f){
@@ -171,6 +185,14 @@ float wc_Camera::getAspectX(){
 
 float wc_Camera::getAspectY(){
   return ay;
+}
+
+float wc_Camera::getAngleHorizontal(){
+  return ha;
+}
+
+float wc_Camera::getAngleVertical(){
+  return va;
 }
 
 float wc_Camera::getFOV(){

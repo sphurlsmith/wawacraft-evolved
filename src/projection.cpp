@@ -51,7 +51,7 @@ nsproj::vec3 nsproj::rotateVec3Quat(nsproj::vec3 v, nsproj::vec3 axis, float a){
   rt=rt.normal();
 
   quat rtc=rt.conjugate();
-  quat q(1, v.x, v.y, v.z);
+  quat q(0, v.x, v.y, v.z);
   
   quat retq=quat::product(rt, quat::product(q, rtc));
 
@@ -348,6 +348,15 @@ nsproj::mat4& nsproj::operator*=(nsproj::mat4& a, const nsproj::mat4& m){
   a=nsproj::multiplyMatrices(a, m);
 
   return a;
+}
+
+void nsproj::debugOutputMatrix(mat4 m){
+  for(int y=0; y<4; y++){
+    for(int x=0; x<4; x++){
+      std::cout << m.m[x][y] << ' ';
+    }
+    std::cout << std::endl;
+  }
 }
 
 quat::quat(float pw, float pi, float pj, float pk):

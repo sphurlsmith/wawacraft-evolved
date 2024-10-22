@@ -112,6 +112,9 @@ namespace nsproj{
 
   mat4 operator*(const mat4& a, const mat4& m);
   mat4& operator*=(mat4& a, const mat4& m);
+
+  // debug
+  void debugOutputMatrix(mat4 m);
 };
 
 #endif

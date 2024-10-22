@@ -68,6 +68,9 @@ class wc_Camera{
   
   void setAspectRatio(float x, float y);
 
+  void setAngleHorizontal(float a);
+  void setAngleVertical(float a);
+  
   void setFOV(float f);
   void setPlanes(float n, float f);
 
@@ -82,6 +85,9 @@ class wc_Camera{
   float getAspectX();
   float getAspectY();
 
+  float getAngleHorizontal();
+  float getAngleVertical();
+  
   float getFOV();
   float getNearPlane();
   float getFarPlane();
@@ -93,6 +99,9 @@ class wc_Camera{
   nsproj::mat4& getProjectionMatrix();
   
  private:
+  float ha;
+  float va;
+  
   float ax;
   float ay;
   
