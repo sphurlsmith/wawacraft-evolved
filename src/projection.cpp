@@ -3,6 +3,63 @@
 
 // this is the implementation for the projection.h header
 
+quat::quat(float wp, float ip, float jp, float kp):
+  w(wp),
+  i(ip),
+  j(jp),
+  k(kp){
+  
+}
+
+static quat quat::add(const quat& a, const quat& b){
+  return quat(a.w+b.w,
+	      a.i+b.i,
+	      a.j+b.j,
+	      a.k+b.k);
+}
+
+static quat quat::subtract(const quat& a, const quat& b){
+  return quat(a.w-b.w,
+	      a.i-b.i,
+	      a.j-b.j,
+	      a.k-b.k);
+}
+
+static quat quat::product(const quat& a, const quat& b){
+  return quat(a.w*b.w-(a.i*b.i+a.j*b.j+a.k*b.k),
+	      (a.w*b.i+a.i*b.w)+(a.j*b.k-a.k*b.j),
+	      (a.w*b.j+a.j*b.w)+(a.k*b.i-a.i*b.k),
+	      (a.w*b.k+a.k*b.w)+(a.i*b.j-a.j*b.i));
+}
+
+static quat quat::conjugation(const quat& a, const quat& b){
+  return product(b, product(a, b.conjugate()));
+}
+
+quat quat::scalar(float h){
+  return quat(h*w, h*i, h*j, h*k);
+}
+
+quat quat::normal(){
+  return quat(w/norm(), i/norm(), j/norm(), k/norm());
+}
+
+quat quat::conjugate(){
+  return quat(w, -i, -j, -k);
+}
+
+quat quat::inverse(){
+  return quat(w/conjugateProduct(), i/conjugateProduct(), j/conjugateProduct(), k/conjugateProduct());
+}
+
+float quat::norm(){
+  return (sqrt(w*w+i*i+j*j+k*k));
+}
+
+float quat::conjugateProduct(){
+  return (w*w+i*i+j*j+k*k);
+}
+
 nsproj::vec3 nsproj::translateVec3(nsproj::vec3 a, nsproj::vec3 b){
   return {
     a.x+b.x,
@@ -50,10 +107,9 @@ nsproj::vec3 nsproj::rotateVec3Quat(nsproj::vec3 v, nsproj::vec3 axis, float a){
   quat rt(cosha, sinha*axis.x, sinha*axis.y, sinha*axis.z);
   rt=rt.normal();
 
-  quat rtc=rt.conjugate();
   quat q(0, v.x, v.y, v.z);
   
-  quat retq=quat::product(rt, quat::product(q, rtc));
+  quat retq=quat::conjugation(q, rt);
 
   nsproj::vec3 ret={retq.i, retq.j, retq.k};
 
@@ -318,16 +374,38 @@ nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 up, nsproj::vec3 target, nsproj::ve
   nsproj::vec3 v=up;
   nsproj::vec3 n=target;
   
-  nsproj::mat4 view={
+  nsproj::mat4 rot={
     {
-      {u.x, u.y, u.z, -tran.x},
-      {v.x, v.y, v.z, -tran.y},
-      {n.x, n.y, n.z, -tran.z},
-      {0,   0,   0,         1}
+      {u.x, u.y, u.z, 0},
+      {v.x, v.y, v.z, 0},
+      {n.x, n.y, n.z, 0},
+      {0,   0,   0,   1}
     }
   };
 
+  nsproj::mat4 tranm={
+    {
+      {1, 0, 0, -tran.x},
+      {0, 1, 0, -tran.y},
+      {0, 0, 1, -tran.z},
+      {0, 0, 0,       1}
+    }
+  };
+
+  nsproj::mat4 view=rot*tranm;
+  
   return view;
+}
+
+nsproj::mat4 nsproj::quatMatrix(quat q){
+  return {
+    {
+      {q.w*q.w+q.i*q.i-q.j*q.j-q.k*q.k, 2*q.i*q.j-2*q.w*q.k,             2*q.i*q.k+2*q.w*q.j,             0},
+      {2*q.i*q.j-2*q.w*q.k,             q.w*q.w-q.i*q.i+q.j*q.j-q.k*q.k, 2*q.j*q.k-2*q.w*q.i,             0},
+      {2*q.i*q.k-2*q.w*q.j,             2*q.j*q.k+2*q.w*q.i,             q.w*q.w-q.i*q.i-q.j*q.j+q.k*q.k, 0},
+      {0, 0, 0, 1}
+    }
+  };
 }
 
 nsproj::vec4 nsproj::operator*(const nsproj::vec4& a, const nsproj::mat4& m){
@@ -357,54 +435,4 @@ void nsproj::debugOutputMatrix(mat4 m){
     }
     std::cout << std::endl;
   }
-}
-
-quat::quat(float pw, float pi, float pj, float pk):
-  w(pw),
-  i(pi),
-  j(pj),
-  k(pk){
-  
-}
-
-quat quat::conjugate(){
-  return quat(w, -i, -j, -k);
-}
-
-quat quat::normal(){
-  return quat(w/norm(), i/norm(), j/norm(), k/norm());
-}
-
-quat quat::inverse(){
-  return quat(w/conjugateProduct(),
-	      -i/conjugateProduct(),
-	      -j/conjugateProduct(),
-	      -k/conjugateProduct());
-}
-
-static quat quat::add(const quat& a, const quat& b){
-  return quat(a.w+b.w, a.i+b.i, a.j+b.j, a.k+b.k);
-}
-
-static quat quat::subtract(const quat& a, const quat& b){
-  return quat(a.w-b.w, a.i-b.i, a.j-b.j, a.k-b.k);
-}
-
-static quat quat::product(const quat& a, const quat& b){
-  return quat(a.w*b.w-a.i*b.i-a.j*b.j-a.k*b.k,
-	      (a.w*b.i+a.i*b.w+a.j*b.k-a.k*b.j),
-	      (a.w*b.j+a.j*b.w+a.k*b.i-a.i*b.k),
-	      (a.w*b.k+a.k*b.w+a.i*a.j-a.j*b.i));
-}
-
-static float quat::dotProduct(const quat& a, const quat&b){
-  return (a.w*b.w+a.i*b.i+a.j*b.j+a.k*b.k);
-}
-
-float quat::conjugateProduct(){
-  return (w*w+i*i+j*j+k*k);
-}
-
-float quat::norm(){
-  return sqrt(w*w+i*i+j*j+k*k);
 }

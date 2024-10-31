@@ -11,20 +11,18 @@ class quat{
 public:
   quat(float pw, float pi, float pj, float pk);
 
-  quat conjugate();
-  quat normal();
-  quat inverse();
-  
   static quat add(const quat& a, const quat& b);
   static quat subtract(const quat& a, const quat& b);
-  
   static quat product(const quat& a, const quat& b);
-
-  static float dotProduct(const quat& a, const quat& b);
+  static quat conjugation(const quat& a, const quat& b);
   
-  float conjugateProduct();
-
+  quat scalar(float h);
+  quat normal();
+  quat conjugate();
+  quat inverse();
+  
   float norm();
+  float conjugateProduct();
   
   float w;
   float i;
@@ -104,6 +102,7 @@ namespace nsproj{
   mat4 perspectiveProjectionMatrix(float fov, float aspect, float near, float far); // perspective projection matrix
   mat4 modelMatrix(vec3 rot, vec3 tran, float s);                               // scale, rotation, and translation all in 1
   mat4 viewMatrix(vec3 up, vec3 target, vec3 tran);
+  mat4 quatMatrix(quat q);
   
   // misc
   vec4 vec4Xmat4(vec4 a, mat4 m);               // multiplying a vec4 by a matrix

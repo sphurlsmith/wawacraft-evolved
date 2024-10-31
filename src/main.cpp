@@ -97,6 +97,22 @@ int main(){
       cam.setPosition({cam.getPosition().x, cam.getPosition().y-.2, cam.getPosition().z});
     }
 
+    if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_LEFT)==GLFW_PRESS){
+      cam.setAngleHorizontal(cam.getAngleHorizontal()-5*nsproj::DEGTORAD);
+    }
+
+    if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_RIGHT)==GLFW_PRESS){
+      cam.setAngleHorizontal(cam.getAngleHorizontal()+5*nsproj::DEGTORAD);
+    }
+
+    if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_UP)==GLFW_PRESS){
+      cam.setAngleVertical(cam.getAngleVertical()+5*nsproj::DEGTORAD);
+    }
+
+    if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_DOWN)==GLFW_PRESS){
+      cam.setAngleVertical(cam.getAngleVertical()-5*nsproj::DEGTORAD);
+    }
+
     glfwSwapBuffers(glfwGetCurrentContext());
     glfwPollEvents();
   }

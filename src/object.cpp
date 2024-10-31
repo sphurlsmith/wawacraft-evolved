@@ -95,13 +95,24 @@ wc_Camera::wc_Camera(float px, float py, float fv, float n, float f, nsproj::vec
 
 void wc_Camera::constructViewMatrix(){
   nsproj::vec3 tr=target;
-  
-  //tr=nsproj::rotateVec3Quat(tr, {1,0,0}, va);
-  //tr=nsproj::rotateVec3Quat(tr, {0,1,0}, ha);
 
-  target=tr;
+  float cva=cos(va/2);
+  float sva=sin(va/2);
+
+  float cha=cos(-ha/2);
+  float sha=sin(-ha/2);
   
-  view=nsproj::viewMatrix(up, target, position);
+  quat va(cva, sva, 0, 0);
+  quat ha(cha, 0, sha, 0);
+
+  va=va.normal();
+  ha=ha.normal();
+
+  quat q(1,1,1,1);
+  q=quat::product(ha, va);
+  
+  view=nsproj::quatMatrix(q);
+  view*=nsproj::viewMatrix(up, tr, position);
   nsproj::debugOutputMatrix(view);
 }
 
