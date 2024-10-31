@@ -57,7 +57,7 @@ int main(){
   // starting the game window 
   nswcwin::wc_res WINRES={800, 600};
 
-  wc_Window WIN(WINRES, "Wawacraft Evolved [OpenGL 3.3]", rpointer);
+  wc_Window WIN(WINRES, "Wawacraft Evolved [Alpha 0.0.0/October 31st Release] [OpenGL 3.3]", rpointer);
 
   wc_Shader def("shd/wc_vertex_3d.glsl", "shd/wc_fragment_source.glsl");
   wc_Texture wtx(32, 32, "tex/wawa.png");
