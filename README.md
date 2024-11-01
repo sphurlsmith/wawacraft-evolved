@@ -34,6 +34,17 @@ set for release, however I plan to give the game several development/release sta
 
 Was this just for the funny idea that a game be versioned Sigma 2.2.0? Yes. Very Much So.
 
+## Current Version
+
+As of now, the game has finally began with the October 31st Release,(AKA Alpha 0.0.0). Current 
+features include:
+
+* A working projection and model matrix
+* Support for quaternions and their relationship with matrices
+* Ability to rotate the camera with the arrow keys(I dont exactly like implementing the mouse)
+* Ability to move using WASD and Page-up/Page-down keys!!
+* A plethora of view-matrix bugs to be fixed quite soon
+
 ## The Original Wawacraft
 
 The original game Wawacraft Classic is available in its latest distribution flavour, 
