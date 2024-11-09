@@ -216,7 +216,7 @@ void wc_Camera::strafeLeft(float sp){
 
   nsproj::vec3 left=nsproj::cross(ttran, up);
 
-  position=nsproj::subtractVec3(position, left);
+  position=nsproj::translateVec3(position, left);
 }
 
 float wc_Camera::getAspectX(){
