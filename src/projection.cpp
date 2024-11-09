@@ -373,17 +373,8 @@ nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 up, nsproj::vec3 target, nsproj::ve
   nsproj::vec3 u=right;
   nsproj::vec3 v=up;
   nsproj::vec3 n=target;
-  
-  nsproj::mat4 rot={
-    {
-      {u.x, u.y, u.z, 0},
-      {v.x, v.y, v.z, 0},
-      {n.x, n.y, n.z, 0},
-      {0,   0,   0,   1}
-    }
-  };
 
-  nsproj::mat4 tranm={
+  nsproj::mat4 rtran={
     {
       {1, 0, 0, -tran.x},
       {0, 1, 0, -tran.y},
@@ -391,10 +382,17 @@ nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 up, nsproj::vec3 target, nsproj::ve
       {0, 0, 0,       1}
     }
   };
-
-  nsproj::mat4 view=rot*tranm;
   
-  return view;
+  nsproj::mat4 view={
+    {
+      {u.x, v.x, n.x, 0},
+      {u.y, v.y, n.y, 0},
+      {u.z, v.z, n.z, 0},
+      {0,   0,   0,   1}
+    }
+  };
+
+  return rtran*view;
 }
 
 nsproj::mat4 nsproj::quatMatrix(quat q){
@@ -429,10 +427,8 @@ nsproj::mat4& nsproj::operator*=(nsproj::mat4& a, const nsproj::mat4& m){
 }
 
 void nsproj::debugOutputMatrix(mat4 m){
-  for(int y=0; y<4; y++){
-    for(int x=0; x<4; x++){
-      std::cout << m.m[y][x] << ' ';
-    }
-    std::cout << std::endl;
-  }
+  std::cout << m.m[0][0] << ' ' << m.m[1][0] << ' ' << m.m[2][0] << ' ' << m.m[3][0] << std::endl;
+  std::cout << m.m[0][1] << ' ' << m.m[1][1] << ' ' << m.m[2][1] << ' ' << m.m[3][1] << std::endl;
+  std::cout << m.m[0][2] << ' ' << m.m[1][2] << ' ' << m.m[2][2] << ' ' << m.m[3][2] << std::endl;
+  std::cout << m.m[0][3] << ' ' << m.m[1][3] << ' ' << m.m[2][3] << ' ' << m.m[3][3] << std::endl;
 }

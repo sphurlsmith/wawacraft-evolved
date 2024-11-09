@@ -110,9 +110,12 @@ void wc_Camera::constructViewMatrix(){
 
   quat q(1,1,1,1);
   q=quat::product(ha, va);
+
+  quat t(0, tr.x, tr.y, tr.z);
+  t=quat::conjugation(t, ha);
+  tr={t.i, t.j, t.k};
   
-  view=nsproj::quatMatrix(q);
-  view*=nsproj::viewMatrix(up, tr, position);
+  view=nsproj::viewMatrix(up, tr, position);
   nsproj::debugOutputMatrix(view);
 }
 
@@ -143,10 +146,14 @@ void wc_Camera::setAspectRatio(float x, float y){
 
 void wc_Camera::setAngleHorizontal(float a){
   ha=a;
+  if(ha>360*nsproj::DEGTORAD){ha-=360*nsproj::DEGTORAD;}
+  if(ha<0){ha+=360*nsproj::DEGTORAD;}
 }
 
 void wc_Camera::setAngleVertical(float a){
   va=a;
+  if(va>90*nsproj::DEGTORAD){va=90*nsproj::DEGTORAD;}
+  if(va<-90*nsproj::DEGTORAD){va=-90*nsproj::DEGTORAD;}
 }
 
 void wc_Camera::setFOV(float f){
@@ -167,29 +174,49 @@ void wc_Camera::setTarget(nsproj::vec3 tar){
 }
 
 void wc_Camera::moveFront(float sp){
-  nsproj::vec3 ttran=nsproj::scaleVec3(target, sp);
+  nsproj::vec3 ttran={0,0,1};
+
+  ttran=nsproj::rotateVec3Quat(ttran, {0,1,0}, ha);
+  ttran=nsproj::rotateVec3Quat(ttran, {1,0,0}, va);
+  ttran=nsproj::scaleVec3(ttran, sp);
   
   position=nsproj::translateVec3(position, ttran);
 }
 
 void wc_Camera::moveBack(float sp){
-  nsproj::vec3 ttran=nsproj::scaleVec3(target, sp);
+  nsproj::vec3 ttran={0,0,1};
+
+  ttran=nsproj::rotateVec3Quat(ttran, {0,1,0}, ha);
+  ttran=nsproj::rotateVec3Quat(ttran, {1,0,0}, va);
+  ttran=nsproj::scaleVec3(ttran, sp);
 
   position=nsproj::subtractVec3(position, ttran);
 }
 
 void wc_Camera::strafeRight(float sp){
-  nsproj::vec3 tright=nsproj::cross(up, target);
-  tright=nsproj::scaleVec3(tright, sp);
+  nsproj::vec3 ttran={0,0,1};
+  nsproj::vec3 up={0,1,0};
   
-  position=nsproj::translateVec3(position, tright);
+  ttran=nsproj::rotateVec3Quat(ttran, {0,1,0}, ha);
+  ttran=nsproj::rotateVec3Quat(ttran, {1,0,0}, va);
+  ttran=nsproj::scaleVec3(ttran, sp);
+
+  nsproj::vec3 right=nsproj::cross(up, ttran);
+  
+  position=nsproj::translateVec3(position, right);
 }
 
 void wc_Camera::strafeLeft(float sp){
-  nsproj::vec3 tleft=nsproj::cross(target, up);
-  tleft=nsproj::scaleVec3(tleft, sp);
+  nsproj::vec3 ttran={0,0,1};
+  nsproj::vec3 up={0,1,0};
   
-  position=nsproj::translateVec3(position, tleft);
+  ttran=nsproj::rotateVec3Quat(ttran, {0,1,0}, ha);
+  ttran=nsproj::rotateVec3Quat(ttran, {1,0,0}, va);
+  ttran=nsproj::scaleVec3(ttran, sp);
+
+  nsproj::vec3 left=nsproj::cross(ttran, up);
+
+  position=nsproj::subtractVec3(position, left);
 }
 
 float wc_Camera::getAspectX(){
