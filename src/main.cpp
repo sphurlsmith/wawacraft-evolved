@@ -73,6 +73,11 @@ int main(){
     wtx.useTexture();
     cam.renderObject(&wawa, &def);
 
+    nsproj::vec3 olr=wawa.getRotation();
+    nsproj::vec3 nr={olr.x+nsproj::DEGTORAD, olr.y+nsproj::DEGTORAD, olr.z+nsproj::DEGTORAD};
+
+    wawa.setRot(nr);
+    
     if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_W)==GLFW_PRESS){
       cam.moveFront(.2);
     }

@@ -95,7 +95,8 @@ wc_Camera::wc_Camera(float px, float py, float fv, float n, float f, nsproj::vec
 
 void wc_Camera::constructViewMatrix(){
   nsproj::vec3 tr=target;
-
+  nsproj::vec3 ur=up;
+  
   float cva=cos(va/2);
   float sva=sin(va/2);
 
@@ -103,16 +104,26 @@ void wc_Camera::constructViewMatrix(){
   float sha=sin(-ha/2);
   
   quat va(cva, sva, 0, 0);
-  quat ha(cha, 0, sha, 0);
+  quat ha(cha,  0, sha, 0);
 
   va=va.normal();
   ha=ha.normal();
 
   quat q(1,1,1,1);
-  q=quat::product(ha, va);
-
+  q=quat::product(va, ha);
+  q=q.normal();
+  
+  std::cout << q.i << ' ' << q.j << ' ' << q.k << std::endl;
+  std::cout << ha.i << ' ' << ha.j << ' ' << ha.k << std::endl;
+  std::cout << va.i<< ' ' << va.j << ' ' << va.k << std::endl;
+  
   quat t(0, tr.x, tr.y, tr.z);
-  t=quat::conjugation(t, ha);
+  quat u(0, up.x, up.y, up.z);
+  
+  t=quat::conjugation(t, q);
+  u=quat::conjugation(u, q);
+  
+  ur={u.i, u.j, u.k};
   tr={t.i, t.j, t.k};
   
   view=nsproj::viewMatrix(up, tr, position);
@@ -125,6 +136,7 @@ void wc_Camera::constructProjectionMatrix(){
 
 void wc_Camera::renderObject(wc_Object* o, wc_Shader* sh){
   constructViewMatrix();
+  o->constructModelMatrix();
   sh->activate();
   
   sh->setUniformMatrix("mod",  true, &(o->getModelMatrix().m[0][0]));
