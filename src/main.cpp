@@ -57,10 +57,10 @@ int main(){
   // starting the game window 
   nswcwin::wc_res WINRES={800, 600};
 
-  wc_Window WIN(WINRES, "Wawacraft Evolved [Alpha 0.0.0/October 31st Release] [OpenGL 3.3]", rpointer);
+  wc_Window WIN(WINRES, "Wawacraft Evolved [Alpha 0.0.1/Evolved Uni Demo Release] [OpenGL 3.3]", rpointer);
 
   wc_Shader def("shd/wc_vertex_3d.glsl", "shd/wc_fragment_source.glsl");
-  wc_Texture wtx(32, 32, "tex/wawa.png");
+  wc_Texture wtx(32, 32, "tex/uni.png");
   wc_BasicMesh wms(vert, ind);
 
   wc_Camera cam(WINRES.x, WINRES.y, 50*nsproj::DEGTORAD, .2, 10000, {0, 0, 0}, {0, 0, 1});
@@ -111,11 +111,11 @@ int main(){
     }
 
     if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_UP)==GLFW_PRESS){
-      cam.setAngleVertical(cam.getAngleVertical()+5*nsproj::DEGTORAD);
+      cam.setAngleVertical(cam.getAngleVertical()-5*nsproj::DEGTORAD);
     }
 
     if(nswincon::getKeyStatus(WIN.getWinPointer(), GLFW_KEY_DOWN)==GLFW_PRESS){
-      cam.setAngleVertical(cam.getAngleVertical()-5*nsproj::DEGTORAD);
+      cam.setAngleVertical(cam.getAngleVertical()+5*nsproj::DEGTORAD);
     }
 
     glfwSwapBuffers(glfwGetCurrentContext());

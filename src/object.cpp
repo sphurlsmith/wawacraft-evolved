@@ -88,9 +88,9 @@ wc_Camera::wc_Camera(float px, float py, float fv, float n, float f, nsproj::vec
   position(pos),
   target(tar){
   up={0,1,0};
-  
-  constructViewMatrix();
+
   constructProjectionMatrix();
+  constructViewMatrix();
 }
 
 void wc_Camera::constructViewMatrix(){
@@ -103,8 +103,8 @@ void wc_Camera::constructViewMatrix(){
   float cha=cos(-ha/2);
   float sha=sin(-ha/2);
   
-  quat va(cva, sva, 0, 0);
-  quat ha(cha,  0, sha, 0);
+  quat va(cva, -sva, 0, 0);
+  quat ha(cha, 0, sha, 0);
 
   va=va.normal();
   ha=ha.normal();
@@ -113,20 +113,21 @@ void wc_Camera::constructViewMatrix(){
   q=quat::product(va, ha);
   q=q.normal();
   
-  std::cout << q.i << ' ' << q.j << ' ' << q.k << std::endl;
-  std::cout << ha.i << ' ' << ha.j << ' ' << ha.k << std::endl;
-  std::cout << va.i<< ' ' << va.j << ' ' << va.k << std::endl;
+  //std::cout << q.i << ' ' << q.j << ' ' << q.k << std::endl;
+  //std::cout << ha.i << ' ' << ha.j << ' ' << ha.k << std::endl;
+  //std::cout << va.i<< ' ' << va.j << ' ' << va.k << std::endl;
   
   quat t(0, tr.x, tr.y, tr.z);
   quat u(0, up.x, up.y, up.z);
   
-  t=quat::conjugation(t, q);
+  t=quat::conjugation(t, ha);
+  //t=quat::conjugation(t, va);
   u=quat::conjugation(u, q);
   
   ur={u.i, u.j, u.k};
   tr={t.i, t.j, t.k};
   
-  view=nsproj::viewMatrix(up, tr, position);
+  view=nsproj::viewMatrix(up, tr, position)*nsproj::quatMatrix(va);
   nsproj::debugOutputMatrix(view);
 }
 
@@ -158,13 +159,13 @@ void wc_Camera::setAspectRatio(float x, float y){
 
 void wc_Camera::setAngleHorizontal(float a){
   ha=a;
-  if(ha>360*nsproj::DEGTORAD){ha-=360*nsproj::DEGTORAD;}
+  if(ha>=360*nsproj::DEGTORAD){ha-=360*nsproj::DEGTORAD;}
   if(ha<0){ha+=360*nsproj::DEGTORAD;}
 }
 
 void wc_Camera::setAngleVertical(float a){
   va=a;
-  if(va>90*nsproj::DEGTORAD){va=90*nsproj::DEGTORAD;}
+  if(va>=90*nsproj::DEGTORAD){va=90*nsproj::DEGTORAD;}
   if(va<-90*nsproj::DEGTORAD){va=-90*nsproj::DEGTORAD;}
 }
 
@@ -186,20 +187,22 @@ void wc_Camera::setTarget(nsproj::vec3 tar){
 }
 
 void wc_Camera::moveFront(float sp){
-  nsproj::vec3 ttran={0,0,1};
+  nsproj::vec3 ttran={view.m[2][0], view.m[2][1], view.m[2][2]};
 
-  ttran=nsproj::rotateVec3Quat(ttran, {0,1,0}, ha);
-  ttran=nsproj::rotateVec3Quat(ttran, {1,0,0}, va);
+  //ttran=nsproj::rotateVec3Quat(ttran, {0,1,0}, ha);
+  //ttran=nsproj::normalizeVec4(nsproj::homogenizeVector(ttran)*nsproj::quatMatrix({cos(va/2), -sin(va/2), 0, 0}));
+  
   ttran=nsproj::scaleVec3(ttran, sp);
   
   position=nsproj::translateVec3(position, ttran);
 }
 
 void wc_Camera::moveBack(float sp){
-  nsproj::vec3 ttran={0,0,1};
+  nsproj::vec3 ttran={view.m[2][0], view.m[2][1], view.m[2][2]};
 
-  ttran=nsproj::rotateVec3Quat(ttran, {0,1,0}, ha);
-  ttran=nsproj::rotateVec3Quat(ttran, {1,0,0}, va);
+  //ttran=nsproj::rotateVec3Quat(ttran, {0,1,0}, ha);
+  //ttran=nsproj::normalizeVec4(nsproj::homogenizeVector(ttran)*nsproj::quatMatrix({cos(va/2), sin(va), 0, 0}));
+			    
   ttran=nsproj::scaleVec3(ttran, sp);
 
   position=nsproj::subtractVec3(position, ttran);
@@ -210,7 +213,8 @@ void wc_Camera::strafeRight(float sp){
   nsproj::vec3 up={0,1,0};
   
   ttran=nsproj::rotateVec3Quat(ttran, {0,1,0}, ha);
-  ttran=nsproj::rotateVec3Quat(ttran, {1,0,0}, va);
+  ttran=nsproj::normalizeVec4(nsproj::homogenizeVector(ttran));
+  
   ttran=nsproj::scaleVec3(ttran, sp);
 
   nsproj::vec3 right=nsproj::cross(up, ttran);
@@ -223,7 +227,8 @@ void wc_Camera::strafeLeft(float sp){
   nsproj::vec3 up={0,1,0};
   
   ttran=nsproj::rotateVec3Quat(ttran, {0,1,0}, ha);
-  ttran=nsproj::rotateVec3Quat(ttran, {1,0,0}, va);
+  ttran=nsproj::normalizeVec4(nsproj::homogenizeVector(ttran)*nsproj::quatMatrix({cos(va/2), -sin(va/2), 0, 0}));
+  
   ttran=nsproj::scaleVec3(ttran, sp);
 
   nsproj::vec3 left=nsproj::cross(ttran, up);

@@ -364,10 +364,14 @@ nsproj::mat4 nsproj::modelMatrix(nsproj::vec3 rot, nsproj::vec3 tran, float s){
 }
 
 nsproj::mat4 nsproj::viewMatrix(nsproj::vec3 up, nsproj::vec3 target, nsproj::vec3 tran){
+  
   nsproj::vec3 right=nsproj::cross(up, target);
   right=nsproj::normalizeVec3(right);
 
-  target=nsproj::cross(right, up);
+  up=nsproj::cross(right, target);
+  up=nsproj::normalizeVec3(up);
+  
+  //target=nsproj::cross(right, up);
   target=nsproj::normalizeVec3(target);
   
   nsproj::vec3 u=right;
