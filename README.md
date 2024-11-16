@@ -36,14 +36,34 @@ Was this just for the funny idea that a game be versioned Sigma 2.2.0? Yes. Very
 
 ## Current Version
 
-As of now, the game has finally began with the October 31st Release,(AKA Alpha 0.0.0). Current 
-features include:
+As of now, the current version is **v0.0.1 Alpha**, also codenamed as the **Evolved Uni Demo
+Release**. Current features include:  
 
-* A working projection and model matrix
-* Support for quaternions and their relationship with matrices
-* Ability to rotate the camera with the arrow keys(I dont exactly like implementing the mouse)
-* Ability to move using WASD and Page-up/Page-down keys!!
-* A plethora of view-matrix bugs to be fixed quite soon
+* Added vertical and horizontal rotation
+* Added semi-working movement using WASD and arrow keys
+* Fixed numerous bugs with the view matrix
+* Made the wawa cube an uni cube, and made it rotate.
+
+TODO for the next version:
+
+* Fix 'cursed boots' bug where horizontal rotation is either very fast or nonexistent
+  when running the game sometimes
+* Rewrite/refactor EVERYTHING going into the next version
+* Fix the math-related code for the view matrix
+
+Going into the next version(v0.1.1 alpha) however, I will be making a big rewrite of the
+entire project to uphold new standards for the source code(correct naming conventions,
+thought out software architecture, better file structures, etc.). If you want information
+on the project, consider reading my blog, listed below.
+
+## Screenshots
+
+This section provides a gallery for some cool screenshots taken during development:
+
+(./arc/screenshots/wawa_cube.png)
+(./arc/screenshots/v0.0.1-alpha_inside_the_uni.png)
+(./arc/screenshots/v0.0.1-alpha_uni_rotate2.png)
+(./arc/screenshots/v0.0.1-alpha_can_you_spot_the_uni.png)
 
 ## The Original Wawacraft
 
