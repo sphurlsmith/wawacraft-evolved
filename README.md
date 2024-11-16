@@ -60,10 +60,10 @@ on the project, consider reading my blog, listed below.
 
 This section provides a gallery for some cool screenshots taken during development:
 
-!(./arc/screenshots/wawa_cube.png)
-!(./arc/screenshots/v0.0.1-alpha_inside_the_uni.png)
-!(./arc/screenshots/v0.0.1-alpha_uni_rotate2.png)
-!(./arc/screenshots/v0.0.1-alpha_can_you_spot_the_uni.png)
+![](./arc/screenshots/wawa_cube.png)
+![](./arc/screenshots/v0.0.1-alpha_inside_the_uni.png)
+![](./arc/screenshots/v0.0.1-alpha_uni_rotate2.png)
+![](./arc/screenshots/v0.0.1-alpha_can_you_spot_the_uni.png)
 
 ## The Original Wawacraft
 
