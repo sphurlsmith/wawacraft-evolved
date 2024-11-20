@@ -10,21 +10,20 @@ BINDIR=bin
 SHDDIR=shd
 TEXDIR=tex
 
-LIBO=$(LIBDIR)/*.o
-SRCO=$(SRCDIR)/*.o
+BINO=$(BINDIR)/*.o
 
 TARGET=$(BINDIR)/wawacraft_evolved
 
 wawacraft_evolved: glad stb_image main
 	cp -r $(SHDDIR) $(BINDIR)
 	cp -r $(TEXDIR) $(BINDIR)
-	$(CC) $(LIBO) $(SRCO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
+	$(CC) $(BINO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
 
 main: $(SRCDIR)/main.cpp
-	$(CC) $(SRCDIR)/main.cpp -o $(SRCDIR)/main.o $(CFLAGS) $(LFLAGS) -c
+	$(CC) $(SRCDIR)/main.cpp -o $(BINDIR)/main.o $(CFLAGS) $(LFLAGS) -c
 
-glad: $(LIBDIR)/glad.cI
-	$(CC) $(LIBDIR)/glad.c -o $(LIBDIR)/glad.o $(CFLAGS) $(LFLAGS) -c
+glad: $(LIBDIR)/glad.c
+	$(CC) $(LIBDIR)/glad.c -o $(BINDIR)/glad.o $(CFLAGS) $(LFLAGS) -c
 
 stb_image: $(LIBDIR)/stb_image.h $(LIBDIR)/stb_image.cpp
-	$(CC) $(LIBDIR)/stb_image.cpp -o $(LIBDIR)/stb_image.o $(CFLAGS) $(LFLAGS) -c
+	$(CC) $(LIBDIR)/stb_image.cpp -o $(BINDIR)/stb_image.o $(CFLAGS) $(LFLAGS) -c
