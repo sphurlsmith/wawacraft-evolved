@@ -1,9 +1,7 @@
 #ifndef LIBS_H
 #define LIBS_H
 
-// Library include that gives us all we need to compile our project.
-
-// standard libraries we will use for debugging and such
+// standard libraries
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -11,11 +9,11 @@
 #include <vector>
 #include <math.h>
 
-// GLAD, GLFW, etc. are set up here
+// OpenGL libraries
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-// including our image handling library header
+// Image loading library
 #include "../lib/stb_image.h"
 
 #endif

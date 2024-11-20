@@ -14,13 +14,20 @@ BINO=$(BINDIR)/*.o
 
 TARGET=$(BINDIR)/wawacraft_evolved
 
-wawacraft_evolved: glad stb_image main
+wawacraft_evolved: glad stb_image windef main
 	cp -r $(SHDDIR) $(BINDIR)
 	cp -r $(TEXDIR) $(BINDIR)
 	$(CC) $(BINO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
 
 main: $(SRCDIR)/main.cpp
 	$(CC) $(SRCDIR)/main.cpp -o $(BINDIR)/main.o $(CFLAGS) $(LFLAGS) -c
+
+# source
+
+windef: $(SRCDIR)/windef.cpp $(SRCDIR)/windef.h
+	$(CC) $(SRCDIR)/windef.cpp -o $(BINDIR)/windef.o $(CFLAGS) $(LFLAGS) -c
+
+# libraries
 
 glad: $(LIBDIR)/glad.c
 	$(CC) $(LIBDIR)/glad.c -o $(BINDIR)/glad.o $(CFLAGS) $(LFLAGS) -c
