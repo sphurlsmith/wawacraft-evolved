@@ -18,7 +18,7 @@ window::window(int pxres, int pyres, std::string pt):
   
   reference=glfwCreateWindow(xres, yres, title.c_str(), NULL, NULL);
   if(reference==NULL){
-    std::cout << "w-window-initglfw-failed" << std::endl;
+    std::cerr << "err:w-window-initglfw-failed" << std::endl;
     window::kill_glfw();
     return;
   }
@@ -26,7 +26,7 @@ window::window(int pxres, int pyres, std::string pt):
   set_current_context();
 
   if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
-    std::cout << "w-window-initglad-failed" << std::endl;
+    std::cerr << "err:w-window-initglad-failed" << std::endl;
     return;
   }
 
@@ -90,6 +90,10 @@ void window::set_resolution(int pxres, int pyres)
 void window::set_render_loop_callback(void (*prfc)(window* pwin))
 {
   rendercallback=prfc;
+
+  if(rendercallback==NULL){
+    std::cerr << "err:w-window-rendercallback-null" << std::endl;
+  }
 }
 
 void window::run_render_loop()
@@ -97,6 +101,10 @@ void window::run_render_loop()
   set_current_context();
 
   (*rendercallback)((window*)this);
+
+  if(rendercallback==NULL){
+    std::cerr << "err:w-window-rendercallback-null" << std::endl;
+  }
 
   glfwSwapBuffers(reference);
   glfwPollEvents();
