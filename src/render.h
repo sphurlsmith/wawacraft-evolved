@@ -4,20 +4,23 @@
 #include "libs.h"
 #include "windef.h"
 
-struct color4e{
+struct color4e
+{
   float r;
   float g;
   float b;
   float a;
 };
 
-struct color3e{
+struct color3e
+{
   float r;
   float g;
   float b;
 };
 
-class render_environment{
+class render_environment
+{
  public:
   render_environment(window* pwin, void (*prlc)(window* p), color4e pc);
 
