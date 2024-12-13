@@ -8,18 +8,19 @@ class shader
  public:
   shader(const char* pvertex, const char* pfragment);
   
-  static void file_read(const char* path, char* buffer)
-  static void vertex_shader_create(unsigned int& pshid, const char* ps);
-  static void fragment_shader_create(unsigned int& pshid, const char* ps);
+  static void shader_create_vertex(unsigned int& pshid, const char* ps);
+  static void shader_create_fragment(unsigned int& pshid, const char* ps);
+
+  static std::string read_file(const char* path);
+
+  void uniform_set_bool(const char* name, bool val) const;
+  void uniform_set_int(const char* name, int val) const;
+  void uniform_set_float(const char* name, float val) const;
+  void uniform_set_matrix(const char* name, float* matrix, bool transposed) const;
 
   void activate();
-
-  void uniform_bool_set(const char* name, bool val) const;
-  void uniform_int_set(const char* name, int val) const;
-  void uniform_float_set(const char* name, float val) const;
-  void uniform_matrix_set(const char* name, float* matrix, bool transposed);
-
-  unsigned int& id_get();
+  
+  unsigned int& get_id();
   
  private:
   unsigned int shaderid;

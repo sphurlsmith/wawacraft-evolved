@@ -14,7 +14,7 @@ BINO=$(BINDIR)/*.o
 
 TARGET=$(BINDIR)/wawacraft_evolved
 
-wawacraft_evolved: glad stb_image windef render main
+wawacraft_evolved: glad stb_image windef render shader main
 	cp -r $(SHDDIR) $(BINDIR)
 	cp -r $(TEXDIR) $(BINDIR)
 	$(CC) $(BINO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
@@ -29,6 +29,9 @@ windef: $(SRCDIR)/windef.cpp $(SRCDIR)/windef.h
 
 render: $(SRCDIR)/render.cpp $(SRCDIR)/render.h
 	$(CC) $(SRCDIR)/render.cpp -o $(BINDIR)/render.o $(CFLAGS) $(LFLAGS) -c
+
+shader: $(SRCDIR)/shader.cpp $(SRCDIR)/shader.h
+	$(CC) $(SRCDIR)/shader.cpp -o $(BINDIR)/shader.o $(CFLAGS) $(LFLAGS) -c
 
 # libraries
 
