@@ -15,7 +15,7 @@ window::window(int pxres, int pyres, std::string pt):
     xres++;
     yres++;
   }
-  
+
   reference=glfwCreateWindow(xres, yres, title.c_str(), NULL, NULL);
   if(reference==NULL){
     std::cerr << "err:w-window-initglfw-failed" << std::endl;
@@ -42,6 +42,7 @@ static void window::init_glfw()
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     window::glfw_initialized=true;
