@@ -68,7 +68,7 @@ void render_environment::screen_call_render_callback(){
   }
 
   if(targetwindow!=NULL && targetwindow->get_render_loop_callback()!=NULL){
-    targetwindow->run_render_loop();
+    targetwindow->run_render_loop(default_shader, default_mesh);
   }
 }
 

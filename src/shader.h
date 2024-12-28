@@ -12,7 +12,7 @@ class shader
   static void shader_create_fragment(unsigned int& pshid, const char* ps);
 
   static std::string read_file(const char* path);
-
+  
   void uniform_set_bool(const char* name, bool val) const;
   void uniform_set_int(const char* name, int val) const;
   void uniform_set_float(const char* name, float val) const;

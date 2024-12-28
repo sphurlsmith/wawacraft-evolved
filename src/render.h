@@ -3,6 +3,8 @@
 
 #include "libs.h"
 #include "windef.h"
+#include "shader.h"
+#include "mesh.h"
 
 struct color4e
 {
@@ -36,6 +38,9 @@ class render_environment
 
   window* target_window_get();
   color4e clear_color_get();
+
+  shader* default_shader;
+  mesh_base* default_mesh;
   
  private:
   window* targetwindow;

@@ -16,9 +16,9 @@ class window
   void set_current_context();
   void set_title(std::string pt);
   void set_resolution(int pxres, int pyres);
-  void set_render_loop_callback(void (*prfc)(window* pwin));
+  void set_render_loop_callback(void (*prfc)(window* pwin, void* pshd, void* pmsh));
 
-  void run_render_loop();
+  void run_render_loop(void* pshd, void* pmsh);
   
   bool is_open();
 
@@ -29,7 +29,7 @@ class window
   
   GLFWwindow* get_reference();
 
-  void (*get_render_loop_callback(void))(window* pwin);
+  void (*get_render_loop_callback(void))(window* pwin, void* pshd, void* pmsh);
   
  private:
   static bool glfw_initialized;
@@ -39,7 +39,7 @@ class window
 
   std::string title;
 
-  void (*rendercallback)(window* pwin);
+  void (*rendercallback)(window* pwin, void* pshd, void* pmsh);
   GLFWwindow* reference;
 };
 
