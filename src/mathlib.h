@@ -43,12 +43,31 @@ class vector_3d
 
   static vector_3d add(vector_3d a, vector_3d b);
   static vector_3d subtract(vector_3d a, vector_3d b);
+
   static vector_3d dot(vector_3d a, vector_3d b);
   static vector_3d cross(vector_3d a, vector_3d b);
+  
+  static float dot_sum(vector_3d a, vector_3d b);
+  static float cross_sum(vector_3d a, vector_3d b);
   
   float x;
   float y;
   float z;
+};
+
+class vector_homogenous:public vector_3d
+{
+ public:
+  vector_homogenous(float x, float y, float z, float w);
+
+  static vector_homogenous homogenize(vector_homogenous a);
+  
+  static vector_homogenous faux_dot(vector_homogenous a, vector_homogenous b); 
+  static vector_homogenous faux_scalar(vector_homogenous v, float l);
+
+  static float faux_dot_sum(vector_homogenous a, vector_homogenous b);
+
+  float w;
 };
 
 class matrix
@@ -57,28 +76,20 @@ class matrix
   matrix(float pm[4][4]);
   
   static matrix base();
-
+  static matrix translation(vector_3d a);
+  
   static matrix projection(float near, float far, float fov, float aspect);
-  static matrix model(float axy, float ayz, float axz, float sx, float sy, float sz);
+  static matrix model(float axy, float ayz, float axz, float s, vector_3d t);
   static matrix view(vector_3d target, vector_3d up, vector_3d translation);
 
   static matrix quaternion(quat a);
 
   static matrix multiply(matrix a, matrix b);
-  static matrix transpose(matrix a);
+  static matrix transpose(matrix &a);
+
+  static vector_homogenous vector_multiply(matrix m, vector_homogenous v);
 
   float m[4][4];
-};
-
-class vector_homogenous:vector_3d
-{
- public:
-  vector_homogenous(float x, float y, float z, float w);
-
-  static vector_homogenous homogenize(vector_homogenous a);
-  static vector_homogenous multiplyMatrix(vector_homogenous v, matrix m);
-  
-  float w;
 };
 
 #endif
