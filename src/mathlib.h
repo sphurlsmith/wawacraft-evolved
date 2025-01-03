@@ -81,14 +81,14 @@ class matrix
   static matrix projection(float near, float far, float fov, float aspect);
   static matrix model(float axy, float ayz, float axz, float s, vector_3d t);
   static matrix view(vector_3d target, vector_3d up, vector_3d translation);
-
   static matrix quaternion(quat a);
 
   static matrix multiply(matrix a, matrix b);
-  static matrix transpose(matrix &a);
 
   static vector_homogenous vector_multiply(matrix m, vector_homogenous v);
 
+  static void transpose(matrix &a);
+  
   float m[4][4];
 };
 

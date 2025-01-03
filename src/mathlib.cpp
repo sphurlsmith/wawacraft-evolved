@@ -74,6 +74,8 @@ static quat quat::product(quat a, quat b)
   float ck=(a.w*b.k+b.w*a.k)+(a.i*b.j-b.i*a.j);
   
   quat ret(cw, ci, cj, ck);
+
+  return ret;
 }
 
 static quat quat::conjugation(quat a, quat b)
@@ -326,6 +328,8 @@ static matrix matrix::view(vector_3d target, vector_3d up, vector_3d translation
   matrix rotations(v);
 
   matrix ret=matrix::multiply(translation_matrix, rotations);
+
+  return ret;
 }
 
 static matrix matrix::quaternion(quat a)
@@ -347,8 +351,6 @@ static matrix matrix::quaternion(quat a)
 
   return r;
 }
-
-// WIP WIP WIP WIP WIP WIP
 
 static matrix matrix::multiply(matrix a, matrix b)
 {
@@ -387,7 +389,7 @@ static matrix matrix::multiply(matrix a, matrix b)
   return ret;
 }
 
-static matrix matrix::transpose(matrix &a)
+static void matrix::transpose(matrix &a)
 {
   for(int y=0; y<4; y++){
     for(int x=0; x<4; x++){

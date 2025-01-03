@@ -2,6 +2,7 @@
 #define MESH_H
 
 #include "libs.h"
+#include "mathlib.h"
 #include "shader.h"
 #include "textures.h"
 
@@ -39,6 +40,26 @@ class mesh_base
 
   shader* m_shader;
   texture* m_texture;
+};
+
+class mesh_3d:public mesh_base
+{
+ public:
+  mesh_3d(std::vector<float pvert>, std::vector<unsigned int> pind, bool colors, bool textures, matrix model);
+
+  void model_matrix_set(matrix a);
+  matrix model_matrix_get();
+  
+ private:
+  matrix m_model;
+};
+
+class camera
+{
+ public:
+  camera()
+    
+ private:
 };
 
 #endif
