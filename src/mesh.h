@@ -45,7 +45,7 @@ class mesh_base
 class mesh_3d:public mesh_base
 {
  public:
-  mesh_3d(std::vector<float pvert>, std::vector<unsigned int> pind, bool colors, bool textures, vector_3d protation, vector_3d ptranslation, float pscale);
+  mesh_3d(std::vector<float> pvert, std::vector<unsigned int> pind, bool colors, bool textures, vector_3d protation, vector_3d ptranslation, float pscale);
 
   void scale_set(float pscale);
   void rotation_set(vector_3d protation);
@@ -61,7 +61,7 @@ class mesh_3d:public mesh_base
 
   vector_3d position_get();
   
-  matrix model_matrix_get();
+  matrix* model_matrix_get();
   
  protected:
   float m_scale;
@@ -98,7 +98,7 @@ class camera
   float plane_near_get();
   float plane_far_get();
 
-  matrix projection_matrix_get();
+  matrix* projection_matrix_get();
   
  private:
   int c_resolution_x;

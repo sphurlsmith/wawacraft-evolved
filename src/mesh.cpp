@@ -125,14 +125,14 @@ texture* mesh_base::texture_get()
   return m_texture;
 }
 
-mesh_3d::mesh_3d(std::vector<float pvert>, std::vector<unsigned int> pind, bool colors, bool textures, vector_3d protation, vector_3d ptranslation, float pscale):
+mesh_3d::mesh_3d(std::vector<float> pvert, std::vector<unsigned int> pind, bool colors, bool textures, vector_3d protation, vector_3d ptranslation, float pscale):
+  mesh_base(pvert, pind, colors, textures),
   m_position(ptranslation),
   m_rotation_x(protation.x),
   m_rotation_y(protation.y),
   m_rotation_z(protation.z),
-  m_scale(pscale){
-  mesh_base(pvert, pind, colors, textures);
-
+  m_scale(pscale),
+  m_model(matrix::base()){
   model_matrix_form();
 }
 
@@ -183,9 +183,9 @@ vector_3d mesh_3d::position_get()
   return m_position;
 }
 
-matrix mesh_3d::model_matrix_get()
+matrix* mesh_3d::model_matrix_get()
 {
-  return m_model;
+  return &m_model;
 }
 
 camera::camera(int paspectx, int paspecty, float pfov, float pnear, float pfar):
@@ -193,8 +193,21 @@ camera::camera(int paspectx, int paspecty, float pfov, float pnear, float pfar):
   c_resolution_y(paspecty),
   c_fov(pfov),
   c_near(pnear),
-  c_far(pfar){
+  c_far(pfar),
+  c_projection(matrix::base()){
   projection_matrix_form();
+}
+
+void camera::render_mesh(mesh_3d* mesh)
+{
+  projection_matrix_form();
+  mesh->model_matrix_form();
+  
+  mesh->shader_get()->activate();
+  mesh->shader_get()->uniform_set_matrix("mod", &mesh->model_matrix_get()->m[0][0], true);
+  mesh->shader_get()->uniform_set_matrix("proj", &c_projection.m[0][0], true);
+
+  mesh->render();
 }
 
 void camera::resolution_set(int px, int py)
@@ -249,7 +262,7 @@ float camera::plane_far_get()
   return c_far;
 }
 
-matrix camera::projection_matrix_get()
+matrix* camera::projection_matrix_get()
 {
-  return c_projection;
+  return &c_projection;
 }

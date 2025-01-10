@@ -26,15 +26,15 @@ int main()
   window test(0, 0, "");
   render_environment test_env(&test, &render, {0.5, 0.5, 0.7, 1});
 
-  shader test_shd("shd/wac_v_m_default.glsl", "shd/wac_f_m_default.glsl");
+  shader test_shd("shd/wac_v_m3d_default.glsl", "shd/wac_f_m_default.glsl");
   texture test_tex("tex/wawa.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
 
   std::vector<float> verts=
   {
-    -0.5, -0.5, 0, 1, 0, 0, 0, 0,
-     0.5, -0.5, 0, 0, 1, 0, 1, 0,
-    -0.5,  0.5, 0, 0, 0, 1, 0, 1,
-     0.5,  0.5, 0, 1, 1, 1, 1, 1
+    -0.5, -0.5, 1, 1, 0, 0, 0, 0,
+     0.5, -0.5, 1, 0, 1, 0, 1, 0,
+    -0.5,  0.5, 1, 0, 0, 1, 0, 1,
+     0.5,  0.5, 1, 1, 1, 1, 1, 1
   };
 
   std::vector<unsigned int> inds={0, 1, 2, 1, 2, 3};
@@ -46,12 +46,11 @@ int main()
 
   test_mesh.shader_set(&test_shd);
   test_mesh.texture_set(&test_tex);
-
-  test_env.default_shader=&test_shd;
-  test_env.default_mesh=&test_mesh;
   
   while(test.is_open())
   {
+    test_env.default_shader=test_mesh.shader_get();
+    test_env.default_mesh=&test_mesh;
     test_env.screen_run_render_loop_instance();
   }
 
