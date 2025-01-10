@@ -80,7 +80,7 @@ class camera
  public:
   camera(int paspectx, int paspecty, float pfov, float pnear, float pfar);
 
-  void render_mesh(mesh_3d mesh);
+  void render_mesh(mesh_3d* mesh);
   
   void resolution_set(int px, int py);
   void fov_set(float pfov);
