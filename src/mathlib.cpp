@@ -315,7 +315,7 @@ static matrix matrix::view(vector_3d target, vector_3d up, vector_3d translation
   right=vector_3d::normalize(vector_3d::cross(up, target));
   up=vector_3d::normalize(vector_3d::cross(right, target));
 
-  matrix translation_matrix=matrix::translation(translation);
+  matrix translation_matrix=matrix::translation(vector_3d::negate(translation));
 
   float v[4][4]=
     {

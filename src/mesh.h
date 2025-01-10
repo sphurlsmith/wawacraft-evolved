@@ -45,21 +45,71 @@ class mesh_base
 class mesh_3d:public mesh_base
 {
  public:
-  mesh_3d(std::vector<float pvert>, std::vector<unsigned int> pind, bool colors, bool textures, matrix model);
+  mesh_3d(std::vector<float pvert>, std::vector<unsigned int> pind, bool colors, bool textures, vector_3d protation, vector_3d ptranslation, float pscale);
 
-  void model_matrix_set(matrix a);
+  void scale_set(float pscale);
+  void rotation_set(vector_3d protation);
+  void position_set(vector_3d ptranslation);
+  
+  void model_matrix_form();
+
+  float scale_get();
+  
+  float rotation_x_get();
+  float rotation_y_get();
+  float rotation_z_get();
+
+  vector_3d position_get();
+  
   matrix model_matrix_get();
   
- private:
+ protected:
+  float m_scale;
+  
+  float m_rotation_x;
+  float m_rotation_y;
+  float m_rotation_z;
+  
+  vector_3d m_position;
+
   matrix m_model;
 };
 
 class camera
 {
  public:
-  camera()
-    
+  camera(int paspectx, int paspecty, float pfov, float pnear, float pfar);
+
+  void render_mesh(mesh_3d mesh);
+  
+  void resolution_set(int px, int py);
+  void fov_set(float pfov);
+  
+  void plane_near_set(float p);
+  void plane_far_set(float p);
+
+  void projection_matrix_form();
+
+  int resolution_x_get();
+  int resolution_y_get();
+
+  float fov_get();
+
+  float plane_near_get();
+  float plane_far_get();
+
+  matrix projection_matrix_get();
+  
  private:
+  int c_resolution_x;
+  int c_resolution_y;
+
+  float c_fov;
+  
+  float c_near;
+  float c_far;
+
+  matrix c_projection;
 };
 
 #endif

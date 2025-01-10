@@ -124,3 +124,132 @@ texture* mesh_base::texture_get()
 {
   return m_texture;
 }
+
+mesh_3d::mesh_3d(std::vector<float pvert>, std::vector<unsigned int> pind, bool colors, bool textures, vector_3d protation, vector_3d ptranslation, float pscale):
+  m_position(ptranslation),
+  m_rotation_x(protation.x),
+  m_rotation_y(protation.y),
+  m_rotation_z(protation.z),
+  m_scale(pscale){
+  mesh_base(pvert, pind, colors, textures);
+
+  model_matrix_form();
+}
+
+void mesh_3d::scale_set(float pscale)
+{
+  m_scale=pscale;
+}
+
+void mesh_3d::rotation_set(vector_3d protation)
+{
+  m_rotation_x=protation.x;
+  m_rotation_y=protation.y;
+  m_rotation_z=protation.z;
+}
+
+void mesh_3d::position_set(vector_3d ptranslation)
+{
+  m_position=ptranslation;
+}
+
+void mesh_3d::model_matrix_form()
+{
+  m_model=matrix::model(m_rotation_x, m_rotation_y, m_rotation_z, m_scale, m_position);
+}
+
+float mesh_3d::scale_get()
+{
+  return m_scale;
+}
+
+float mesh_3d::rotation_x_get()
+{
+  return m_rotation_x;
+}
+
+float mesh_3d::rotation_y_get()
+{
+  return m_rotation_y;
+}
+
+float mesh_3d::rotation_z_get()
+{
+  return m_rotation_z;
+}
+
+vector_3d mesh_3d::position_get()
+{
+  return m_position;
+}
+
+matrix mesh_3d::model_matrix_get()
+{
+  return m_model;
+}
+
+camera::camera(int paspectx, int paspecty, float pfov, float pnear, float pfar):
+  c_resolution_x(paspectx),
+  c_resolution_y(paspecty),
+  c_fov(pfov),
+  c_near(pnear),
+  c_far(pfar){
+  projection_matrix_form();
+}
+
+void camera::resolution_set(int px, int py)
+{
+  c_resolution_x=px;
+  c_resolution_y=py;
+}
+
+void camera::fov_set(float pfov)
+{
+  c_fov=pfov;
+}
+
+void camera::plane_near_set(float p)
+{
+  c_near=p;
+}
+
+void camera::plane_far_set(float p)
+{
+  c_far=p;
+}
+
+void camera::projection_matrix_form()
+{
+  float aspect=c_resolution_x/c_resolution_y;
+  c_projection=matrix::projection(c_near, c_far, c_fov, aspect);
+}
+
+int camera::resolution_x_get()
+{
+  return c_resolution_x;
+}
+
+int camera::resolution_y_get()
+{
+  return c_resolution_y;
+}
+
+float camera::fov_get()
+{
+  return c_fov;
+}
+
+float camera::plane_near_get()
+{
+  return c_near;
+}
+
+float camera::plane_far_get()
+{
+  return c_far;
+}
+
+matrix camera::projection_matrix_get()
+{
+  return c_projection;
+}
