@@ -155,7 +155,21 @@ void mesh_3d::position_set(vector_3d ptranslation)
 
 void mesh_3d::model_matrix_form()
 {
-  m_model=matrix::model(m_rotation_x, m_rotation_y, m_rotation_z, m_scale, m_position);
+  //m_model=matrix::model(m_rotation_x, m_rotation_y, m_rotation_z, m_scale, m_position);
+
+  float m[4][4]=
+    {
+      {1, 0, 0, 1},
+      {0, 1, 0, 1},
+      {0, 0, 1, 1},
+      {0, 0, 0, 1},
+    };
+
+  for(int y=0; y<4; y++){
+    for(int x=0; x<4; x++){
+      m_model.m[x][y]=m[x][y];
+    }
+  }
 }
 
 float mesh_3d::scale_get()

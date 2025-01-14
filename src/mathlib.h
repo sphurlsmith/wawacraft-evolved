@@ -88,6 +88,8 @@ class matrix
   static vector_homogenous vector_multiply(matrix m, vector_homogenous v);
 
   static void transpose(matrix &a);
+
+  void debug_output();
   
   float m[4][4];
 };

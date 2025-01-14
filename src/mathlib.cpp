@@ -303,7 +303,7 @@ static matrix matrix::model(float axy, float ayz, float axz, float s, vector_3d 
   matrix ret(matrix::base().m);
 
   // brother what is this... matrix multiplication without operators... holy shit
-  ret=matrix::multiply(translation_matrix, matrix::multiply(scale, matrix::multiply(rotation_xy, matrix::multiply(rotation_yz, rotation_xz))));
+  ret=matrix::multiply(translation_matrix, /*matrix::multiply(scale, matrix::multiply(rotation_xy, matrix::multiply(rotation_yz, rotation_xz)))*/ scale);
 
   return ret;
 }
@@ -413,4 +413,15 @@ static vector_homogenous matrix::vector_multiply(matrix m, vector_homogenous v)
 			vector_homogenous::faux_dot_sum(w, v));
   
   return ret;
+}
+
+void matrix::debug_output()
+{
+  std::cout << "MATRIX DEBUG OUTPUT" << std::endl;
+  for(int y=0; y<4; y++){
+    for(int x=0; x<4; x++){
+      std::cout << m[y][x] << ' ';
+    }
+    std::cout << std::endl;
+  }
 }

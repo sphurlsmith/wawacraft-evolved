@@ -88,7 +88,7 @@ void window::set_resolution(int pxres, int pyres)
   window::framebuffer_resize(reference, xres, yres);
 }
 
-void window::set_render_loop_callback(void (*prfc)(window* pwin, void* pshd, void* pmsh))
+void window::set_render_loop_callback(void (*prfc)(window* pwin, void* pcmr, void* pmsh))
 {
   rendercallback=prfc;
 
@@ -97,11 +97,11 @@ void window::set_render_loop_callback(void (*prfc)(window* pwin, void* pshd, voi
   }
 }
 
-void window::run_render_loop(void* pshd, void* pmsh)
+void window::run_render_loop(void* pcmr, void* pmsh)
 {
   set_current_context();
 
-  (*rendercallback)((window*)this, pshd, pmsh);
+  (*rendercallback)((window*)this, pcmr, pmsh);
 
   if(rendercallback==NULL){
     std::cerr << "err:w-window-rendercallback-null" << std::endl;
@@ -135,7 +135,7 @@ GLFWwindow* window::get_reference()
   return reference;
 }
 
-void (*window::get_render_loop_callback(void))(window* pwin, void* pshd, void* pmsh)
+void (*window::get_render_loop_callback(void))(window* pwin, void* pcmr, void* pmsh)
 {
   return rendercallback;
 }

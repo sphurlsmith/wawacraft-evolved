@@ -33,14 +33,16 @@ class render_environment
   void (*render_loop_callback_get(void))(window* p);
   
   void screen_clear();
-  void screen_call_render_callback();
-  void screen_run_render_loop_instance();
+  void screen_call_render_callback(bool use_3d);
+  void screen_run_render_loop_instance(bool use_3d);
 
   window* target_window_get();
   color4e clear_color_get();
 
-  shader* default_shader;
-  mesh_base* default_mesh;
+  mesh_base* mesh;
+  mesh_3d* mesh_3d;
+  
+  camera* camera;
   
  private:
   window* targetwindow;

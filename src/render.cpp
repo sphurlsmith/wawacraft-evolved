@@ -2,7 +2,10 @@
 #include "windef.h"
 #include "render.h"
 
-render_environment::render_environment(window* pwin, void (*prlc)(window* p), color4e pc)
+render_environment::render_environment(window* pwin, void (*prlc)(window* p), color4e pc):
+  mesh(NULL),
+  mesh_3d(NULL),
+  camera(NULL)
 {
   target_window_set(pwin);
   render_loop_callback_set(prlc);
@@ -58,7 +61,7 @@ void render_environment::screen_clear()
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void render_environment::screen_call_render_callback(){
+void render_environment::screen_call_render_callback(bool use_3d){
   if(targetwindow==NULL){
     std::cerr << "err:w-render_environment-targetwindow-null" << std::endl;
   }
@@ -68,14 +71,18 @@ void render_environment::screen_call_render_callback(){
   }
 
   if(targetwindow!=NULL && targetwindow->get_render_loop_callback()!=NULL){
-    targetwindow->run_render_loop(default_shader, default_mesh);
+    if(use_3d){
+      targetwindow->run_render_loop(camera, mesh_3d);
+    }else{
+      targetwindow->run_render_loop(camera, mesh);
+    }
   }
 }
 
-void render_environment::screen_run_render_loop_instance()
+void render_environment::screen_run_render_loop_instance(bool use_3d)
 {
   screen_clear();
-  screen_call_render_callback();
+  screen_call_render_callback(use_3d);
 }
 
 window* render_environment::target_window_get()

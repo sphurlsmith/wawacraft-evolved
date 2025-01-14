@@ -8,15 +8,18 @@
 int DEFAULT_TEXTURE_RESOLUTION=32;
 int DEFAULT_TEXTURE_CHANNELS=4;
 
-void render(window* pwint, void* pshd, void* pmsh)
+void render(window* pwint, void* pcmr, void* pmsh)
 {
-  shader* pshader=(shader*)pshd;
   mesh_base* pmesh=(mesh_base*)pmsh;
+  mesh_3d* pmesh3d=(mesh_3d*)pmsh;
 
-  pmesh->shader_set(pshader);
-  // pmesh->vertex_attributes_bind(true);
-
-  pmesh->render();
+  camera* pcamera=(camera*)pcmr;
+  
+  if(pcmr==NULL){
+    pmesh->render();
+  }else{
+    pcamera->render_mesh(pmsh);
+  }
 }
 
 int main()
@@ -29,17 +32,20 @@ int main()
   shader test_shd("shd/wac_v_m3d_default.glsl", "shd/wac_f_m_default.glsl");
   texture test_tex("tex/wawa.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
 
+  camera test_camera(800, 600, 50, 0.1, 10);
+  
   std::vector<float> verts=
   {
-    -0.5, -0.5, 1, 1, 0, 0, 0, 0,
-     0.5, -0.5, 1, 0, 1, 0, 1, 0,
-    -0.5,  0.5, 1, 0, 0, 1, 0, 1,
-     0.5,  0.5, 1, 1, 1, 1, 1, 1
+    -0.5, -0.5, 0, 1, 0, 0, 0, 0,
+     0.5, -0.5, 0, 0, 1, 0, 1, 0,
+    -0.5,  0.5, 0, 0, 0, 1, 0, 1,
+     0.5,  0.5, 0, 1, 1, 1, 1, 1
   };
 
   std::vector<unsigned int> inds={0, 1, 2, 1, 2, 3};
   
   mesh_base test_mesh(verts, inds, true, true);
+  mesh_3d test_3d(verts, inds, false, true, {0, 0, 0}, {1, -1, 1}, 1);
   
   test.set_title("Wawacraft:Evolved [v0.1.1-alpha indev] [OpenGL 3.3]");
   test.set_resolution(800, 600);
@@ -49,9 +55,14 @@ int main()
   
   while(test.is_open())
   {
-    test_env.default_shader=test_mesh.shader_get();
-    test_env.default_mesh=&test_mesh;
-    test_env.screen_run_render_loop_instance();
+    test_env.mesh=&test_mesh;
+    test_env.mesh_3d=&test_3d;
+    test_env.camera=&test_camera;
+    
+    test_env.screen_run_render_loop_instance(true);
+
+    test_3d.model_matrix_get()->debug_output();
+    test_camera.projection_matrix_get()->debug_output();
   }
 
   window::kill_glfw();
