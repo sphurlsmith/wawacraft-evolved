@@ -29,7 +29,7 @@ static quat quat::conjugate(quat a)
 static quat quat::normalize(quat a)
 {
   float norm=1/quat::norm(a);
- 
+
   return quat::scalar(a, norm);
 }
 

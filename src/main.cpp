@@ -22,8 +22,106 @@ void render(window* pwint, void* pcmr, void* pmsh)
   }
 }
 
+void testing_math()
+{
+  // QUATERNION TESTING
+
+  std::cout << "UNIT TESTING WAWACRAFT:EVOLVED MATHLIB" << std::endl;
+  std::cout << "QUATERNION TESTING" << std::endl;
+
+  std::cout << "INITIALIZING QUAT A WITH VALUES {1, 2, 3, 4}" << std::endl;
+  quat a(1, 2, 3, 4);
+
+  std::cout << "A: {" << a.w << ", " << a.i << ", " << a.j << ", " << a.k << "}" << std::endl;
+
+  int succeeded_tests=0;
+  
+  std::cout << "[1]: Testing norm... ";
+  if(quat::norm(a)==(float)sqrt(30)){
+    std::cout << "OK" << std::endl;
+    succeeded_tests++;
+  }else{std::cout << "NO" << std::endl;}
+  
+  std::cout << "[2]: Testing conjugate product... ";
+  if(quat::norm_nosqrt(a)==30){
+    std::cout << "OK" << std::endl;
+    succeeded_tests++;
+  }else{std::cout << "NO" << std::endl;}
+  
+  std::cout << "[3]: Testing conjugate... ";
+  if(quat::conjugate(a).w==a.w && quat::conjugate(a).i==-a.i &&
+     quat::conjugate(a).j==-a.j && quat::conjugate(a).k==-a.k){
+    std::cout << "OK" << std::endl;
+    succeeded_tests++;
+  }else{std::cout << "NO" << std::endl;}
+
+  std::cout << "[4]: Testing normalized quaternion... ";
+  std::cout << (quat::normalize(a).w*quat::normalize(a).w+
+		quat::normalize(a).i*quat::normalize(a).i+
+		quat::normalize(a).j*quat::normalize(a).j+
+		quat::normalize(a).k*quat::normalize(a).k)*100 << "% ";
+  if((quat::normalize(a).w*quat::normalize(a).w+
+      quat::normalize(a).i*quat::normalize(a).i+
+      quat::normalize(a).j*quat::normalize(a).j+
+      quat::normalize(a).k*quat::normalize(a).k)*100>90){
+    std::cout << "OK" << std::endl;
+    succeeded_tests++;
+  }else{std::cout << "NO" << std::endl;}
+
+  std::cout << "[5]: Testing inverse quaternion... ";
+  std::cout << (quat::inverse(a).w+quat::inverse(a).i+
+		quat::inverse(a).j+quat::inverse(a).k)*30*100 << "% ";
+  if((quat::inverse(a).w+quat::inverse(a).i+
+      quat::inverse(a).j+quat::inverse(a).k)*30*100>90){
+    std::cout << "OK" << std::endl;
+    succeeded_tests++;
+  }else{std::cout << "NO" << std::endl;}
+
+  std::cout << "[6]: Testing (faux)negated quaternion... ";
+  if(quat::negate(a).w==-a.w && quat::negate(a).i==-a.i &&
+     quat::negate(a).j==-a.j && quat::negate(a).k==-a.k){
+    std::cout << "OK" << std::endl;
+    succeeded_tests++;
+  }else{std::cout << "NO" << std::endl;}
+
+  std::cout << "If test 4, and 5 are correct, the scalar function works. :3" << std::endl;
+
+  std::cout << "[7]: Testing quaternion addition... ";
+  quat b(4, 3, 2, 1);
+  quat c=quat::add(a, b);
+  if(c.w==5 && c.i==5 && c.j==5 && c.k==5){
+    std::cout << "OK" << std::endl;
+    succeeded_tests++;
+  }else{std::cout << "NO" << std::endl;}
+
+  std::cout << "[8]: Testing quaternion subtraction... ";
+  c=quat::subtract(b, a);
+  if(c.w==3 && c.i==1 && c.j==-1 && c.k==-3){
+    std::cout << "OK" << std::endl;
+    succeeded_tests++;
+  }else{std::cout << "NO" << std::endl;}
+
+  std::cout << "[9]: Testing quaternion product... ";
+  c=quat::product(a, b);
+  if(c.w==-12 && c.i==6 && c.j==24 && c.k==12){
+    std::cout << "OK" << std::endl;
+    succeeded_tests++;
+  }else{std::cout << "NO" << std::endl;}
+  std::cout << "{" << quat::product(a, b).w << ", "
+	    << quat::product(a, b).i << ", "
+	    << quat::product(a, b).j << ", "
+	    << quat::product(a, b).k << "}" << std::endl;
+  
+  std::cout << succeeded_tests << " out of 9 Tests succeeded" << std::endl;
+}
+
 int main()
 {
+  testing_math();
+  return 0;
+
+  // trying out unit testing ofc
+  
   window::init_glfw();
 
   window test(0, 0, "");
