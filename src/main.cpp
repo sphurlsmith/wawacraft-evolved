@@ -24,10 +24,6 @@ void render(window* pwint, void* pcmr, void* pmsh)
 
 int main()
 {
-  //testing_math();
-
-  // trying out unit testing ofc
-  
   window::init_glfw();
 
   window test(0, 0, "");
@@ -75,7 +71,6 @@ int main()
     
     vecr=matrix::vector_multiply(matrix::multiply(*(test_camera.projection_matrix_get()), *(test_3d.model_matrix_get())), vecr);
 
-    std::cout << vecr.x << " " << vecr.y << " " << vecr.z << " " << vecr.w << std::endl;
     
     roll=!roll;
   }
