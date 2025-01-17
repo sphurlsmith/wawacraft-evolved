@@ -74,7 +74,7 @@ void render_environment::screen_call_render_callback(bool use_3d){
     if(use_3d){
       targetwindow->run_render_loop(camera, mesh_3d);
     }else{
-      targetwindow->run_render_loop(camera, mesh);
+      targetwindow->run_render_loop(NULL, mesh);
     }
   }
 }

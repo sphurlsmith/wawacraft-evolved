@@ -3,6 +3,9 @@
 
 #include "libs.h"
 
+#define MATHLIB_PI 3.141592653589
+#define MATHLIB_DEGTORAD MATHLIB_PI/180
+
 class quat
 {
  public:
@@ -79,7 +82,7 @@ class matrix
   static matrix translation(vector_3d a);
   
   static matrix projection(float near, float far, float fov, float aspect);
-  static matrix model(float axy, float ayz, float axz, float s, vector_3d t);
+  static matrix model(float x, float y, float z, float s, vector_3d t);
   static matrix view(vector_3d target, vector_3d up, vector_3d translation);
   static matrix quaternion(quat a);
 

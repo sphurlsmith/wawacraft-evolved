@@ -60,7 +60,11 @@ void mesh_base::vertex_attributes_bind(bool colors_used, bool textures_used)
 void mesh_base::render()
 {
   if(m_shader!=NULL){
-    m_shader->activate();
+    int val;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &val);
+    if(val!=m_shader->get_id()){
+      m_shader->activate();
+    }
   }else{
     std::cerr << "err:w-m_base-render-shader-null" << std::endl;
   }
@@ -155,21 +159,7 @@ void mesh_3d::position_set(vector_3d ptranslation)
 
 void mesh_3d::model_matrix_form()
 {
-  //m_model=matrix::model(m_rotation_x, m_rotation_y, m_rotation_z, m_scale, m_position);
-
-  float m[4][4]=
-    {
-      {1, 0, 0, 1},
-      {0, 1, 0, 1},
-      {0, 0, 1, 1},
-      {0, 0, 0, 1},
-    };
-
-  for(int y=0; y<4; y++){
-    for(int x=0; x<4; x++){
-      m_model.m[x][y]=m[x][y];
-    }
-  }
+  m_model=matrix::model(m_rotation_x, m_rotation_y, m_rotation_z, m_scale, m_position);
 }
 
 float mesh_3d::scale_get()
@@ -218,9 +208,9 @@ void camera::render_mesh(mesh_3d* mesh)
   mesh->model_matrix_form();
   
   mesh->shader_get()->activate();
-  mesh->shader_get()->uniform_set_matrix("mod", &mesh->model_matrix_get()->m[0][0], true);
-  mesh->shader_get()->uniform_set_matrix("proj", &c_projection.m[0][0], true);
-
+  mesh->shader_get()->uniform_set_matrix("mod", &(mesh->model_matrix_get()->m[0][0]), false);
+  mesh->shader_get()->uniform_set_matrix("proj", &(c_projection.m[0][0]), false);
+  
   mesh->render();
 }
 

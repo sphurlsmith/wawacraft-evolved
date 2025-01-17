@@ -8,7 +8,6 @@ window::window(int pxres, int pyres, std::string pt):
   yres(pyres),
   title(pt)
 {
-  // std::cout << "Initializing window " << name << " with resolution " << pxres << ", " << pyres << std::endl;
   window::init_glfw();
 
   if(xres==0 || yres==0){
@@ -101,12 +100,12 @@ void window::run_render_loop(void* pcmr, void* pmsh)
 {
   set_current_context();
 
-  (*rendercallback)((window*)this, pcmr, pmsh);
-
   if(rendercallback==NULL){
     std::cerr << "err:w-window-rendercallback-null" << std::endl;
   }
-
+  
+  (*rendercallback)((window*)this, pcmr, pmsh);
+  
   glfwSwapBuffers(reference);
   glfwPollEvents();
 }

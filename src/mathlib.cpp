@@ -80,7 +80,7 @@ static quat quat::product(quat a, quat b)
 
 static quat quat::conjugation(quat a, quat b)
 {
-  return quat::product(b, quat::product(a, quat::conjugate(b)));
+  return quat::product(b, quat::product(a, quat::inverse(b)));
 }
 
 vector_3d::vector_3d(float px, float py, float pz):
@@ -238,28 +238,45 @@ static matrix matrix::projection(float near, float far, float fov, float aspect)
   float n=near;
   float f=far;
 
-  float tanfov=tan(fov/2);
+  float tanfov=tan(fov*(MATHLIB_PI/180)/2);
 
-  float r=n*tanfov;
-  float t=r*aspect;
-  float l=-r;
-  float b=-t;
+  float fr=n*tanfov;
+  float ft=fr*aspect;
+  float fl=-fr;
+  float fb=-ft;
   
   float rs[4][4]=
     {
-      {(2*n)/(r-l),      0,      (r+l)/(r-l),              0},
-      {     0,      (2*n)/(t-b), (t+b)/(t-b),              0},
+      {(2*n)/(fr-fl),    0,      (fr+fl)/(fr-fl),          0},
+      {     0,    (2*n)/(ft-fb), (ft+fb)/(ft-fb),          0},
       {     0,           0,      (f+n)/(f-n), -(2*f*n)/(f-n)},
       {     0,           0,          -1,                   0}
     };
 
   matrix ret(rs);
+  
+  ret.m[0][0]=(2*n)/(fr-fl);
+  ret.m[0][2]=(fr+fl)/(fr-fl);
+  
+  ret.m[1][1]=(2*n)/(ft-fl);
+  ret.m[1][2]=(ft+fb)/(ft-fb);
+
+  ret.m[2][2]=(f+n)/(f-n);
+  ret.m[2][3]=(-2*f*n)/(f-n);
+
+  ret.m[3][2]=1;
 
   return ret;
 }
 
-static matrix matrix::model(float axy, float ayz, float axz, float s, vector_3d t)
+static matrix matrix::model(float x, float y, float z, float s, vector_3d t)
 {
+  quat rotorx(cos(x/2), sin(x/2), 0, 0);
+  quat rotory(cos(y/2), 0, sin(y/2), 0);
+  quat rotorz(cos(z/2), 0, 0, sin(z/2));
+
+  quat rotor=quat::product(rotorz, quat::product(rotory, rotorx));
+  
   float scs[4][4]=
     {
       {s, 0, 0, 0},
@@ -268,42 +285,13 @@ static matrix matrix::model(float axy, float ayz, float axz, float s, vector_3d 
       {0, 0, 0, 1}
     };
 
-  float xys[4][4]=
-    {
-      {cos(axy), -sin(axy), 0, 0},
-      {sin(axy),  cos(axy), 0, 0},
-      {   0,         0,     1, 0},
-      {   0,         0,     0, 1}
-    };
-
-  float yzs[4][4]=
-    {
-      {1,    0,         0,     0},
-      {0, cos(ayz), -sin(ayz), 0},
-      {0, sin(ayz),  cos(ayz), 0},
-      {0,    0,         0,     1}
-    };
-
-  float xzs[4][4]=
-    {
-      {cos(axz), 0, -sin(axz), 0},
-      {   0,     1,     0,     0},
-      {sin(axz), 0,  cos(axz), 0},
-      {   0,     0,     0,     1}
-    };
-
   matrix scale(scs);
-  
-  matrix rotation_xy(xys);
-  matrix rotation_yz(yzs);
-  matrix rotation_xz(xzs);
-
-  matrix translation_matrix=matrix::translation(t);
+  matrix translation=matrix::translation(t);
 
   matrix ret(matrix::base().m);
 
   // brother what is this... matrix multiplication without operators... holy shit
-  ret=matrix::multiply(translation_matrix, /*matrix::multiply(scale, matrix::multiply(rotation_xy, matrix::multiply(rotation_yz, rotation_xz)))*/ scale);
+  ret=matrix::multiply(matrix::multiply(scale, matrix::quaternion(rotor)), translation);
 
   return ret;
 }
@@ -354,36 +342,17 @@ static matrix matrix::quaternion(quat a)
 
 static matrix matrix::multiply(matrix a, matrix b)
 {
-  vector_homogenous xa(a.m[0][0], a.m[1][0], a.m[2][0], a.m[3][0]);
-  vector_homogenous ya(a.m[0][1], a.m[1][1], a.m[2][1], a.m[3][1]);
-  vector_homogenous za(a.m[0][2], a.m[1][2], a.m[2][2], a.m[3][2]);
-  vector_homogenous wa(a.m[0][3], a.m[1][3], a.m[2][3], a.m[3][3]);
+  float r[4][4];
 
-  vector_homogenous b1(b.m[0][0], b.m[0][1], b.m[0][2], b.m[0][3]);
-  vector_homogenous b2(b.m[1][0], b.m[1][1], b.m[1][2], b.m[1][3]);
-  vector_homogenous b3(b.m[2][0], b.m[2][1], b.m[2][2], b.m[2][3]);
-  vector_homogenous b4(b.m[3][0], b.m[3][1], b.m[3][2], b.m[3][3]);
+  for(int y=0; y<4; y++){
+    for(int x=0; x<4; x++){
+      r[x][y]=0;
+      for(int z=0; z<4; z++){
+	r[x][y]+=a.m[z][y]*b.m[x][z];
+      }
+    }
+  }
   
-  float r[4][4]=
-    {
-      {vector_homogenous::faux_dot_sum(xa, b1),
-       vector_homogenous::faux_dot_sum(xa, b2),
-       vector_homogenous::faux_dot_sum(xa, b3),
-       vector_homogenous::faux_dot_sum(xa, b4)},
-      {vector_homogenous::faux_dot_sum(ya, b1),
-       vector_homogenous::faux_dot_sum(ya, b2),
-       vector_homogenous::faux_dot_sum(ya, b3),
-       vector_homogenous::faux_dot_sum(ya, b4)},
-      {vector_homogenous::faux_dot_sum(za, b1),
-       vector_homogenous::faux_dot_sum(za, b2),
-       vector_homogenous::faux_dot_sum(za, b3),
-       vector_homogenous::faux_dot_sum(za, b4)},
-      {vector_homogenous::faux_dot_sum(wa, b1),
-       vector_homogenous::faux_dot_sum(wa, b2),
-       vector_homogenous::faux_dot_sum(wa, b3),
-       vector_homogenous::faux_dot_sum(wa, b4)}
-    };
-
   matrix ret(r);
 
   return ret;
