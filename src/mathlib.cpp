@@ -97,7 +97,7 @@ static float vector_3d::norm(vector_3d a)
 
 static vector_3d vector_3d::negate(vector_3d a)
 {
-  vector_3d ret(-a.x, -a.y, a.z);
+  vector_3d ret(-a.x, -a.y, -a.z);
 
   return ret;
 }
@@ -250,7 +250,7 @@ static matrix matrix::projection(float near, float far, float fov, float aspect)
       {(2*n)/(fr-fl),    0,      (fr+fl)/(fr-fl),          0},
       {     0,    (2*n)/(ft-fb), (ft+fb)/(ft-fb),          0},
       {     0,           0,      (f+n)/(f-n), -(2*f*n)/(f-n)},
-      {     0,           0,          -1,                   0}
+      {     0,           0,           -1,                  0}
     };
 
   matrix ret(rs);
@@ -298,23 +298,26 @@ static matrix matrix::model(float x, float y, float z, float s, vector_3d t)
 
 static matrix matrix::view(vector_3d target, vector_3d up, vector_3d translation)
 {
-  vector_3d right(0, 0, 0);
+  vector_3d left(1, 0, 0);
 
-  right=vector_3d::normalize(vector_3d::cross(up, target));
-  up=vector_3d::normalize(vector_3d::cross(right, target));
+  target=vector_3d::normalize(target);
+  
+  left=vector_3d::normalize(vector_3d::cross(up, target));
+  up=vector_3d::normalize(vector_3d::cross(left, target));
 
   matrix translation_matrix=matrix::translation(vector_3d::negate(translation));
 
   float v[4][4]=
     {
-      {right.x, up.x, target.x, 0},
-      {right.y, up.y, target.y, 0},
-      {right.z, up.z, target.z, 0},
-      {   0,      0,      0,    1}
+      {left.x, up.x, target.x, 0},
+      {left.y, up.y, target.y, 0},
+      {left.z, up.z, target.z, 0},
+      {  0,      0,      0,    1}
     };
 
   matrix rotations(v);
-
+  matrix::transpose(rotations);
+  
   matrix ret=matrix::multiply(translation_matrix, rotations);
 
   return ret;
@@ -330,7 +333,7 @@ static matrix matrix::quaternion(quat a)
   float r[4][4]=
     {
       {w*w+i*i-j*j-k*k,   2*i*j-2*w*k,     2*i*k+2*w*j,   0},
-      {  2*i*j-2*w*k,   w*w-i*i+j*j-k*k,   2*j*k-2*w*i,   0},
+      {  2*i*j+2*w*k,   w*w-i*i+j*j-k*k,   2*j*k-2*w*i,   0},
       {  2*i*j-2*w*j,     2*j*k+2*w*i,   w*w-i*i-j*j+k*k, 0},
       {       0,               0,               0,        1}
     };

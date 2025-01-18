@@ -8,11 +8,12 @@ out vec3 ov_color;
 out vec2 ov_tex;
 
 uniform mat4 mod;
+uniform mat4 view;
 uniform mat4 proj;
 
 void main()
 {
-	gl_Position=vec4(vertex_position, 1)*mod*proj;
+	gl_Position=vec4(vertex_position, 1)*mod*view*proj;
 
 	ov_color=vertex_color;
 	ov_tex=vertex_texture;

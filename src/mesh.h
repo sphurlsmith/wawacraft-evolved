@@ -78,7 +78,7 @@ class mesh_3d:public mesh_base
 class camera
 {
  public:
-  camera(int paspectx, int paspecty, float pfov, float pnear, float pfar);
+  camera(int paspectx, int paspecty, float pfov, float pnear, float pfar, vector_3d pposition, vector_3d protation);
 
   void render_mesh(mesh_3d* mesh);
   
@@ -88,7 +88,11 @@ class camera
   void plane_near_set(float p);
   void plane_far_set(float p);
 
+  void position_set(vector_3d pposition);
+  void rotation_set(vector_3d protation);
+  
   void projection_matrix_form();
+  void view_matrix_form();
 
   int resolution_x_get();
   int resolution_y_get();
@@ -98,7 +102,11 @@ class camera
   float plane_near_get();
   float plane_far_get();
 
+  vector_3d position_get();
+  vector_3d rotation_get();
+
   matrix* projection_matrix_get();
+  matrix* view_matrix_get();
   
  private:
   int c_resolution_x;
@@ -109,7 +117,11 @@ class camera
   float c_near;
   float c_far;
 
+  vector_3d c_position;
+  vector_3d c_rotation;
+  
   matrix c_projection;
+  matrix c_view;
 };
 
 #endif

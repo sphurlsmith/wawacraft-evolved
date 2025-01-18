@@ -192,23 +192,29 @@ matrix* mesh_3d::model_matrix_get()
   return &m_model;
 }
 
-camera::camera(int paspectx, int paspecty, float pfov, float pnear, float pfar):
+camera::camera(int paspectx, int paspecty, float pfov, float pnear, float pfar, vector_3d pposition, vector_3d protation):
   c_resolution_x(paspectx),
   c_resolution_y(paspecty),
   c_fov(pfov),
   c_near(pnear),
   c_far(pfar),
-  c_projection(matrix::base()){
+  c_position(pposition),
+  c_rotation(protation),
+  c_projection(matrix::base()),
+  c_view(matrix::base()){
   projection_matrix_form();
+  view_matrix_form();
 }
 
 void camera::render_mesh(mesh_3d* mesh)
 {
   projection_matrix_form();
+  view_matrix_form();
   mesh->model_matrix_form();
   
   mesh->shader_get()->activate();
   mesh->shader_get()->uniform_set_matrix("mod", &(mesh->model_matrix_get()->m[0][0]), false);
+  mesh->shader_get()->uniform_set_matrix("view", &(c_view.m[0][0]), false);
   mesh->shader_get()->uniform_set_matrix("proj", &(c_projection.m[0][0]), false);
   
   mesh->render();
@@ -225,6 +231,16 @@ void camera::fov_set(float pfov)
   c_fov=pfov;
 }
 
+void camera::position_set(vector_3d pposition)
+{
+  c_position=pposition;
+}
+
+void camera::rotation_set(vector_3d protation)
+{
+  c_rotation=protation;
+}
+
 void camera::plane_near_set(float p)
 {
   c_near=p;
@@ -235,10 +251,29 @@ void camera::plane_far_set(float p)
   c_far=p;
 }
 
+vector_3d camera::position_get()
+{
+  return c_position;
+}
+
+vector_3d camera::rotation_get()
+{
+  return c_rotation;
+}
+
 void camera::projection_matrix_form()
 {
   float aspect=c_resolution_x/c_resolution_y;
   c_projection=matrix::projection(c_near, c_far, c_fov, aspect);
+}
+
+void camera::view_matrix_form()
+{
+  quat rotorx(cos(c_rotation.x/2), sin(c_rotation.x/2), 0, 0);
+  quat rotory(cos(c_rotation.y/2), 0, sin(c_rotation.y/2), 0);
+  quat rotorz(cos(c_rotation.z/2), 0, 0, sin(c_rotation.z/2));
+
+  c_view=matrix::multiply(matrix::translation(vector_3d::negate(c_position)), matrix::quaternion(quat::product(rotorz, quat::product(rotory, rotorx))));
 }
 
 int camera::resolution_x_get()
@@ -269,4 +304,9 @@ float camera::plane_far_get()
 matrix* camera::projection_matrix_get()
 {
   return &c_projection;
+}
+
+matrix* camera::view_matrix_get()
+{
+  return &c_view;
 }
