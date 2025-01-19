@@ -334,7 +334,7 @@ static matrix matrix::quaternion(quat a)
     {
       {w*w+i*i-j*j-k*k,   2*i*j-2*w*k,     2*i*k+2*w*j,   0},
       {  2*i*j+2*w*k,   w*w-i*i+j*j-k*k,   2*j*k-2*w*i,   0},
-      {  2*i*j-2*w*j,     2*j*k+2*w*i,   w*w-i*i-j*j+k*k, 0},
+      {  2*i*k-2*w*j,     2*j*k+2*w*i,   w*w-i*i-j*j+k*k, 0},
       {       0,               0,               0,        1}
     };
 

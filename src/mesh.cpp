@@ -150,6 +150,14 @@ void mesh_3d::rotation_set(vector_3d protation)
   m_rotation_x=protation.x;
   m_rotation_y=protation.y;
   m_rotation_z=protation.z;
+
+  if(m_rotation_x>=2*MATHLIB_PI){m_rotation_x-=2*MATHLIB_PI;}
+  if(m_rotation_y>=2*MATHLIB_PI){m_rotation_y-=2*MATHLIB_PI;}
+  if(m_rotation_z>=2*MATHLIB_PI){m_rotation_z-=2*MATHLIB_PI;}
+
+  if(m_rotation_x<=0){m_rotation_x+=2*MATHLIB_PI;}
+  if(m_rotation_y<=0){m_rotation_y+=2*MATHLIB_PI;}
+  if(m_rotation_z<=0){m_rotation_z+=2*MATHLIB_PI;}
 }
 
 void mesh_3d::position_set(vector_3d ptranslation)
@@ -239,6 +247,14 @@ void camera::position_set(vector_3d pposition)
 void camera::rotation_set(vector_3d protation)
 {
   c_rotation=protation;
+
+  if(c_rotation.x>=2*MATHLIB_PI){c_rotation.x-=2*MATHLIB_PI;}
+  if(c_rotation.y>=2*MATHLIB_PI){c_rotation.y-=2*MATHLIB_PI;}
+  if(c_rotation.z>=2*MATHLIB_PI){c_rotation.z-=2*MATHLIB_PI;}
+
+  if(c_rotation.x<=0){c_rotation.x+=2*MATHLIB_PI;}
+  if(c_rotation.y<=0){c_rotation.y+=2*MATHLIB_PI;}
+  if(c_rotation.z<=0){c_rotation.z+=2*MATHLIB_PI;}
 }
 
 void camera::plane_near_set(float p)
@@ -273,7 +289,8 @@ void camera::view_matrix_form()
   quat rotory(cos(c_rotation.y/2), 0, sin(c_rotation.y/2), 0);
   quat rotorz(cos(c_rotation.z/2), 0, 0, sin(c_rotation.z/2));
 
-  c_view=matrix::multiply(matrix::translation(vector_3d::negate(c_position)), matrix::quaternion(quat::product(rotorz, quat::product(rotory, rotorx))));
+  c_view=matrix::multiply(matrix::translation(vector_3d::negate(c_position)), matrix::quaternion(quat::product(rotorz, quat::product(rotorx, rotory))));
+  c_view.debug_output();
 }
 
 int camera::resolution_x_get()
