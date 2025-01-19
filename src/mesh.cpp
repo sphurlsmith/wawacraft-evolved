@@ -290,7 +290,6 @@ void camera::view_matrix_form()
   quat rotorz(cos(c_rotation.z/2), 0, 0, sin(c_rotation.z/2));
 
   c_view=matrix::multiply(matrix::translation(vector_3d::negate(c_position)), matrix::quaternion(quat::product(rotorz, quat::product(rotorx, rotory))));
-  c_view.debug_output();
 }
 
 int camera::resolution_x_get()
