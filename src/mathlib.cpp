@@ -275,7 +275,7 @@ static matrix matrix::model(float x, float y, float z, float s, vector_3d t)
   quat rotory(cos(y/2), 0, sin(y/2), 0);
   quat rotorz(cos(z/2), 0, 0, sin(z/2));
 
-  quat rotor=quat::product(rotorz, quat::product(rotory, rotorx));
+  quat rotor=quat::product(rotorz, quat::product(rotorx, rotory));
   
   float scs[4][4]=
     {
