@@ -79,6 +79,7 @@ void mesh_base::render()
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
   glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void mesh_base::vertices_set(std::vector<float> pvert)

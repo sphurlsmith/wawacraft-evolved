@@ -12,6 +12,8 @@ int DEFAULT_TEXTURE_CHANNELS=4;
 float DEFAULT_SPEED=0.1;
 float DEFAULT_TURN=2;
 
+float DEFAULT_BLOCK_SIZE=(float)1/4;
+
 key_callback KEY_W;
 key_callback KEY_A;
 key_callback KEY_S;
@@ -23,17 +25,19 @@ key_callback KEY_ARROW_UP;
 key_callback KEY_ARROW_DOWN;
 
 
-void render(window* pwint, void* pcmr, void* pmsh)
+void render(window* pwint, void* pcmr, int argc, void** pmsh)
 {
-  mesh_base* pmesh=(mesh_base*)pmsh;
-  mesh_3d* pmesh3d=(mesh_3d*)pmsh;
-
+  mesh_base** pmesh=(mesh_base**)pmsh;
+  mesh_3d** pmesh3d=(mesh_3d**)pmsh;
+  
   camera* pcamera=(camera*)pcmr;
   
   if(pcmr!=NULL){
-    pcamera->render_mesh(pmesh3d);
+    for(int x=0; x<argc; x++){
+      pcamera->render_mesh(*(pmesh3d+x));
+    }
   }else{
-    pmesh->render();
+    (*pmesh)->render();
   }
 }
 
@@ -84,36 +88,103 @@ int main()
 {
   window::init_glfw();
 
-  window test(0, 0, "");
+  window test(800, 600, "");
+  test.set_current_context();
+  glEnable(GL_DEPTH_TEST);
+  
   render_environment test_env(&test, &render, {0.5, 0.5, 0.7, 1});
 
   shader test_shd("shd/wac_v_m_default.glsl", "shd/wac_f_m_default.glsl");
   shader test_sh3d("shd/wac_v_m3d_default.glsl", "shd/wac_f_m_default.glsl");
-  texture test_tex("tex/wawa.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
+  texture test_tex("tex/grass.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, false);
+  texture wawatex("tex/wawa.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
 
   camera test_camera(1, 1, 50, 0.1, 256, {0, 0, 1}, {0, 0, 0});
   
   std::vector<float> verts=
   {
-    -0.5, -0.5, 0, 1, 0, 0, 0, 0,
-     0.5, -0.5, 0, 0, 1, 0, 1, 0,
-    -0.5,  0.5, 0, 0, 0, 1, 0, 1,
-     0.5,  0.5, 0, 1, 1, 1, 1, 1
+    // front face
+    -1, -1, 1, 0, 0, 0, 1, 0,
+     1, -1, 1, 0, 0, 0, 0, 0,
+     1,  1, 1, 0, 0, 0, 0, 1,
+    -1,  1, 1, 0, 0, 0, 1, 1,
+
+     // back face
+    -1, -1, -1, 0, 0, 0, 0, 0,
+     1, -1, -1, 0, 0, 0, 1, 0,
+     1,  1, -1, 0, 0, 0, 1, 1,
+    -1,  1, -1, 0, 0, 0, 0, 1,
+
+     // left face
+     1, -1,  1, 0, 0, 0, 1, 0,
+     1, -1, -1, 0, 0, 0, 0, 0,
+     1,  1, -1, 0, 0, 0, 0, 1,
+     1,  1,  1, 0, 0, 0, 1, 1,
+
+     // right face
+     -1, -1,  1, 0, 0, 0, 0, 0,
+     -1, -1, -1, 0, 0, 0, 1, 0,
+     -1,  1, -1, 0, 0, 0, 1, 1,
+     -1,  1,  1, 0, 0, 0, 0, 1,
+
+     // top face
+     -1, 1,  1, 0, 0, 0, 0, 0,
+      1, 1,  1, 0, 0, 0, 0, 1,
+      1, 1, -1, 0, 0, 0, 1, 1,
+     -1, 1, -1, 0, 0, 0, 1, 0,
+
+     // bottom face
+     -1, -1,  1, 0, 0, 0, 0, 0,
+      1, -1,  1, 0, 0, 0, 0, 1,
+      1, -1, -1, 0, 0, 0, 1, 1,
+     -1, -1, -1, 0, 0, 0, 1, 0,
   };
 
-  std::vector<unsigned int> inds={0, 1, 2, 1, 2, 3};
+  std::vector<unsigned int> inds={
+    0, 1, 2,
+    2, 3, 0,
+
+    4, 5, 6,
+    6, 7, 4,
+
+    8, 9, 10,
+    10, 11, 8,
+
+    12, 13, 14,
+    14, 15, 12,
+
+    16, 17, 18,
+    18, 19, 16,
+
+    20, 21, 22,
+    22, 23, 20
+  };
   
   mesh_base test_mesh(verts, inds, true, true);
-  mesh_3d test_3d(verts, inds, true, true, {0, 0, 0}, {0, 0, 5}, 1);
-  
-  test.set_title("Wawacraft:Evolved [v0.1.1-alpha indev] [OpenGL 3.3]");
-  test.set_resolution(800, 600);
+  mesh_3d test_3d(verts, inds, true, true, {0, 0, 0}, {0, 0, 5}, DEFAULT_BLOCK_SIZE);
+  mesh_3d test_3d_2(verts, inds, true, true, {0, 0, 0}, {DEFAULT_BLOCK_SIZE*2, 0, 5}, DEFAULT_BLOCK_SIZE);
+  mesh_3d test_3d_3(verts, inds, true, true, {0, 0, 0}, {0, 0, 5-DEFAULT_BLOCK_SIZE*2}, DEFAULT_BLOCK_SIZE);
 
   test_mesh.shader_set(&test_shd);
   test_mesh.texture_set(&test_tex);
 
   test_3d.shader_set(&test_sh3d);
-  test_3d.texture_set(&test_tex);
+  test_3d.texture_set(&wawatex);
+
+  test_3d_2.shader_set(&test_sh3d);
+  test_3d_2.texture_set(&test_tex);
+
+  test_3d_3.shader_set(&test_sh3d);
+  test_3d_3.texture_set(&test_tex);
+  
+  mesh_3d* meshes[3]=
+    {
+      &test_3d,
+      &test_3d_2,
+      &test_3d_3
+    };
+  
+  test.set_title("Wawacraft:Evolved [v0.1.1-alpha indev] [OpenGL 3.3]");
 
   KEY_W.keycode=GLFW_KEY_W;
   KEY_W.callback=&move_camera;
@@ -141,15 +212,18 @@ int main()
   
   char* camptr=(char*)&test_camera;
   char** camptrptr=&camptr;
+
+  mesh_base* test_meshptr=&test_mesh;
+  mesh_base** test_meshptrptr=&test_meshptr;
   
   bool roll=false;
   while(test.is_open())
   {
-    test_env.mesh=&test_mesh;
-    test_env.mesh_3d=&test_3d;
+    test_env.mesh=test_meshptrptr;
+    test_env.mesh_3d=meshes;
     test_env.camera=&test_camera;
     
-    test_env.screen_run_render_loop_instance(true);
+    test_env.screen_run_render_loop_instance(3, true);
     
     key_callback_execute_press(test.get_reference(), &KEY_W, 1, camptrptr);
     key_callback_execute_press(test.get_reference(), &KEY_S, 2, camptrptr);

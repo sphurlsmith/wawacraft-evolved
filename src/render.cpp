@@ -58,10 +58,10 @@ void render_environment::screen_clear()
   targetwindow->set_current_context();
 
   glClearColor(clearcolor.r, clearcolor.g, clearcolor.b, clearcolor.a);
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void render_environment::screen_call_render_callback(bool use_3d){
+void render_environment::screen_call_render_callback(int argc, bool use_3d){
   if(targetwindow==NULL){
     std::cerr << "err:w-render_environment-targetwindow-null" << std::endl;
   }
@@ -72,17 +72,17 @@ void render_environment::screen_call_render_callback(bool use_3d){
 
   if(targetwindow!=NULL && targetwindow->get_render_loop_callback()!=NULL){
     if(use_3d){
-      targetwindow->run_render_loop(camera, mesh_3d);
+      targetwindow->run_render_loop(camera, argc, mesh_3d);
     }else{
-      targetwindow->run_render_loop(NULL, mesh);
+      targetwindow->run_render_loop(NULL, argc, mesh);
     }
   }
 }
 
-void render_environment::screen_run_render_loop_instance(bool use_3d)
+void render_environment::screen_run_render_loop_instance(int argc, bool use_3d)
 {
   screen_clear();
-  screen_call_render_callback(use_3d);
+  screen_call_render_callback(argc, use_3d);
 }
 
 window* render_environment::target_window_get()
