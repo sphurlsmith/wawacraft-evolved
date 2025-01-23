@@ -10,7 +10,7 @@ int DEFAULT_TEXTURE_RESOLUTION=32;
 int DEFAULT_TEXTURE_CHANNELS=4;
 
 float DEFAULT_SPEED=0.1;
-float DEFAULT_TURN=2;
+float DEFAULT_TURN=4;
 
 float DEFAULT_BLOCK_SIZE=(float)1/4;
 
@@ -96,8 +96,13 @@ int main()
 
   shader test_shd("shd/wac_v_m_default.glsl", "shd/wac_f_m_default.glsl");
   shader test_sh3d("shd/wac_v_m3d_default.glsl", "shd/wac_f_m_default.glsl");
+
   texture test_tex("tex/grass.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, false);
   texture wawatex("tex/wawa.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
+  texture unitex("tex/uni.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
+
+  test_shd.uniform_set_int("tex", 0);
+  test_sh3d.uniform_set_int("tex", 0);
 
   camera test_camera(1, 1, 50, 0.1, 256, {0, 0, 1}, {0, 0, 0});
   
@@ -166,16 +171,16 @@ int main()
   mesh_3d test_3d_3(verts, inds, true, true, {0, 0, 0}, {0, 0, 5-DEFAULT_BLOCK_SIZE*2}, DEFAULT_BLOCK_SIZE);
 
   test_mesh.shader_set(&test_shd);
-  test_mesh.texture_set(&test_tex);
+  test_mesh.texture_set(&wawatex);
 
   test_3d.shader_set(&test_sh3d);
-  test_3d.texture_set(&wawatex);
+  test_3d.texture_set(&test_tex);
 
   test_3d_2.shader_set(&test_sh3d);
-  test_3d_2.texture_set(&test_tex);
+  test_3d_2.texture_set(&unitex);
 
   test_3d_3.shader_set(&test_sh3d);
-  test_3d_3.texture_set(&test_tex);
+  test_3d_3.texture_set(&wawatex);
   
   mesh_3d* meshes[3]=
     {

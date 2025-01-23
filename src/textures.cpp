@@ -4,10 +4,11 @@
 texture::texture(std::string path, int &width, int &height, int &channels, bool nearest_or_linear)
 {
   buffers_generate();
-  
-  texture_attributes_set(nearest_or_linear);
-  image_load(path, width, height, channels);
 
+  texture_object_use();
+  texture_attributes_set(nearest_or_linear);
+  
+  image_load(path, width, height, channels);
   buffers_bind(width, height);
   image_free();
 }
@@ -15,7 +16,6 @@ texture::texture(std::string path, int &width, int &height, int &channels, bool 
 void texture::buffers_generate()
 {
   glGenTextures(1, &t_object);
-  glBindTexture(GL_TEXTURE_2D, &t_object);
 }
 
 void texture::buffers_bind(int width, int height)
@@ -61,7 +61,8 @@ void texture::image_free()
 
 void texture::texture_object_use()
 {
-  glBindTexture(GL_TEXTURE_2D, &t_object);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, t_object);
 }
 
 unsigned int* texture::texture_object_get()
