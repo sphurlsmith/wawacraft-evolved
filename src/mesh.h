@@ -9,6 +9,7 @@
 class mesh_base
 {
  public:
+  mesh_base();
   mesh_base(std::vector<float> pvert, std::vector<unsigned int> pind, bool colors, bool textures);
 
   void buffers_generate();
@@ -45,6 +46,7 @@ class mesh_base
 class mesh_3d:public mesh_base
 {
  public:
+  mesh_3d();
   mesh_3d(std::vector<float> pvert, std::vector<unsigned int> pind, bool colors, bool textures, vector_3d protation, vector_3d ptranslation, float pscale);
 
   void scale_set(float pscale);

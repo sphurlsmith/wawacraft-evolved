@@ -14,7 +14,7 @@ BINO=$(BINDIR)/*.o
 
 TARGET=$(BINDIR)/wawacraft_evolved
 
-wawacraft_evolved: glad stb_image mathlib windef control textures shader mesh render main
+wawacraft_evolved: glad stb_image mathlib windef control textures shader mesh render voxel main
 	cp -r $(SHDDIR) $(BINDIR)
 	cp -r $(TEXDIR) $(BINDIR)
 	$(CC) $(BINO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
@@ -44,6 +44,9 @@ control: $(SRCDIR)/control.cpp $(SRCDIR)/control.h
 
 mathlib: $(SRCDIR)/mathlib.cpp $(SRCDIR)/mathlib.h
 	$(CC) $(SRCDIR)/mathlib.cpp -o $(BINDIR)/mathlib.o $(CFLAGS) $(LFLAGS) -c
+
+voxel: $(SRCDIR)/voxel.cpp $(SRCDIR)/voxel.h
+	$(CC) $(SRCDIR)/voxel.cpp -o $(BINDIR)/voxel.o $(CFLAGS) $(LFLAGS) -c
 
 # libraries
 

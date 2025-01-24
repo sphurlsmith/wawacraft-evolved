@@ -3,6 +3,11 @@
 #include "textures.h"
 #include "mesh.h"
 
+mesh_base::mesh_base()
+{
+
+}
+
 mesh_base::mesh_base(std::vector<float> pvert, std::vector<unsigned int> pind, bool colors, bool textures):
   m_vertices(pvert),
   m_indices(pind)
@@ -128,6 +133,16 @@ shader* mesh_base::shader_get()
 texture* mesh_base::texture_get()
 {
   return m_texture;
+}
+
+mesh_3d::mesh_3d():
+  m_model(matrix::base()),
+  m_position({0, 0, 0}),
+  m_rotation_x(0),
+  m_rotation_y(0),
+  m_rotation_z(0),
+  m_scale(1){
+  
 }
 
 mesh_3d::mesh_3d(std::vector<float> pvert, std::vector<unsigned int> pind, bool colors, bool textures, vector_3d protation, vector_3d ptranslation, float pscale):

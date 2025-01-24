@@ -4,6 +4,7 @@
 #include "render.h"
 #include "shader.h"
 #include "textures.h"
+#include "voxel.h"
 #include "mesh.h"
 
 int DEFAULT_TEXTURE_RESOLUTION=32;
@@ -96,6 +97,7 @@ int main()
 
   shader test_shd("shd/wac_v_m_default.glsl", "shd/wac_f_m_default.glsl");
   shader test_sh3d("shd/wac_v_m3d_default.glsl", "shd/wac_f_m_default.glsl");
+  shader nocol3d("shd/wac_v_m3d_nocol.glsl", "shd/wac_f_m_nocol.glsl");
 
   texture test_tex("tex/grass.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, false);
   texture wawatex("tex/wawa.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
@@ -105,88 +107,16 @@ int main()
   test_sh3d.uniform_set_int("tex", 0);
 
   camera test_camera(1, 1, 50, 0.1, 256, {0, 0, 1}, {0, 0, 0});
-  
-  std::vector<float> verts=
-  {
-    // front face
-    -1, -1, 1, 0, 0, 0, 1, 0,
-     1, -1, 1, 0, 0, 0, 0, 0,
-     1,  1, 1, 0, 0, 0, 0, 1,
-    -1,  1, 1, 0, 0, 0, 1, 1,
-
-     // back face
-    -1, -1, -1, 0, 0, 0, 0, 0,
-     1, -1, -1, 0, 0, 0, 1, 0,
-     1,  1, -1, 0, 0, 0, 1, 1,
-    -1,  1, -1, 0, 0, 0, 0, 1,
-
-     // left face
-     1, -1,  1, 0, 0, 0, 1, 0,
-     1, -1, -1, 0, 0, 0, 0, 0,
-     1,  1, -1, 0, 0, 0, 0, 1,
-     1,  1,  1, 0, 0, 0, 1, 1,
-
-     // right face
-     -1, -1,  1, 0, 0, 0, 0, 0,
-     -1, -1, -1, 0, 0, 0, 1, 0,
-     -1,  1, -1, 0, 0, 0, 1, 1,
-     -1,  1,  1, 0, 0, 0, 0, 1,
-
-     // top face
-     -1, 1,  1, 0, 0, 0, 0, 0,
-      1, 1,  1, 0, 0, 0, 0, 1,
-      1, 1, -1, 0, 0, 0, 1, 1,
-     -1, 1, -1, 0, 0, 0, 1, 0,
-
-     // bottom face
-     -1, -1,  1, 0, 0, 0, 0, 0,
-      1, -1,  1, 0, 0, 0, 0, 1,
-      1, -1, -1, 0, 0, 0, 1, 1,
-     -1, -1, -1, 0, 0, 0, 1, 0,
-  };
-
-  std::vector<unsigned int> inds={
-    0, 1, 2,
-    2, 3, 0,
-
-    4, 5, 6,
-    6, 7, 4,
-
-    8, 9, 10,
-    10, 11, 8,
-
-    12, 13, 14,
-    14, 15, 12,
-
-    16, 17, 18,
-    18, 19, 16,
-
-    20, 21, 22,
-    22, 23, 20
-  };
-  
-  mesh_base test_mesh(verts, inds, true, true);
-  mesh_3d test_3d(verts, inds, true, true, {0, 0, 0}, {0, 0, 5}, DEFAULT_BLOCK_SIZE);
-  mesh_3d test_3d_2(verts, inds, true, true, {0, 0, 0}, {DEFAULT_BLOCK_SIZE*2, 0, 5}, DEFAULT_BLOCK_SIZE);
-  mesh_3d test_3d_3(verts, inds, true, true, {0, 0, 0}, {0, 0, 5-DEFAULT_BLOCK_SIZE*2}, DEFAULT_BLOCK_SIZE);
-
-  test_mesh.shader_set(&test_shd);
-  test_mesh.texture_set(&wawatex);
-
-  test_3d.shader_set(&test_sh3d);
-  test_3d.texture_set(&test_tex);
-
-  test_3d_2.shader_set(&test_sh3d);
-  test_3d_2.texture_set(&unitex);
-
-  test_3d_3.shader_set(&test_sh3d);
-  test_3d_3.texture_set(&wawatex);
+    
+  voxel wawa(DEFAULT_BLOCK_SIZE, {-1, 0, 5}, VOX_WAWA, &nocol3d, &wawatex);
+  voxel grass(DEFAULT_BLOCK_SIZE, {0, 0, 5}, VOX_GRASS, &nocol3d, &test_tex);
+  voxel uni(DEFAULT_BLOCK_SIZE, {1, 0, 5}, VOX_UNI, &nocol3d, &unitex);
   
   mesh_3d* meshes[3]=
     {
-      &test_3d,
-      &test_3d_2,
-      &test_3d_3
+      wawa.mesh_get(),
+      grass.mesh_get(),
+      uni.mesh_get()
     };
   
   test.set_title("Wawacraft:Evolved [v0.1.1-alpha indev] [OpenGL 3.3]");
@@ -217,14 +147,10 @@ int main()
   
   char* camptr=(char*)&test_camera;
   char** camptrptr=&camptr;
-
-  mesh_base* test_meshptr=&test_mesh;
-  mesh_base** test_meshptrptr=&test_meshptr;
   
   bool roll=false;
   while(test.is_open())
   {
-    test_env.mesh=test_meshptrptr;
     test_env.mesh_3d=meshes;
     test_env.camera=&test_camera;
     
