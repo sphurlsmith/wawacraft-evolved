@@ -91,7 +91,9 @@ int main()
 
   window test(800, 600, "");
   test.set_current_context();
+
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
   
   render_environment test_env(&test, &render, {0.5, 0.5, 0.7, 1});
 

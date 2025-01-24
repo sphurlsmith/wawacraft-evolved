@@ -9,7 +9,7 @@ uniform sampler2D tex;
 
 void main()
 {
-	fragment_color=texture(tex, ov_tex);
+	fragment_color=vec4(vec3(gl_FragCoord.z), 1);
 
 	if(fragment_color.a<0.2){
 		discard;
