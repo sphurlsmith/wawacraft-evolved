@@ -19,6 +19,9 @@ wawacraft_evolved: glad stb_image mathlib windef control textures shader mesh re
 	cp -r $(TEXDIR) $(BINDIR)
 	$(CC) $(BINO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
 
+link:
+	$(CC) $(BINO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
+
 main: $(SRCDIR)/main.cpp
 	$(CC) $(SRCDIR)/main.cpp -o $(BINDIR)/main.o $(CFLAGS) $(LFLAGS) -c
 

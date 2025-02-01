@@ -94,6 +94,10 @@ int main()
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
+  glFrontFace(GL_CCW);
   
   render_environment test_env(&test, &render, {0.5, 0.5, 0.7, 1});
 
@@ -101,25 +105,37 @@ int main()
   shader test_sh3d("shd/wac_v_m3d_default.glsl", "shd/wac_f_m_default.glsl");
   shader nocol3d("shd/wac_v_m3d_nocol.glsl", "shd/wac_f_m_nocol.glsl");
 
-  texture test_tex("tex/grass.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, false);
+  texture test_tex("tex/grass.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
   texture wawatex("tex/wawa.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
   texture unitex("tex/uni.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
 
   test_shd.uniform_set_int("tex", 0);
   test_sh3d.uniform_set_int("tex", 0);
 
-  camera test_camera(1, 1, 50, 0.1, 256, {0, 0, 1}, {0, 0, 0});
-    
-  voxel wawa(DEFAULT_BLOCK_SIZE, {-1, 0, 5}, VOX_WAWA, &nocol3d, &wawatex);
-  voxel grass(DEFAULT_BLOCK_SIZE, {0, 0, 5}, VOX_GRASS, &nocol3d, &test_tex);
-  voxel uni(DEFAULT_BLOCK_SIZE, {1, 0, 5}, VOX_UNI, &nocol3d, &unitex);
-  
-  mesh_3d* meshes[3]=
+  camera test_camera(1, 1, 50, 0.1, 256, {0, 0, -1}, {0, 0, 0});
+
+  texture* texpack[4]=
     {
-      wawa.mesh_get(),
-      grass.mesh_get(),
-      uni.mesh_get()
+      NULL,
+      &test_tex,
+      &wawatex,
+      &unitex
     };
+  
+  mesh_3d* meshes[1];
+
+  chunk my_chunk({0, 0, 0}, texpack, &nocol3d);
+
+  for(int x=0; x<chunk::DEFAULT_CHUNK_SIZE; x++){
+    for(int y=chunk::DEFAULT_CHUNK_SIZE-1; y>=5; y--){
+      for(int z=0; z<chunk::DEFAULT_CHUNK_SIZE; z++){
+	my_chunk.voxel_type_set(x, y, z, VOX_NONE);
+      }
+    }
+  }
+  
+  mesh_3d my_chunk_mesh=my_chunk.mesh_form();
+  meshes[0]=&my_chunk_mesh;
   
   test.set_title("Wawacraft:Evolved [v0.1.1-alpha indev] [OpenGL 3.3]");
 
@@ -149,6 +165,8 @@ int main()
   
   char* camptr=(char*)&test_camera;
   char** camptrptr=&camptr;
+
+  vector_3d rot(0, 0, 0);
   
   bool roll=false;
   while(test.is_open())
@@ -156,18 +174,18 @@ int main()
     test_env.mesh_3d=meshes;
     test_env.camera=&test_camera;
     
-    test_env.screen_run_render_loop_instance(3, true);
+    test_env.screen_run_render_loop_instance(1, true);
+    
+    key_callback_execute_press(test.get_reference(), &KEY_ARROW_LEFT, 5, camptrptr);
+    key_callback_execute_press(test.get_reference(), &KEY_ARROW_RIGHT, 6, camptrptr);
+    key_callback_execute_press(test.get_reference(), &KEY_ARROW_UP, 7, camptrptr);
+    key_callback_execute_press(test.get_reference(), &KEY_ARROW_DOWN, 8, camptrptr);
     
     key_callback_execute_press(test.get_reference(), &KEY_W, 1, camptrptr);
     key_callback_execute_press(test.get_reference(), &KEY_S, 2, camptrptr);
     key_callback_execute_press(test.get_reference(), &KEY_A, 3, camptrptr);
     key_callback_execute_press(test.get_reference(), &KEY_D, 4, camptrptr);
 
-    key_callback_execute_press(test.get_reference(), &KEY_ARROW_LEFT, 5, camptrptr);
-    key_callback_execute_press(test.get_reference(), &KEY_ARROW_RIGHT, 6, camptrptr);
-    key_callback_execute_press(test.get_reference(), &KEY_ARROW_UP, 7, camptrptr);
-    key_callback_execute_press(test.get_reference(), &KEY_ARROW_DOWN, 8, camptrptr);
-    
     roll=!roll;
   }
 
