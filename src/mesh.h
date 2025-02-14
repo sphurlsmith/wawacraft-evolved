@@ -84,7 +84,7 @@ class camera
 
   void render_mesh(mesh_3d* mesh);
   
-  void resolution_set(int px, int py);
+  void resolution_set(float px, float py);
   void fov_set(float pfov);
   
   void plane_near_set(float p);
@@ -111,8 +111,8 @@ class camera
   matrix* view_matrix_get();
   
  private:
-  int c_resolution_x;
-  int c_resolution_y;
+  float c_resolution_x;
+  float c_resolution_y;
 
   float c_fov;
   

@@ -10,6 +10,11 @@
 int DEFAULT_TEXTURE_RESOLUTION=32;
 int DEFAULT_TEXTURE_CHANNELS=4;
 
+int CLASSIC_TEXTURE_RESOLUTION=16;
+int CLASSIC_TEXTURE_CHANNELS=3;
+
+int SCLASS_TEXTURE_RESOLUTION=128;
+
 float DEFAULT_SPEED=0.1;
 float DEFAULT_TURN=4;
 
@@ -25,6 +30,8 @@ key_callback KEY_ARROW_RIGHT;
 key_callback KEY_ARROW_UP;
 key_callback KEY_ARROW_DOWN;
 
+key_callback KEY_TAB;
+key_callback KEY_ESC;
 
 void render(window* pwint, void* pcmr, int argc, void** pmsh)
 {
@@ -85,6 +92,20 @@ void move_camera(int argc, char** argv)
   }
 }
 
+void tab(int argc, char** argv)
+{
+  switch(argc){
+  case 0:
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    break;
+  case 1:
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    break;
+  default:
+    break;
+  }
+}
+
 int main()
 {
   window::init_glfw();
@@ -94,7 +115,6 @@ int main()
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
@@ -112,8 +132,7 @@ int main()
   test_shd.uniform_set_int("tex", 0);
   test_sh3d.uniform_set_int("tex", 0);
 
-  camera test_camera(1, 1, 50, 0.1, 256, {0, 0, -1}, {0, 0, 0});
-
+  camera test_camera(800, 600, 60, 0.1, 256, {0, 0, -1}, {0, 0, 0});
   texture* texpack[4]=
     {
       NULL,
@@ -121,21 +140,25 @@ int main()
       &wawatex,
       &unitex
     };
-  
-  mesh_3d* meshes[1];
 
-  chunk my_chunk({0, 0, 0}, texpack, &nocol3d);
-
-  for(int x=0; x<chunk::DEFAULT_CHUNK_SIZE; x++){
-    for(int y=chunk::DEFAULT_CHUNK_SIZE-1; y>=5; y--){
-      for(int z=0; z<chunk::DEFAULT_CHUNK_SIZE; z++){
-	my_chunk.voxel_type_set(x, y, z, VOX_NONE);
-      }
-    }
-  }
+  texture* texpack2[4]=
+    {
+      NULL,
+      &wawatex,
+      &unitex,
+      &test_tex
+    };
   
-  mesh_3d my_chunk_mesh=my_chunk.mesh_form();
-  meshes[0]=&my_chunk_mesh;
+  chunk my_chunk({1, 0, 0}, texpack, &nocol3d);
+  chunk my_chunk2({0, 0, 0}, texpack2, &nocol3d);
+
+  my_chunk2.mesh_form();
+  my_chunk.mesh_form();
+  
+  mesh_3d* meshes[2]={
+    my_chunk2.mesh_get(),
+    my_chunk.mesh_get()
+  };
   
   test.set_title("Wawacraft:Evolved [v0.1.1-alpha indev] [OpenGL 3.3]");
 
@@ -162,6 +185,12 @@ int main()
 
   KEY_ARROW_DOWN.keycode=GLFW_KEY_DOWN;
   KEY_ARROW_DOWN.callback=&move_camera;
+
+  KEY_TAB.keycode=GLFW_KEY_TAB;
+  KEY_TAB.callback=&tab;
+
+  KEY_ESC.keycode=GLFW_KEY_ESCAPE;
+  KEY_ESC.callback=&tab;
   
   char* camptr=(char*)&test_camera;
   char** camptrptr=&camptr;
@@ -174,7 +203,7 @@ int main()
     test_env.mesh_3d=meshes;
     test_env.camera=&test_camera;
     
-    test_env.screen_run_render_loop_instance(1, true);
+    test_env.screen_run_render_loop_instance(2, true);
     
     key_callback_execute_press(test.get_reference(), &KEY_ARROW_LEFT, 5, camptrptr);
     key_callback_execute_press(test.get_reference(), &KEY_ARROW_RIGHT, 6, camptrptr);
@@ -186,6 +215,9 @@ int main()
     key_callback_execute_press(test.get_reference(), &KEY_A, 3, camptrptr);
     key_callback_execute_press(test.get_reference(), &KEY_D, 4, camptrptr);
 
+    key_callback_execute_press(test.get_reference(), &KEY_TAB, 0, NULL);
+    key_callback_execute_press(test.get_reference(), &KEY_ESC, 1, NULL);
+    
     roll=!roll;
   }
 

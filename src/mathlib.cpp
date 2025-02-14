@@ -241,7 +241,7 @@ static matrix matrix::projection(float near, float far, float fov, float aspect)
   float tanfov=tan(fov*(MATHLIB_PI/180)/2);
 
   float fr=n*tanfov;
-  float ft=fr*aspect;
+  float ft=fr/aspect;
   float fl=-fr;
   float fb=-ft;
   

@@ -9,7 +9,7 @@ class texture
   texture(std::string path, int &width, int &height, int &channels, bool nearest_or_linear);
 
   void buffers_generate();
-  void buffers_bind(int width, int height);
+  void buffers_bind(int width, int height, int channels);
   
   void texture_attributes_set(bool nearest_or_linear);
   

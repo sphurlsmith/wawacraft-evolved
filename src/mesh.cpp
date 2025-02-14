@@ -244,7 +244,7 @@ void camera::render_mesh(mesh_3d* mesh)
   mesh->render();
 }
 
-void camera::resolution_set(int px, int py)
+void camera::resolution_set(float px, float py)
 {
   c_resolution_x=px;
   c_resolution_y=py;

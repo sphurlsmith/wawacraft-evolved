@@ -9,6 +9,7 @@
 int voxel::DEFAULT_TEXTURE_RESOLUTION=32;
 int voxel::DEFAULT_TEXTURE_CHANNELS=4;
 int chunk::DEFAULT_CHUNK_SIZE=16;
+float chunk::DEFAULT_BLOCK_SCALE=0.25;
 
 voxel::voxel():
   v_size(1),
@@ -126,29 +127,21 @@ mesh_3d voxel::mesh_form(shader* pshader, texture* ptexture)
   return v_mesh;
 }
 
-mesh_3d voxel::mesh_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right)
+std::vector<float> voxel::vertices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right)
 {
-  mesh_3d v_mesh;
-  
   std::vector<float> vertices;
-  std::vector<unsigned int> indices;
-
+  
   float s=v_size/2;
 
   float x=v_position.x*v_size;
   float y=v_position.y*v_size;
   float z=v_position.z*v_size;
 
-  int face=0;
-
   if(face_front){
     vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), 0, 0});
     vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), 1, 0});
     vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), 1, 1});
     vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), 0, 1});
-    
-    indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
-    face+=4;
   }
 
   if(face_back){
@@ -156,9 +149,6 @@ mesh_3d voxel::mesh_form(bool face_top, bool face_bottom, bool face_front, bool 
     vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), 1, 0});
     vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), 1, 1});
     vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), 0, 1});
-
-    indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
-    face+=4;
   }
 
   if(face_left){
@@ -166,9 +156,6 @@ mesh_3d voxel::mesh_form(bool face_top, bool face_bottom, bool face_front, bool 
     vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), 1, 0});
     vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), 1, 1});
     vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), 0, 1});
-
-    indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
-    face+=4;
   }
 
   if(face_right){
@@ -176,9 +163,6 @@ mesh_3d voxel::mesh_form(bool face_top, bool face_bottom, bool face_front, bool 
     vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), 0, 1});
     vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), 0, 0});
     vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), 1, 0});
-    
-    indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
-    face+=4;
   }
 
   if(face_top){
@@ -186,9 +170,6 @@ mesh_3d voxel::mesh_form(bool face_top, bool face_bottom, bool face_front, bool 
     vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), 1, 0});
     vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), 1, 1});
     vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), 0, 1});
-
-    indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
-    face+=4;
   }
 
   if(face_bottom){
@@ -196,21 +177,48 @@ mesh_3d voxel::mesh_form(bool face_top, bool face_bottom, bool face_front, bool 
     vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), 1, 0});
     vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), 1, 1});
     vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), 0, 1});
+  }
   
+  return vertices;
+}
+
+std::vector<unsigned int> voxel::indices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right)
+{
+  std::vector<unsigned int> indices;
+
+  int face=0;
+
+  if(face_front){
+    indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
+    face+=4;
+  }
+
+  if(face_back){
+    indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
+    face+=4;
+  }
+
+  if(face_left){
+    indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
+    face+=4;
+  }
+
+  if(face_right){
+    indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
+    face+=4;
+  }
+
+  if(face_top){
+    indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
+    face+=4;
+  }
+
+  if(face_bottom){
     indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
     face+=4;
   }
   
-  v_mesh.vertices_set(vertices);
-  v_mesh.indices_set(indices);
-
-  v_mesh.buffers_generate();
-  v_mesh.vertex_attributes_bind(false, true);
-
-  v_mesh.position_set({x*v_size, y*v_size, z*v_size});
-  v_mesh.model_matrix_form();
-
-  return v_mesh;
+  return indices;
 }
 
 voxtype voxel::type_get()
@@ -225,10 +233,12 @@ float voxel::size_get()
 
 chunk::chunk()
 {
+  c_mesh.buffers_generate();
+  
   for(int x=0; x<DEFAULT_CHUNK_SIZE; x++){
     for(int y=0; y<DEFAULT_CHUNK_SIZE; y++){
       for(int z=0; z<DEFAULT_CHUNK_SIZE; z++){
-	c_data[x][y][z].size_set(0.25);
+	c_data[x][y][z].size_set(DEFAULT_BLOCK_SCALE);
 	c_data[x][y][z].position_set({x, y, z});
 	c_data[x][y][z].type_set(VOX_GRASS);
       }
@@ -238,6 +248,8 @@ chunk::chunk()
 
 chunk::chunk(voxcoord pposition, texture* ptexpack[4], shader* pshader):
   c_position(pposition){
+  c_mesh.buffers_generate();
+  
   for(int x=0; x<3; x++){
     texture_pack[x]=ptexpack[x];
   }
@@ -245,7 +257,7 @@ chunk::chunk(voxcoord pposition, texture* ptexpack[4], shader* pshader):
   for(int x=0; x<DEFAULT_CHUNK_SIZE; x++){
     for(int y=0; y<DEFAULT_CHUNK_SIZE; y++){
       for(int z=0; z<DEFAULT_CHUNK_SIZE; z++){
-	c_data[x][y][z].size_set(0.25);
+	c_data[x][y][z].size_set(DEFAULT_BLOCK_SCALE);
 	c_data[x][y][z].position_set({x, y, z});
 	c_data[x][y][z].type_set(VOX_GRASS);
       }
@@ -280,12 +292,16 @@ voxel* chunk::voxel_get(int x, int y, int z)
   return &(c_data[x][y][z]);
 }
 
-mesh_3d chunk::mesh_form()
+void chunk::mesh_form()
 {
-  mesh_3d c_mesh;
+  int c=0;
 
-  int c;
-  mesh_3d c_data_mesh[DEFAULT_CHUNK_SIZE][DEFAULT_CHUNK_SIZE][DEFAULT_CHUNK_SIZE];
+  std::vector<float> mesh_verts;
+  std::vector<unsigned int> mesh_inds;
+
+  std::vector<float> new_verts;
+  std::vector<unsigned int> new_inds;
+  
   for(int x=0; x<DEFAULT_CHUNK_SIZE; x++){
     for(int y=0; y<DEFAULT_CHUNK_SIZE; y++){
       for(int z=0; z<DEFAULT_CHUNK_SIZE; z++){
@@ -341,39 +357,30 @@ mesh_3d chunk::mesh_form()
 	bool face_back=(!covered_back || edge_back);
 	
 	if(c_data[x][y][z].type_get()!=VOX_NONE){
-	  c_data_mesh[x][y][z]=c_data[x][y][z].mesh_form(face_top, face_bottom, face_front, face_back, face_left, face_right);
-	}
-	
-	std::vector<float> mesh_verts=c_mesh.vertices_get();
-	std::vector<unsigned int> mesh_inds=c_mesh.indices_get();
+	  new_verts=c_data[x][y][z].vertices_form(face_top, face_bottom, face_front, face_back, face_left, face_right);
+	  new_inds=c_data[x][y][z].indices_form(face_top, face_bottom, face_front, face_back, face_left, face_right);
 
-	std::vector<float> new_verts=c_data_mesh[x][y][z].vertices_get();
-	std::vector<unsigned int> new_inds=c_data_mesh[x][y][z].indices_get();
-	for(int x=0; x<new_inds.size(); x++){
-	  new_inds[x]+=c*4;
-	}
-	
-	std::vector<float> cat;
-	cat.insert(cat.end(), mesh_verts.begin(), mesh_verts.end());
-	cat.insert(cat.end(), new_verts.begin(), new_verts.end());
-
-	std::vector<unsigned int> catind;
-	catind.insert(catind.end(), mesh_inds.begin(), mesh_inds.end());
-	catind.insert(catind.end(), new_inds.begin(), new_inds.end());
-	
-	c_mesh.vertices_set(cat);
-	c_mesh.indices_set(catind);
-
-	if(c_data[x][y][z].type_get()!=VOX_NONE){
-	  c+=face_top+face_bottom+face_left+face_right+face_front+face_back;
+	  for(int x=0; x<new_inds.size(); x++){
+	    new_inds[x]+=c*4;
+	  }
+	  
+	  mesh_verts.insert(mesh_verts.end(), new_verts.begin(), new_verts.end());
+	  mesh_inds.insert(mesh_inds.end(), new_inds.begin(), new_inds.end());
+	  
+	  if(face_top){c++;}
+	  if(face_bottom){c++;}
+	  if(face_front){c++;}
+	  if(face_back){c++;}
+	  if(face_left){c++;}
+	  if(face_right){c++;}
 	}
       }
     }
   }
-
-  c_mesh.buffers_generate();
-  c_mesh.vertex_attributes_bind(false, true);
   
+  c_mesh.vertices_set(mesh_verts);
+  c_mesh.indices_set(mesh_inds);
+    
   if(texture_pack[VOX_GRASS]!=NULL){
     c_mesh.texture_set(texture_pack[VOX_GRASS]);
   }else{
@@ -386,12 +393,17 @@ mesh_3d chunk::mesh_form()
     std::cerr << "err:w-chunk-mesh_form-c_shader-null" << std::endl;
   }
 
-  vector_3d pos(c_position.x*DEFAULT_CHUNK_SIZE, c_position.y*DEFAULT_CHUNK_SIZE, c_position.z*DEFAULT_CHUNK_SIZE);
+  c_mesh.vertex_attributes_bind(false, true);
   
+  vector_3d pos(c_position.x*DEFAULT_CHUNK_SIZE*DEFAULT_BLOCK_SCALE, c_position.y*DEFAULT_CHUNK_SIZE*DEFAULT_BLOCK_SCALE, c_position.z*DEFAULT_CHUNK_SIZE*DEFAULT_BLOCK_SCALE);
+
   c_mesh.position_set(pos);
   c_mesh.model_matrix_form();
+}
 
-  return c_mesh;
+mesh_3d* chunk::mesh_get()
+{
+  return &c_mesh;
 }
 
 shader* chunk::shader_get()

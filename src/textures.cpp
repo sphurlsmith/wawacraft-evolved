@@ -9,7 +9,7 @@ texture::texture(std::string path, int &width, int &height, int &channels, bool 
   texture_attributes_set(nearest_or_linear);
   
   image_load(path, width, height, channels);
-  buffers_bind(width, height);
+  buffers_bind(width, height, channels);
   image_free();
 }
 
@@ -18,11 +18,16 @@ void texture::buffers_generate()
   glGenTextures(1, &t_object);
 }
 
-void texture::buffers_bind(int width, int height)
+void texture::buffers_bind(int width, int height, int channels)
 {
   if(t_raw){
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, t_raw);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    if(channels==4){
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, t_raw);
+      glGenerateMipmap(GL_TEXTURE_2D);
+    }else if(channels==3){
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, t_raw);
+      glGenerateMipmap(GL_TEXTURE_2D);	
+    }
   }else{
     std::cerr << "err:texture-buffers_bind-t_raw-invalid" << std::endl;
   }
