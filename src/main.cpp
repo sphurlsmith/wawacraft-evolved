@@ -8,6 +8,7 @@
 #include "mesh.h"
 
 int DEFAULT_TEXTURE_RESOLUTION=32;
+int LARGE_TEXTURE_RESOLUTION=512;
 int DEFAULT_TEXTURE_CHANNELS=4;
 
 int CLASSIC_TEXTURE_RESOLUTION=16;
@@ -114,7 +115,6 @@ int main()
   test.set_current_context();
 
   glEnable(GL_DEPTH_TEST);
-  glEnable(GL_BLEND);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
@@ -125,33 +125,37 @@ int main()
   shader test_sh3d("shd/wac_v_m3d_default.glsl", "shd/wac_f_m_default.glsl");
   shader nocol3d("shd/wac_v_m3d_nocol.glsl", "shd/wac_f_m_nocol.glsl");
 
-  texture test_tex("tex/grass.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
-  texture wawatex("tex/wawa.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
-  texture unitex("tex/uni.png", DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
-
+  texture texpack("tex/spritesheet.png", LARGE_TEXTURE_RESOLUTION, LARGE_TEXTURE_RESOLUTION, DEFAULT_TEXTURE_CHANNELS, true);
+  
   test_shd.uniform_set_int("tex", 0);
   test_sh3d.uniform_set_int("tex", 0);
 
   camera test_camera(800, 600, 60, 0.1, 256, {0, 0, -1}, {0, 0, 0});
-  texture* texpack[4]=
-    {
-      NULL,
-      &test_tex,
-      &wawatex,
-      &unitex
-    };
-
-  texture* texpack2[4]=
-    {
-      NULL,
-      &wawatex,
-      &unitex,
-      &test_tex
-    };
   
-  chunk my_chunk({1, 0, 0}, texpack, &nocol3d);
-  chunk my_chunk2({0, 0, 0}, texpack2, &nocol3d);
+  chunk my_chunk({1, 0, 0}, &texpack, &nocol3d);
+  chunk my_chunk2({0, 0, 0}, &texpack, &nocol3d);
 
+  for(int x=0; x<chunk::DEFAULT_CHUNK_SIZE; x++){
+    for(int y=0; y<chunk::DEFAULT_CHUNK_SIZE; y++){
+      for(int z=0; z<chunk::DEFAULT_CHUNK_SIZE; z++){
+	my_chunk2.voxel_type_set(x, y, z, VOX_UNI);
+	
+	if(y<=5){
+	  if(y<=2){
+	    my_chunk.voxel_type_set(x, y, z, VOX_STONE);
+	  }else if(y>2 && y<=4){
+	    my_chunk.voxel_type_set(x, y, z, VOX_SOIL);
+	  }else if(y==5){
+	    my_chunk.voxel_type_set(x, y, z, VOX_GRASS);
+	  }
+	}else{
+	  my_chunk.voxel_type_set(x, y, z, VOX_WOOD);
+	  my_chunk2.voxel_type_set(x, y, z, VOX_WAWA);
+	}
+      }
+    }
+  }
+  
   my_chunk2.mesh_form();
   my_chunk.mesh_form();
   

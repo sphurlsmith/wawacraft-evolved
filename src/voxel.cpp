@@ -9,6 +9,9 @@
 int voxel::DEFAULT_TEXTURE_RESOLUTION=32;
 int voxel::DEFAULT_TEXTURE_CHANNELS=4;
 int chunk::DEFAULT_CHUNK_SIZE=16;
+int chunk::DEFAULT_TEXTUREPACK_RESOLUTION=512;
+int chunk::DEFAULT_TEXTUREPACK_CAPACITY=16;
+
 float chunk::DEFAULT_BLOCK_SCALE=0.25;
 
 voxel::voxel():
@@ -127,7 +130,7 @@ mesh_3d voxel::mesh_form(shader* pshader, texture* ptexture)
   return v_mesh;
 }
 
-std::vector<float> voxel::vertices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right)
+std::vector<float> voxel::vertices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right, spritecoord psc)
 {
   std::vector<float> vertices;
   
@@ -138,45 +141,45 @@ std::vector<float> voxel::vertices_form(bool face_top, bool face_bottom, bool fa
   float z=v_position.z*v_size;
 
   if(face_front){
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), 0, 0});
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), 1, 0});
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), 1, 1});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), 0, 1});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), psc.x0, psc.y0});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), psc.x1, psc.y0});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), psc.x1, psc.y1});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), psc.x0, psc.y1});
   }
 
   if(face_back){
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), 0, 0});
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), 1, 0});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), 1, 1});
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), 0, 1});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), psc.x0, psc.y0});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), psc.x1, psc.y0});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), psc.x1, psc.y1});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), psc.x0, psc.y1});
   }
 
   if(face_left){
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), 0, 0});
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), 1, 0});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), 1, 1});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), 0, 1});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), psc.x0, psc.y0});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), psc.x1, psc.y0});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), psc.x1, psc.y1});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), psc.x0, psc.y1});
   }
 
   if(face_right){
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), 1, 1});
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), 0, 1});
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), 0, 0});
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), 1, 0});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), psc.x1, psc.y1});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), psc.x0, psc.y1});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), psc.x0, psc.y0});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), psc.x1, psc.y0});
   }
 
   if(face_top){
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), 0, 0});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), 1, 0});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), 1, 1});
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), 0, 1});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), psc.x0, psc.y0});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), psc.x1, psc.y0});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), psc.x1, psc.y1});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), psc.x0, psc.y1});
   }
 
   if(face_bottom){
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), 0, 0});
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), 1, 0});
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), 1, 1});
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), 0, 1});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), psc.x0, psc.y0});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), psc.x1, psc.y0});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), psc.x1, psc.y1});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), psc.x0, psc.y1});
   }
   
   return vertices;
@@ -246,13 +249,11 @@ chunk::chunk()
   }
 }
 
-chunk::chunk(voxcoord pposition, texture* ptexpack[4], shader* pshader):
+chunk::chunk(voxcoord pposition, texture* pspritesheet, shader* pshader):
   c_position(pposition){
   c_mesh.buffers_generate();
   
-  for(int x=0; x<3; x++){
-    texture_pack[x]=ptexpack[x];
-  }
+  spritesheet=pspritesheet;
 
   for(int x=0; x<DEFAULT_CHUNK_SIZE; x++){
     for(int y=0; y<DEFAULT_CHUNK_SIZE; y++){
@@ -264,10 +265,25 @@ chunk::chunk(voxcoord pposition, texture* ptexpack[4], shader* pshader):
     }
   }
 
-  texture_pack[VOX_NONE]=NULL;
+  spritesheet=pspritesheet;
   shader_set(pshader);
 }
 
+static spritecoord chunk::voxel_sprite_location_get(voxtype pv)
+{
+  spritecoord ret;
+  
+  int x=pv%DEFAULT_CHUNK_SIZE;
+  int y=pv/DEFAULT_CHUNK_SIZE;
+  
+  ret.x0=float(x)/DEFAULT_TEXTUREPACK_CAPACITY;
+  ret.x1=float(x+1)/DEFAULT_TEXTUREPACK_CAPACITY;
+
+  ret.y0=1-float(y+1)/DEFAULT_TEXTUREPACK_CAPACITY;
+  ret.y1=1-float(y)/DEFAULT_TEXTUREPACK_CAPACITY;
+
+  return ret;
+}
 
 void chunk::shader_set(shader* pshader)
 {
@@ -277,6 +293,7 @@ void chunk::shader_set(shader* pshader)
     std::cerr << "err:w-chunk-shader-null" << std::endl;
   }
 }
+
 void chunk::position_set(voxcoord pposition)
 {
   c_position=pposition;
@@ -357,7 +374,9 @@ void chunk::mesh_form()
 	bool face_back=(!covered_back || edge_back);
 	
 	if(c_data[x][y][z].type_get()!=VOX_NONE){
-	  new_verts=c_data[x][y][z].vertices_form(face_top, face_bottom, face_front, face_back, face_left, face_right);
+	  spritecoord vsp=chunk::voxel_sprite_location_get(c_data[x][y][z].type_get());
+	  
+	  new_verts=c_data[x][y][z].vertices_form(face_top, face_bottom, face_front, face_back, face_left, face_right, vsp);
 	  new_inds=c_data[x][y][z].indices_form(face_top, face_bottom, face_front, face_back, face_left, face_right);
 
 	  for(int x=0; x<new_inds.size(); x++){
@@ -381,10 +400,10 @@ void chunk::mesh_form()
   c_mesh.vertices_set(mesh_verts);
   c_mesh.indices_set(mesh_inds);
     
-  if(texture_pack[VOX_GRASS]!=NULL){
-    c_mesh.texture_set(texture_pack[VOX_GRASS]);
+  if(spritesheet!=NULL){
+    c_mesh.texture_set(spritesheet);
   }else{
-    std::cerr << "err:w-chunk-mesh_form-texture_pack-element-null" << std::endl;
+    std::cerr << "err:w-chunk-mesh_form-spritesheet-null" << std::endl;
   }
 
   if(c_shader){

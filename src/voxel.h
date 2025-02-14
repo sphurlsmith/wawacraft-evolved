@@ -14,9 +14,19 @@ struct voxcoord{
   int z;
 };
 
+struct spritecoord{
+  float x0=0;
+  float x1=0;
+  float y0=0;
+  float y1=0;
+};
+
 enum voxtype{
   VOX_NONE,
   VOX_GRASS,
+  VOX_SOIL,
+  VOX_WOOD,
+  VOX_STONE,
   VOX_WAWA,
   VOX_UNI
 };
@@ -32,7 +42,7 @@ class voxel{
   
   mesh_3d mesh_form(shader* pshader, texture* ptexture);
 
-  std::vector<float> vertices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right);
+  std::vector<float> vertices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right, spritecoord psc);
   std::vector<unsigned int> indices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right);
   
   voxtype type_get();
@@ -52,8 +62,10 @@ class voxel{
 class chunk{
  public:
   chunk();
-  chunk(voxcoord pposition, texture* ptexpack[4], shader* pshader);
+  chunk(voxcoord pposition, texture* pspritesheet, shader* pshader);
 
+  static spritecoord voxel_sprite_location_get(voxtype pv);
+  
   void shader_set(shader* pshader);
   void position_set(voxcoord pposition);
   void voxel_type_set(int x, int y, int z, voxtype ptype);
@@ -65,9 +77,12 @@ class chunk{
   mesh_3d* mesh_get();
   
   shader* shader_get();
-  texture* texture_pack[4];
+  texture* spritesheet;
 
   static int DEFAULT_CHUNK_SIZE;
+  static int DEFAULT_TEXTUREPACK_RESOLUTION;
+  static int DEFAULT_TEXTUREPACK_CAPACITY;
+  
   static float DEFAULT_BLOCK_SCALE;
   
  private:
