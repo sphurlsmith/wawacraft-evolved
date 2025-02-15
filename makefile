@@ -14,14 +14,10 @@ BINO=$(BINDIR)/*.o
 
 TARGET=$(BINDIR)/wawacraft_evolved
 
-<<<<<<< HEAD
-wawacraft_evolved: glad stb_image mathlib windef control textures shader mesh render voxel main
-	mkdir -p $(BINDIR)
-=======
+
 wawacraft_evolved:
 	mkdir -p $(BINDIR)
 	make glad stb_image mathlib windef control textures shader mesh render voxel main
->>>>>>> a1b7268 (The makefile actually works now)
 	cp -r $(SHDDIR) $(BINDIR)
 	cp -r $(TEXDIR) $(BINDIR)
 	$(CC) $(BINO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
