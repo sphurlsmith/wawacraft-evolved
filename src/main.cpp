@@ -138,9 +138,15 @@ int main()
   for(int x=0; x<chunk::DEFAULT_CHUNK_SIZE; x++){
     for(int y=0; y<chunk::DEFAULT_CHUNK_SIZE; y++){
       for(int z=0; z<chunk::DEFAULT_CHUNK_SIZE; z++){
-	my_chunk2.voxel_type_set(x, y, z, VOX_UNI);
+	my_chunk2.voxel_type_set(x, y, z, VOX_NONE);
+	my_chunk.voxel_type_set(x, y, z, VOX_NONE);
+	
+	if(x%4==0 || y%4==0 || z%4==0){
+	  continue;
+	}
 	
 	if(y<=5){
+	  my_chunk2.voxel_type_set(x, y, z, VOX_UNI);
 	  if(y<=2){
 	    my_chunk.voxel_type_set(x, y, z, VOX_STONE);
 	  }else if(y>2 && y<=4){

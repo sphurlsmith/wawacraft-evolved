@@ -8,6 +8,11 @@
 
 int voxel::DEFAULT_TEXTURE_RESOLUTION=32;
 int voxel::DEFAULT_TEXTURE_CHANNELS=4;
+
+float voxel::DEFAULT_SHADE_DARKEST=0.4;
+float voxel::DEFAULT_SHADE_MIDDLE=0.8;
+float voxel::DEFAULT_SHADE_LIGHTEST=1;
+
 int chunk::DEFAULT_CHUNK_SIZE=16;
 int chunk::DEFAULT_TEXTUREPACK_RESOLUTION=512;
 int chunk::DEFAULT_TEXTUREPACK_CAPACITY=16;
@@ -58,50 +63,50 @@ mesh_3d voxel::mesh_form(shader* pshader, texture* ptexture)
 
   int face=0;
 
-  vertices.insert(vertices.end(), {(+s), (-s), (+s), 0, 0});
-  vertices.insert(vertices.end(), {(-s), (-s), (+s), 1, 0});
-  vertices.insert(vertices.end(), {(-s), (+s), (+s), 1, 1});
-  vertices.insert(vertices.end(), {(+s), (+s), (+s), 0, 1});
+  vertices.insert(vertices.end(), {(+s), (-s), (+s), 0, 0, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(-s), (-s), (+s), 1, 0, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(-s), (+s), (+s), 1, 1, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(+s), (+s), (+s), 0, 1, DEFAULT_SHADE_MIDDLE});
   
   indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
   face+=4;
     
-  vertices.insert(vertices.end(), {(-s), (-s), (-s), 0, 0});
-  vertices.insert(vertices.end(), {(+s), (-s), (-s), 1, 0});
-  vertices.insert(vertices.end(), {(+s), (+s), (-s), 1, 1});
-  vertices.insert(vertices.end(), {(-s), (+s), (-s), 0, 1});
+  vertices.insert(vertices.end(), {(-s), (-s), (-s), 0, 0, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(+s), (-s), (-s), 1, 0, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(+s), (+s), (-s), 1, 1, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(-s), (+s), (-s), 0, 1, DEFAULT_SHADE_MIDDLE});
 
   indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
   face+=4;
   
-  vertices.insert(vertices.end(), {(+s), (-s), (-s), 0, 0});
-  vertices.insert(vertices.end(), {(+s), (-s), (+s), 1, 0});
-  vertices.insert(vertices.end(), {(+s), (+s), (+s), 1, 1});
-  vertices.insert(vertices.end(), {(+s), (+s), (-s), 0, 1});
+  vertices.insert(vertices.end(), {(+s), (-s), (-s), 0, 0, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(+s), (-s), (+s), 1, 0, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(+s), (+s), (+s), 1, 1, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(+s), (+s), (-s), 0, 1, DEFAULT_SHADE_MIDDLE});
 
   indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
   face+=4;
   
-  vertices.insert(vertices.end(), {(-s), (+s), (-s), 1, 1});
-  vertices.insert(vertices.end(), {(-s), (+s), (+s), 0, 1});
-  vertices.insert(vertices.end(), {(-s), (-s), (+s), 0, 0});
-  vertices.insert(vertices.end(), {(-s), (-s), (-s), 1, 0});
+  vertices.insert(vertices.end(), {(-s), (+s), (-s), 1, 1, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(-s), (+s), (+s), 0, 1, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(-s), (-s), (+s), 0, 0, DEFAULT_SHADE_MIDDLE});
+  vertices.insert(vertices.end(), {(-s), (-s), (-s), 1, 0, DEFAULT_SHADE_MIDDLE});
 
   indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
   face+=4;
   
-  vertices.insert(vertices.end(), {(-s), (+s), (-s), 0, 0});
-  vertices.insert(vertices.end(), {(+s), (+s), (-s), 1, 0});
-  vertices.insert(vertices.end(), {(+s), (+s), (+s), 1, 1});
-  vertices.insert(vertices.end(), {(-s), (+s), (+s), 0, 1});
+  vertices.insert(vertices.end(), {(-s), (+s), (-s), 0, 0, DEFAULT_SHADE_LIGHTEST});
+  vertices.insert(vertices.end(), {(+s), (+s), (-s), 1, 0, DEFAULT_SHADE_LIGHTEST});
+  vertices.insert(vertices.end(), {(+s), (+s), (+s), 1, 1, DEFAULT_SHADE_LIGHTEST});
+  vertices.insert(vertices.end(), {(-s), (+s), (+s), 0, 1, DEFAULT_SHADE_LIGHTEST});
 
   indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
   face+=4;
   
-  vertices.insert(vertices.end(), {(+s), (-s), (-s), 0, 0});
-  vertices.insert(vertices.end(), {(-s), (-s), (-s), 1, 0});
-  vertices.insert(vertices.end(), {(-s), (-s), (+s), 1, 1});
-  vertices.insert(vertices.end(), {(+s), (-s), (+s), 0, 1});
+  vertices.insert(vertices.end(), {(+s), (-s), (-s), 0, 0, DEFAULT_SHADE_DARKEST});
+  vertices.insert(vertices.end(), {(-s), (-s), (-s), 1, 0, DEFAULT_SHADE_DARKEST});
+  vertices.insert(vertices.end(), {(-s), (-s), (+s), 1, 1, DEFAULT_SHADE_DARKEST});
+  vertices.insert(vertices.end(), {(+s), (-s), (+s), 0, 1, DEFAULT_SHADE_DARKEST});
   
   indices.insert(indices.end(), {0+face, 1+face, 2+face, 2+face, 3+face, 0+face});
   face+=4;
@@ -110,7 +115,7 @@ mesh_3d voxel::mesh_form(shader* pshader, texture* ptexture)
   v_mesh.indices_set(indices);
 
   v_mesh.buffers_generate();
-  v_mesh.vertex_attributes_bind(false, true);
+  v_mesh.vertex_attributes_bind(false, true, true);
   
   if(pshader!=NULL){
     v_mesh.shader_set(pshader);
@@ -141,45 +146,45 @@ std::vector<float> voxel::vertices_form(bool face_top, bool face_bottom, bool fa
   float z=v_position.z*v_size;
 
   if(face_front){
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), psc.x0, psc.y0});
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), psc.x1, psc.y0});
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), psc.x1, psc.y1});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), psc.x0, psc.y1});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), psc.x0, psc.y0, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), psc.x1, psc.y0, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), psc.x1, psc.y1, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), psc.x0, psc.y1, DEFAULT_SHADE_MIDDLE});
   }
 
   if(face_back){
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), psc.x0, psc.y0});
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), psc.x1, psc.y0});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), psc.x1, psc.y1});
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), psc.x0, psc.y1});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), psc.x0, psc.y0, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), psc.x1, psc.y0, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), psc.x1, psc.y1, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), psc.x0, psc.y1, DEFAULT_SHADE_MIDDLE});
   }
 
   if(face_left){
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), psc.x0, psc.y0});
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), psc.x1, psc.y0});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), psc.x1, psc.y1});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), psc.x0, psc.y1});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), psc.x0, psc.y0, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), psc.x1, psc.y0, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), psc.x1, psc.y1, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), psc.x0, psc.y1, DEFAULT_SHADE_MIDDLE});
   }
 
   if(face_right){
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), psc.x1, psc.y1});
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), psc.x0, psc.y1});
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), psc.x0, psc.y0});
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), psc.x1, psc.y0});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), psc.x1, psc.y1, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), psc.x0, psc.y1, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), psc.x0, psc.y0, DEFAULT_SHADE_MIDDLE});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), psc.x1, psc.y0, DEFAULT_SHADE_MIDDLE});
   }
 
   if(face_top){
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), psc.x0, psc.y0});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), psc.x1, psc.y0});
-    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), psc.x1, psc.y1});
-    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), psc.x0, psc.y1});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z-s), psc.x0, psc.y0, DEFAULT_SHADE_LIGHTEST});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z-s), psc.x1, psc.y0, DEFAULT_SHADE_LIGHTEST});
+    vertices.insert(vertices.end(), {(x+s), (y+s), (z+s), psc.x1, psc.y1, DEFAULT_SHADE_LIGHTEST});
+    vertices.insert(vertices.end(), {(x-s), (y+s), (z+s), psc.x0, psc.y1, DEFAULT_SHADE_LIGHTEST});
   }
 
   if(face_bottom){
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), psc.x0, psc.y0});
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), psc.x1, psc.y0});
-    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), psc.x1, psc.y1});
-    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), psc.x0, psc.y1});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z-s), psc.x0, psc.y0, DEFAULT_SHADE_DARKEST});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z-s), psc.x1, psc.y0, DEFAULT_SHADE_DARKEST});
+    vertices.insert(vertices.end(), {(x-s), (y-s), (z+s), psc.x1, psc.y1, DEFAULT_SHADE_DARKEST});
+    vertices.insert(vertices.end(), {(x+s), (y-s), (z+s), psc.x0, psc.y1, DEFAULT_SHADE_DARKEST});
   }
   
   return vertices;
@@ -340,25 +345,25 @@ void chunk::mesh_form()
 	bool edge_front=false;
 	bool edge_back=false;
 	
-	if(y!=0 && y<DEFAULT_CHUNK_SIZE-1){
-	  covered_top=c_data[x][++y][z].type_get()!=VOX_NONE;
-	  covered_bottom=c_data[x][--y][z].type_get()!=VOX_NONE;
+	if(y>=0 && y<DEFAULT_CHUNK_SIZE-1){
+	  covered_top=c_data[x][y+1][z].type_get()!=VOX_NONE;
+	  covered_bottom=c_data[x][y-1][z].type_get()!=VOX_NONE;
 	}else{
 	  if(y==0){edge_bottom=true;}
 	  if(y==DEFAULT_CHUNK_SIZE-1){edge_top=true;}
 	}
 
-	if(x!=0 && x<DEFAULT_CHUNK_SIZE-1){
-	  covered_right=c_data[--x][y][z].type_get()!=VOX_NONE;
-	  covered_left=c_data[++x][y][z].type_get()!=VOX_NONE;
+	if(x>=0 && x<DEFAULT_CHUNK_SIZE-1){
+	  covered_right=c_data[x-1][y][z].type_get()!=VOX_NONE;
+	  covered_left=c_data[x+1][y][z].type_get()!=VOX_NONE;
 	}else{
 	  if(x==0){edge_right=true;}
 	  if(x==DEFAULT_CHUNK_SIZE-1){edge_left=true;}
 	}
 
-	if(z!=0 && z<DEFAULT_CHUNK_SIZE-1){
-	  covered_front=c_data[x][y][++z].type_get()!=VOX_NONE;
-	  covered_back=c_data[x][y][--z].type_get()!=VOX_NONE;
+	if(z>=0 && z<DEFAULT_CHUNK_SIZE-1){
+	  covered_front=c_data[x][y][z+1].type_get()!=VOX_NONE;
+	  covered_back=c_data[x][y][z-1].type_get()!=VOX_NONE;
 	}else{
 	  if(z==0){edge_back=true;}
 	  if(z==DEFAULT_CHUNK_SIZE-1){edge_front=true;}
@@ -412,7 +417,7 @@ void chunk::mesh_form()
     std::cerr << "err:w-chunk-mesh_form-c_shader-null" << std::endl;
   }
 
-  c_mesh.vertex_attributes_bind(false, true);
+  c_mesh.vertex_attributes_bind(false, true, true);
   
   vector_3d pos(c_position.x*DEFAULT_CHUNK_SIZE*DEFAULT_BLOCK_SCALE, c_position.y*DEFAULT_CHUNK_SIZE*DEFAULT_BLOCK_SCALE, c_position.z*DEFAULT_CHUNK_SIZE*DEFAULT_BLOCK_SCALE);
 

@@ -15,7 +15,7 @@ class mesh_base
   void buffers_generate();
   void buffers_bind();
   
-  void vertex_attributes_bind(bool colors_used, bool textures_used);
+  void vertex_attributes_bind(bool colors_used, bool textures_used=false, bool shade_used=false);
 
   void render();
 
