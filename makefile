@@ -15,6 +15,7 @@ BINO=$(BINDIR)/*.o
 TARGET=$(BINDIR)/wawacraft_evolved
 
 wawacraft_evolved: glad stb_image mathlib windef control textures shader mesh render voxel main
+	mkdir -p $(BINDIR)
 	cp -r $(SHDDIR) $(BINDIR)
 	cp -r $(TEXDIR) $(BINDIR)
 	$(CC) $(BINO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
