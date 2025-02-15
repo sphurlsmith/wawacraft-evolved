@@ -6,7 +6,7 @@ LPATHS=-I/usr/include/GL -I/usr/include/GLFW -I/usr/include/glad -L/usr/lib64
 
 SRCDIR=src
 LIBDIR=lib
-BINDIR=bin
+BINDIR=mkdir -p $(@D)
 SHDDIR=shd
 TEXDIR=tex
 
