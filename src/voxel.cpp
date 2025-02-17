@@ -345,7 +345,7 @@ void chunk::mesh_form()
 	bool edge_front=false;
 	bool edge_back=false;
 	
-	if(y>=0 && y<DEFAULT_CHUNK_SIZE-1){
+	if(y>0 && y<DEFAULT_CHUNK_SIZE-1){
 	  covered_top=c_data[x][y+1][z].type_get()!=VOX_NONE;
 	  covered_bottom=c_data[x][y-1][z].type_get()!=VOX_NONE;
 	}else{
@@ -353,7 +353,7 @@ void chunk::mesh_form()
 	  if(y==DEFAULT_CHUNK_SIZE-1){edge_top=true;}
 	}
 
-	if(x>=0 && x<DEFAULT_CHUNK_SIZE-1){
+	if(x>0 && x<DEFAULT_CHUNK_SIZE-1){
 	  covered_right=c_data[x-1][y][z].type_get()!=VOX_NONE;
 	  covered_left=c_data[x+1][y][z].type_get()!=VOX_NONE;
 	}else{
@@ -361,7 +361,7 @@ void chunk::mesh_form()
 	  if(x==DEFAULT_CHUNK_SIZE-1){edge_left=true;}
 	}
 
-	if(z>=0 && z<DEFAULT_CHUNK_SIZE-1){
+	if(z>0 && z<DEFAULT_CHUNK_SIZE-1){
 	  covered_front=c_data[x][y][z+1].type_get()!=VOX_NONE;
 	  covered_back=c_data[x][y][z-1].type_get()!=VOX_NONE;
 	}else{
