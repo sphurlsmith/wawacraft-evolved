@@ -83,10 +83,10 @@ void move_camera(int argc, char** argv)
     (**pcamptr).rotation_set({rot.x, rot.y-DEFAULT_TURN*MATHLIB_DEGTORAD, rot.z});
     break;
   case 7:
-    (**pcamptr).rotation_set({rot.x+MATHLIB_DEGTORAD, rot.y, rot.z});
+    (**pcamptr).rotation_set({rot.x+DEFAULT_TURN*MATHLIB_DEGTORAD, rot.y, rot.z});
     break;
   case 8:
-    (**pcamptr).rotation_set({rot.x-MATHLIB_DEGTORAD, rot.y, rot.z});
+    (**pcamptr).rotation_set({rot.x-DEFAULT_TURN*MATHLIB_DEGTORAD, rot.y, rot.z});
     break;
   default:
     break;
@@ -95,16 +95,15 @@ void move_camera(int argc, char** argv)
 
 void tab(int argc, char** argv)
 {
-  switch(argc){
-  case 0:
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    break;
-  case 1:
+  static bool wireframed;
+
+  if(wireframed){
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    break;
-  default:
-    break;
+  }else{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   }
+
+  wireframed=!wireframed;
 }
 
 int main()
@@ -130,45 +129,11 @@ int main()
   test_shd.uniform_set_int("tex", 0);
   test_sh3d.uniform_set_int("tex", 0);
 
-  camera test_camera(800, 600, 60, 0.1, 256, {0, 0, -1}, {0, 0, 0});
-  
-  chunk my_chunk({1, 0, 0}, &texpack, &nocol3d);
-  chunk my_chunk2({0, 0, 0}, &texpack, &nocol3d);
+  camera test_camera(800, 600, 60, 0.1, 256, {0, 0, 0}, {0, 0, 0});
 
-  for(int x=0; x<chunk::DEFAULT_CHUNK_SIZE; x++){
-    for(int y=0; y<chunk::DEFAULT_CHUNK_SIZE; y++){
-      for(int z=0; z<chunk::DEFAULT_CHUNK_SIZE; z++){
-	my_chunk2.voxel_type_set(x, y, z, VOX_NONE);
-	my_chunk.voxel_type_set(x, y, z, VOX_NONE);
-	
-	if(x%4==0 || y%4==0 || z%4==0){
-	  continue;
-	}
-	
-	if(y<=5){
-	  my_chunk2.voxel_type_set(x, y, z, VOX_UNI);
-	  if(y<=2){
-	    my_chunk.voxel_type_set(x, y, z, VOX_STONE);
-	  }else if(y>2 && y<=4){
-	    my_chunk.voxel_type_set(x, y, z, VOX_SOIL);
-	  }else if(y==5){
-	    my_chunk.voxel_type_set(x, y, z, VOX_GRASS);
-	  }
-	}else{
-	  my_chunk.voxel_type_set(x, y, z, VOX_WOOD);
-	  my_chunk2.voxel_type_set(x, y, z, VOX_WAWA);
-	}
-      }
-    }
-  }
+  chunk_manager chunks(&texpack, &nocol3d);
   
-  my_chunk2.mesh_form();
-  my_chunk.mesh_form();
-  
-  mesh_3d* meshes[2]={
-    my_chunk2.mesh_get(),
-    my_chunk.mesh_get()
-  };
+  mesh_3d* meshes[chunk_manager::DEFAULT_VISIBLE_AREA];
   
   test.set_title("Wawacraft:Evolved [v0.1.1-alpha indev] [OpenGL 3.3]");
 
@@ -198,22 +163,28 @@ int main()
 
   KEY_TAB.keycode=GLFW_KEY_TAB;
   KEY_TAB.callback=&tab;
-
-  KEY_ESC.keycode=GLFW_KEY_ESCAPE;
-  KEY_ESC.callback=&tab;
   
   char* camptr=(char*)&test_camera;
   char** camptrptr=&camptr;
 
-  vector_3d rot(0, 0, 0);
+  double fps=1; // 1 second;
+
+  double previous_frame=glfwGetTime();
   
   bool roll=false;
   while(test.is_open())
   {
     test_env.mesh_3d=meshes;
     test_env.camera=&test_camera;
-    
-    test_env.screen_run_render_loop_instance(2, true);
+
+    chunks.update(test_camera.position_get());
+
+    int MAX_CHUNKS_LOADED=chunk_manager::DEFAULT_VISIBLE_AREA;
+    for(int x=0; x<MAX_CHUNKS_LOADED; x++){
+      meshes[x]=chunks.cm_data[chunks.cm_visible[x]].mesh_get();
+    }
+
+    test_env.screen_run_render_loop_instance(chunks.cm_visible.size(), true);
     
     key_callback_execute_press(test.get_reference(), &KEY_ARROW_LEFT, 5, camptrptr);
     key_callback_execute_press(test.get_reference(), &KEY_ARROW_RIGHT, 6, camptrptr);
@@ -229,6 +200,11 @@ int main()
     key_callback_execute_press(test.get_reference(), &KEY_ESC, 1, NULL);
     
     roll=!roll;
+    
+    double delta=glfwGetTime()-previous_frame;
+    
+    previous_frame=glfwGetTime();
+    std::cout << delta << std::endl;
   }
 
   window::kill_glfw();

@@ -40,10 +40,12 @@ class voxel{
   void size_set(float s);
   void type_set(voxtype ptype);
 
+  static int index_get(int x, int y, int z, int width, int height);
+  
   mesh_3d mesh_form(shader* pshader, texture* ptexture);
 
-  std::vector<float> vertices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right, spritecoord psc);
-  std::vector<unsigned int> indices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right);
+  static std::vector<float> vertices_form(voxcoord v_position, float v_size, spritecoord psc, bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right);
+  static std::vector<unsigned int> indices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right);
 
   voxtype type_get();
 
@@ -70,20 +72,26 @@ class chunk{
 
   static spritecoord voxel_sprite_location_get(voxtype pv);
 
+  static void terrain_flat(chunk& pchunk, int stone_height, int soil_height, int grass_height);
+  
   void shader_set(shader* pshader);
   void position_set(voxcoord pposition);
-  void voxel_type_set(int x, int y, int z, voxtype ptype);
+  void voxel_set(int x, int y, int z, voxtype ptype);
 
   void mesh_form();
 
-  voxel* voxel_get(int x, int y, int z);
+  voxcoord position_get();
+  
+  voxel voxel_get(int x, int y, int z);
 
   mesh_3d* mesh_get();
 
   shader* shader_get();
   texture* spritesheet;
 
-  static int DEFAULT_CHUNK_SIZE;
+  static const int DEFAULT_CHUNK_SIZE=16;
+  static const int DEFAULT_CHUNK_AREA=DEFAULT_CHUNK_SIZE*DEFAULT_CHUNK_SIZE*DEFAULT_CHUNK_SIZE;
+  
   static int DEFAULT_TEXTUREPACK_RESOLUTION;
   static int DEFAULT_TEXTUREPACK_CAPACITY;
 
@@ -91,10 +99,49 @@ class chunk{
 
  private:
   voxcoord c_position;
-  voxel c_data[16][16][16];
+  voxtype c_data[DEFAULT_CHUNK_AREA];
 
   mesh_3d c_mesh;
   shader* c_shader;
+
+ protected:
+  bool setup=false;
+  bool built=false;
+  
+  friend class chunk_manager;
+};
+
+class chunk_manager{
+ public:
+  chunk_manager(texture* pspritesheet, shader* pshader);
+
+  void update(vector_3d camera_position);
+  
+  void chunk_group_setup();
+  void chunk_group_build();
+  void chunk_group_visible(vector_3d camera_position);
+
+  void chunk_setup(voxcoord pos);
+  void chunk_build(voxcoord pos);
+
+  void chunk_unload(int index);
+  void chunk_unload(voxcoord pos);
+  
+  bool chunk_init(voxcoord pos);
+  bool chunk_delete(voxcoord pos);
+  
+  bool chunk_exists(voxcoord ppos);
+
+  int chunk_search(voxcoord pos);
+  
+  static const int DEFAULT_VISIBLE_RADIUS;
+  static const int DEFAULT_VISIBLE_AREA;
+
+  texture* default_spritesheet;
+  shader* default_shader;
+
+  std::vector<int> cm_visible;
+  std::vector<chunk> cm_data;
 };
 
 #endif

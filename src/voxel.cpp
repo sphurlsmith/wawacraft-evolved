@@ -13,11 +13,25 @@ float voxel::DEFAULT_SHADE_DARKEST=0.4;
 float voxel::DEFAULT_SHADE_MIDDLE=0.8;
 float voxel::DEFAULT_SHADE_LIGHTEST=1;
 
-int chunk::DEFAULT_CHUNK_SIZE=16;
+const int chunk::DEFAULT_CHUNK_SIZE;
+const int chunk::DEFAULT_CHUNK_AREA;
+
 int chunk::DEFAULT_TEXTUREPACK_RESOLUTION=512;
 int chunk::DEFAULT_TEXTUREPACK_CAPACITY=16;
 
+const int chunk_manager::DEFAULT_VISIBLE_RADIUS=4;
+const int chunk_manager::DEFAULT_VISIBLE_AREA=(1+2*DEFAULT_VISIBLE_RADIUS)*(1+2*DEFAULT_VISIBLE_RADIUS);
+
 float chunk::DEFAULT_BLOCK_SCALE=0.25;
+
+bool operator==(const voxcoord& a ,const voxcoord& b)
+{
+  if(a.x==b.x && a.y==b.y && a.z==b.z){
+    return true;
+  }else{
+    return false;
+  }
+}
 
 voxel::voxel():
   v_size(1),
@@ -46,6 +60,10 @@ void voxel::size_set(float s)
 void voxel::type_set(voxtype ptype)
 {
   v_type=ptype;
+}
+
+static int voxel::index_get(int x, int y, int z, int width, int height){
+  return (x+(y*width)+(z*width*height));
 }
 
 mesh_3d voxel::mesh_form(shader* pshader, texture* ptexture)
@@ -135,7 +153,7 @@ mesh_3d voxel::mesh_form(shader* pshader, texture* ptexture)
   return v_mesh;
 }
 
-std::vector<float> voxel::vertices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right, spritecoord psc)
+static std::vector<float> voxel::vertices_form(voxcoord v_position, float v_size, spritecoord psc, bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right)
 {
   std::vector<float> vertices;
   
@@ -190,7 +208,7 @@ std::vector<float> voxel::vertices_form(bool face_top, bool face_bottom, bool fa
   return vertices;
 }
 
-std::vector<unsigned int> voxel::indices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right)
+static std::vector<unsigned int> voxel::indices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right)
 {
   std::vector<unsigned int> indices;
 
@@ -243,32 +261,18 @@ chunk::chunk()
 {
   c_mesh.buffers_generate();
   
-  for(int x=0; x<DEFAULT_CHUNK_SIZE; x++){
-    for(int y=0; y<DEFAULT_CHUNK_SIZE; y++){
-      for(int z=0; z<DEFAULT_CHUNK_SIZE; z++){
-	c_data[x][y][z].size_set(DEFAULT_BLOCK_SCALE);
-	c_data[x][y][z].position_set({x, y, z});
-	c_data[x][y][z].type_set(VOX_GRASS);
-      }
-    }
+  for(int x=0; x<DEFAULT_CHUNK_SIZE*DEFAULT_CHUNK_SIZE*DEFAULT_CHUNK_SIZE; x++){
+    c_data[x]=VOX_NONE;
   }
 }
 
 chunk::chunk(voxcoord pposition, texture* pspritesheet, shader* pshader):
   c_position(pposition){
-  c_mesh.buffers_generate();
-  
-  spritesheet=pspritesheet;
-
-  for(int x=0; x<DEFAULT_CHUNK_SIZE; x++){
-    for(int y=0; y<DEFAULT_CHUNK_SIZE; y++){
-      for(int z=0; z<DEFAULT_CHUNK_SIZE; z++){
-	c_data[x][y][z].size_set(DEFAULT_BLOCK_SCALE);
-	c_data[x][y][z].position_set({x, y, z});
-	c_data[x][y][z].type_set(VOX_GRASS);
-      }
-    }
+  for(int x=0; x<DEFAULT_CHUNK_SIZE*DEFAULT_CHUNK_SIZE*DEFAULT_CHUNK_SIZE; x++){
+    c_data[x]=VOX_NONE;
   }
+
+  c_mesh.buffers_generate();
 
   spritesheet=pspritesheet;
   shader_set(pshader);
@@ -290,6 +294,27 @@ static spritecoord chunk::voxel_sprite_location_get(voxtype pv)
   return ret;
 }
 
+static void chunk::terrain_flat(chunk& pchunk, int stone_height, int soil_height, int grass_height)
+{
+  for(int x=0; x<chunk::DEFAULT_CHUNK_SIZE; x++){
+    for(int y=0; y<chunk::DEFAULT_CHUNK_SIZE; y++){
+      for(int z=0; z<chunk::DEFAULT_CHUNK_SIZE; z++){
+	if(y<=grass_height){
+	  if(y<=stone_height){
+	    pchunk.voxel_set(x, y, z, VOX_STONE);
+	  }else if(y<=soil_height){
+	    pchunk.voxel_set(x, y, z, VOX_SOIL);
+	  }else{
+	    pchunk.voxel_set(x, y, z, VOX_GRASS);
+	  }
+	}else{
+	  pchunk.voxel_set(x, y, z, VOX_NONE);
+	}
+      }
+    }
+  }
+}
+
 void chunk::shader_set(shader* pshader)
 {
   if(pshader!=NULL){
@@ -304,14 +329,20 @@ void chunk::position_set(voxcoord pposition)
   c_position=pposition;
 }
 
-void chunk::voxel_type_set(int x, int y, int z, voxtype ptype)
+void chunk::voxel_set(int x, int y, int z, voxtype ptype)
 {
-  c_data[x][y][z].type_set(ptype);
+  c_data[voxel::index_get(x, y, z, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE)]=ptype;
 }
 
-voxel* chunk::voxel_get(int x, int y, int z)
+voxel chunk::voxel_get(int x, int y, int z)
 {
-  return &(c_data[x][y][z]);
+  voxel ret;
+
+  ret.size_set(DEFAULT_BLOCK_SCALE);
+  ret.position_set({x, y, z});
+  ret.type_set(c_data[voxel::index_get(x, y, z, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE)]);
+
+  return ret;
 }
 
 void chunk::mesh_form()
@@ -346,24 +377,24 @@ void chunk::mesh_form()
 	bool edge_back=false;
 	
 	if(y>0 && y<DEFAULT_CHUNK_SIZE-1){
-	  covered_top=c_data[x][y+1][z].type_get()!=VOX_NONE;
-	  covered_bottom=c_data[x][y-1][z].type_get()!=VOX_NONE;
+	  covered_top=c_data[voxel::index_get(x, y+1, z, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE)]!=VOX_NONE;
+	  covered_bottom=c_data[voxel::index_get(x, y-1, z, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE)]!=VOX_NONE;
 	}else{
 	  if(y==0){edge_bottom=true;}
 	  if(y==DEFAULT_CHUNK_SIZE-1){edge_top=true;}
 	}
 
 	if(x>0 && x<DEFAULT_CHUNK_SIZE-1){
-	  covered_right=c_data[x-1][y][z].type_get()!=VOX_NONE;
-	  covered_left=c_data[x+1][y][z].type_get()!=VOX_NONE;
+	  covered_right=c_data[voxel::index_get(x-1, y, z, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE)]!=VOX_NONE;
+	  covered_left=c_data[voxel::index_get(x+1, y, z, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE)]!=VOX_NONE;
 	}else{
 	  if(x==0){edge_right=true;}
 	  if(x==DEFAULT_CHUNK_SIZE-1){edge_left=true;}
 	}
 
 	if(z>0 && z<DEFAULT_CHUNK_SIZE-1){
-	  covered_front=c_data[x][y][z+1].type_get()!=VOX_NONE;
-	  covered_back=c_data[x][y][z-1].type_get()!=VOX_NONE;
+	  covered_front=c_data[voxel::index_get(x, y, z+1, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE)]!=VOX_NONE;
+	  covered_back=c_data[voxel::index_get(x, y, z-1, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE)]!=VOX_NONE;
 	}else{
 	  if(z==0){edge_back=true;}
 	  if(z==DEFAULT_CHUNK_SIZE-1){edge_front=true;}
@@ -378,11 +409,11 @@ void chunk::mesh_form()
 	bool face_front=(!covered_front || edge_front);
 	bool face_back=(!covered_back || edge_back);
 	
-	if(c_data[x][y][z].type_get()!=VOX_NONE){
-	  spritecoord vsp=chunk::voxel_sprite_location_get(c_data[x][y][z].type_get());
+	if(c_data[voxel::index_get(x, y, z, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE)]!=VOX_NONE){
+	  spritecoord vsp=chunk::voxel_sprite_location_get(c_data[voxel::index_get(x, y, z, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_SIZE)]);
 	  
-	  new_verts=c_data[x][y][z].vertices_form(face_top, face_bottom, face_front, face_back, face_left, face_right, vsp);
-	  new_inds=c_data[x][y][z].indices_form(face_top, face_bottom, face_front, face_back, face_left, face_right);
+	  new_verts=voxel::vertices_form({x, y, z}, DEFAULT_BLOCK_SCALE, vsp,face_top, face_bottom, face_front, face_back, face_left, face_right);
+	  new_inds=voxel::indices_form(face_top, face_bottom, face_front, face_back, face_left, face_right);
 
 	  for(int x=0; x<new_inds.size(); x++){
 	    new_inds[x]+=c*4;
@@ -425,6 +456,11 @@ void chunk::mesh_form()
   c_mesh.model_matrix_form();
 }
 
+voxcoord chunk::position_get()
+{
+  return c_position;
+}
+
 mesh_3d* chunk::mesh_get()
 {
   return &c_mesh;
@@ -433,4 +469,194 @@ mesh_3d* chunk::mesh_get()
 shader* chunk::shader_get()
 {
   return c_shader;
+}
+
+chunk_manager::chunk_manager(texture* pspritesheet, shader* pshader):
+  default_spritesheet(pspritesheet),
+  default_shader(pshader){
+  
+}
+
+void chunk_manager::chunk_group_setup()
+{
+  if(default_spritesheet==NULL){
+    std::cerr << "err-chunk_manager-chunk_group_setup-spritesheet-null" << std::endl;
+  }
+
+  if(default_shader==NULL){
+    std::cerr << "err-chunk_manager-chunk_group_setup-shader-null" << std::endl;
+  }
+  
+  for(int x=0; x<cm_data.size(); x++){
+    if(!cm_data[x].setup){
+      int h_stone=rand()%2+1;
+      int h_soil=h_stone+(rand()%2+1);
+      int h_grass=h_soil+1;
+
+      cm_data[x].shader_set(default_shader);
+      cm_data[x].spritesheet=default_spritesheet;
+
+      chunk::terrain_flat(cm_data[x], h_stone, h_soil, h_grass);
+      cm_data[x].setup=true;
+    }
+  }
+
+  chunk_group_build();
+}
+
+void chunk_manager::chunk_group_build()
+{
+  for(int x=0; x<cm_data.size(); x++){
+    if(!cm_data[x].built){
+      cm_data[x].mesh_form();
+      cm_data[x].built=true;
+    }
+  }
+}
+
+void chunk_manager::update(vector_3d camera_position)
+{
+  chunk_group_setup();
+  chunk_group_build();
+  chunk_group_visible(camera_position);
+}
+
+void chunk_manager::chunk_group_visible(vector_3d camera_position)
+{
+  cm_visible.clear();
+
+  camera_position.x=(int)camera_position.x;
+  camera_position.y=(int)camera_position.y;
+  camera_position.z=(int)camera_position.z;
+
+  int conversion=chunk::DEFAULT_CHUNK_SIZE*chunk::DEFAULT_BLOCK_SCALE;
+  
+  int x_location=camera_position.x/conversion;
+  int z_location=camera_position.z/conversion;
+  
+  int x_bound_lesser=x_location-DEFAULT_VISIBLE_RADIUS;
+  int x_bound_higher=x_location+DEFAULT_VISIBLE_RADIUS;
+  
+  int z_bound_lesser=z_location-DEFAULT_VISIBLE_RADIUS;
+  int z_bound_higher=z_location+DEFAULT_VISIBLE_RADIUS;
+  
+  for(int x=x_bound_lesser; x<=x_bound_higher; x++){
+    for(int z=z_bound_lesser; z<=z_bound_higher; z++){
+      if(!chunk_exists({x, 0, z})){
+	chunk_init({x, 0, z});
+      }
+
+      chunk_setup({x, 0, z});
+      chunk_build({x, 0, z});
+      
+      cm_visible.push_back(chunk_search({x, 0, z}));
+    }
+  }
+
+  for(int x=0; x<cm_data.size(); x++){
+    for(int i=0; i<cm_visible.size(); i++){
+      if(cm_visible[i]!=x){
+	if(i==cm_visible.back()){
+	  chunk_unload(x);
+	}else{
+	  continue;
+	}
+      }
+    }
+  }
+}
+
+void chunk_manager::chunk_setup(voxcoord pos){
+  if(default_spritesheet==NULL){
+    std::cerr << "err-chunk_manager-chunk_setup-spritesheet-null" << std::endl;
+  }
+
+  if(default_shader==NULL){
+    std::cerr << "err-chunk_manager-chunk_setup-shader-null" << std::endl;
+  }
+
+  int i=chunk_search(pos);
+  
+  if(chunk_exists(pos) && !cm_data[i].setup){
+    int h_stone=rand()%5+1;
+    int h_soil=h_stone+(rand()%3+1);
+    int h_grass=h_soil+1;
+
+    cm_data[i].shader_set(default_shader);
+    cm_data[i].spritesheet=default_spritesheet;
+
+    chunk::terrain_flat(cm_data[i], h_stone, h_soil, h_grass);
+    cm_data[i].setup=true;
+  }
+}
+
+void chunk_manager::chunk_build(voxcoord pos){
+  if(chunk_exists(pos) && !cm_data[chunk_search(pos)].built){
+    cm_data[chunk_search(pos)].mesh_form();
+    cm_data[chunk_search(pos)].built=true;
+  }
+}
+
+void chunk_manager::chunk_unload(int index)
+{
+  if(index<cm_data.size()){
+    cm_data[index].c_mesh.vertices_set({0});
+    cm_data[index].c_mesh.indices_set({0});
+    cm_data[index].built=false;
+  }
+}
+
+void chunk_manager::chunk_unload(voxcoord pos)
+{
+  if(chunk_exists(pos)){
+    cm_data[chunk_search(pos)].c_mesh.vertices_set({0});
+    cm_data[chunk_search(pos)].c_mesh.indices_set({0});
+    cm_data[chunk_search(pos)].built=false;
+  }
+}
+
+bool chunk_manager::chunk_init(voxcoord pos)
+{
+  bool allowed=!(chunk_exists(pos));
+
+  if(allowed){
+    chunk c_new;
+    cm_data.push_back(c_new);
+    cm_data.back().position_set(pos);
+    return true;
+  }
+
+  return false;
+}
+
+bool chunk_manager::chunk_delete(voxcoord pos)
+{
+  if(chunk_exists(pos)){
+    cm_data.erase(cm_data.begin()+chunk_search(pos));
+    return true;
+  }
+
+  return false;
+}
+
+bool chunk_manager::chunk_exists(voxcoord ppos)
+{
+  for(int x=0; x<cm_data.size(); x++){
+    if(cm_data[x].position_get()==ppos){
+      return true;
+    }
+  }
+
+  return false;
+}
+
+int chunk_manager::chunk_search(voxcoord pos)
+{
+  for(int x=0; x<cm_data.size(); x++){
+    if(cm_data[x].position_get()==pos){
+      return x;
+    }
+  }
+
+  return -1;
 }

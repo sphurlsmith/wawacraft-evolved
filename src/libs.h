@@ -8,6 +8,8 @@
 #include <fstream>
 #include <vector>
 #include <math.h>
+#include <cstdlib>
+#include <unistd.h>
 
 // OpenGL libraries
 #include <glad/glad.h>
