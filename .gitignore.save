@@ -1,0 +1,5 @@
+clear# The wiki is to be removed from the git repository. No updating it.
+docs/
+/#*#
+*~
+*.o

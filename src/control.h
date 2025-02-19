@@ -3,15 +3,15 @@
 
 #include "libs.h"
 
-// this is a header that will provide utilities for the creation
-// and maintaining of the control of a window!!
-// I.E. Keypresses and Mouse input galore!!
+struct key_callback{
+  int keycode;
+  void (*callback)(int argc, char** argv);
+};
 
-namespace nswincon{
-  int getKeyStatus(GLFWwindow* handle, int key);
+void key_callback_execute_press(GLFWwindow* window, key_callback* key, int argc, char** argv);
+void key_callback_execute_release(GLFWwindow* window, key_callback* key, int argc, char** argv);
 
-  void getCursorPosition(GLFWwindow* handle, double* x, double* y);
-  void setCursorMode(GLFWwindow* handle, bool state);
-}
+void key_callbacks_execute_press(GLFWwindow* window, key_callback* keys, int elements, int argc, char** argv);
+void key_callbacks_execute_release(GLFWwindow* window, key_callback* keys, int elements, int argc, char** argv);
 
 #endif

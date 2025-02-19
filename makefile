@@ -10,42 +10,54 @@ BINDIR=bin
 SHDDIR=shd
 TEXDIR=tex
 
-LIBO=$(LIBDIR)/*.o
-SRCO=$(SRCDIR)/*.o
+BINO=$(BINDIR)/*.o
 
 TARGET=$(BINDIR)/wawacraft_evolved
 
-wawacraft_evolved: glad stb_image projection windowdef shader textures mesh object control main
+
+wawacraft_evolved:
+	mkdir -p $(BINDIR)
+	make glad stb_image mathlib windef control textures shader mesh render voxel main
 	cp -r $(SHDDIR) $(BINDIR)
 	cp -r $(TEXDIR) $(BINDIR)
-	$(CC) $(LIBO) $(SRCO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
+	$(CC) $(BINO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
+
+link:
+	$(CC) $(BINO) -o $(TARGET) $(CFLAGS) $(LFLAGS)
 
 main: $(SRCDIR)/main.cpp
-	$(CC) $(SRCDIR)/main.cpp -o $(SRCDIR)/main.o $(CFLAGS) $(LFLAGS) -c
+	$(CC) $(SRCDIR)/main.cpp -o $(BINDIR)/main.o $(CFLAGS) $(LFLAGS) -c
 
-windowdef: $(SRCDIR)/windowdef.h $(SRCDIR)/windowdef.cpp
-	$(CC) $(SRCDIR)/windowdef.cpp -o $(SRCDIR)/windowdef.o $(CFLAGS) $(LFLAGS) -c
+# source
 
-shader: $(SRCDIR)/shader.h $(SRCDIR)/shader.cpp
-	$(CC) $(SRCDIR)/shader.cpp -o $(SRCDIR)/shader.o $(CFLAGS) $(LFLAGS) -c
+windef: $(SRCDIR)/windef.cpp $(SRCDIR)/windef.h
+	$(CC) $(SRCDIR)/windef.cpp -o $(BINDIR)/windef.o $(CFLAGS) $(LFLAGS) -c
 
-mesh: $(SRCDIR)/mesh.h $(SRCDIR)/mesh.cpp
-	$(CC) $(SRCDIR)/mesh.cpp -o $(SRCDIR)/mesh.o $(CFLAGS) $(LFLAGS) -c
+render: $(SRCDIR)/render.cpp $(SRCDIR)/render.h
+	$(CC) $(SRCDIR)/render.cpp -o $(BINDIR)/render.o $(CFLAGS) $(LFLAGS) -c
 
-textures: $(SRCDIR)/textures.h $(SRCDIR)/textures.cpp
-	$(CC) $(SRCDIR)/textures.cpp -o $(SRCDIR)/textures.o $(CFLAGS) $(LFLAGS) -c
+shader: $(SRCDIR)/shader.cpp $(SRCDIR)/shader.h
+	$(CC) $(SRCDIR)/shader.cpp -o $(BINDIR)/shader.o $(CFLAGS) $(LFLAGS) -c
 
-projection: $(SRCDIR)/projection.h $(SRCDIR)/projection.cpp
-	$(CC) $(SRCDIR)/projection.cpp -o $(SRCDIR)/projection.o $(CFLAGS) $(LFLAGS) -c
+mesh: $(SRCDIR)/mesh.cpp $(SRCDIR)/mesh.h
+	$(CC) $(SRCDIR)/mesh.cpp -o $(BINDIR)/mesh.o $(CFLAGS) $(LFLAGS) -c
 
-object: $(SRCDIR)/object.h $(SRCDIR)/object.cpp
-	$(CC) $(SRCDIR)/object.cpp -o $(SRCDIR)/object.o $(CFLAGS) $(LFLAGS) -c
+textures: $(SRCDIR)/textures.cpp $(SRCDIR)/textures.h
+	$(CC) $(SRCDIR)/textures.cpp -o $(BINDIR)/textures.o $(CFLAGS) $(LFLAGS) -c
 
-control: $(SRCDIR)/control.h $(SRCDIR)/control.cpp
-	$(CC) $(SRCDIR)/control.cpp -o $(SRCDIR)/control.o $(CFLAGS) $(LFLAGS) -c
+control: $(SRCDIR)/control.cpp $(SRCDIR)/control.h
+	$(CC) $(SRCDIR)/control.cpp -o $(BINDIR)/control.o $(CFLAGS) $(LFLAGS) -c
+
+mathlib: $(SRCDIR)/mathlib.cpp $(SRCDIR)/mathlib.h
+	$(CC) $(SRCDIR)/mathlib.cpp -o $(BINDIR)/mathlib.o $(CFLAGS) $(LFLAGS) -c
+
+voxel: $(SRCDIR)/voxel.cpp $(SRCDIR)/voxel.h
+	$(CC) $(SRCDIR)/voxel.cpp -o $(BINDIR)/voxel.o $(CFLAGS) $(LFLAGS) -c
+
+# libraries
 
 glad: $(LIBDIR)/glad.c
-	$(CC) $(LIBDIR)/glad.c -o $(LIBDIR)/glad.o $(CFLAGS) $(LFLAGS) -c
+	$(CC) $(LIBDIR)/glad.c -o $(BINDIR)/glad.o $(CFLAGS) $(LFLAGS) -c
 
 stb_image: $(LIBDIR)/stb_image.h $(LIBDIR)/stb_image.cpp
-	$(CC) $(LIBDIR)/stb_image.cpp -o $(LIBDIR)/stb_image.o $(CFLAGS) $(LFLAGS) -c
+	$(CC) $(LIBDIR)/stb_image.cpp -o $(BINDIR)/stb_image.o $(CFLAGS) $(LFLAGS) -c

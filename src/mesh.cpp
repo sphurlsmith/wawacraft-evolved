@@ -1,80 +1,353 @@
 #include "libs.h"
+#include "shader.h"
+#include "textures.h"
 #include "mesh.h"
 
-// implementation of the mesh.h header file.
+mesh_base::mesh_base()
+{
 
-// constructor of wc_BasicMesh. which takes in a vertex and index vector
-// initializing its local arrays, and calls to set up the mesh
-wc_BasicMesh::wc_BasicMesh(std::vector<float> vertexpar, std::vector<unsigned int> indexpar){
-  this->vertices=vertexpar;
-  this->indices=indexpar;
-
-  setupMesh(); // relinquishing control to the setupMesh function
 }
 
-// nothing is done in the destructor for now
-wc_BasicMesh::~wc_BasicMesh(){
+mesh_base::mesh_base(std::vector<float> pvert, std::vector<unsigned int> pind, bool colors, bool textures):
+  m_vertices(pvert),
+  m_indices(pind)
+{
+  buffers_generate();
   
+  vertex_attributes_bind(colors, textures);
 }
 
-// setting generic vertex attributes. static for convenience
-static void wc_BasicMesh::setVertexAttributes(){
-  // since this is just a basic mesh like we did before, it wont have anything too fancy.
+void mesh_base::buffers_generate()
+{
+  glGenBuffers(1, &m_vbo);
+  glGenBuffers(1, &m_ebo);
+  glGenVertexArrays(1, &m_vao);
+}
+
+void mesh_base::buffers_bind()
+{ 
+  glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+
+  glBufferData(GL_ARRAY_BUFFER, m_vertices.size()*sizeof(float), &m_vertices.front(), GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size()*sizeof(unsigned int), &m_indices.front(), GL_STATIC_DRAW);
+}
+
+void mesh_base::vertex_attributes_bind(bool colors_used, bool textures_used=false, bool shade_used=false)
+{
+  glBindVertexArray(m_vao);
+
+  buffers_bind();
+
+  int vpos=3;
+  int vcol=0;
+  int vtex=0;
+  int vshd=0;
   
-  // vertex location attributes
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
+  if(colors_used){vcol=3;}
+  if(textures_used){vtex=2;}
+  if(shade_used){vshd=1;}
+
+  int sum=vpos+vcol+vtex+vshd;
+  
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sum*sizeof(float), (void*)(0));
   glEnableVertexAttribArray(0);
-
-  // color data attributes
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
-  glEnableVertexAttribArray(1);
-
-  // texture data attributes
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
-  glEnableVertexAttribArray(2);
-}
-
-// initializing the OpenGL objects: VAO, VBO, and EBO
-void wc_BasicMesh::initializeBufferObjects(){
-  // initializing the vertex array object
-  glGenVertexArrays(1, &(this->VAO));
-
-  // initializing the vertex buffer and element buffer object
-  glGenBuffers(1, &(this->VBO));
-  glGenBuffers(1, &(this->EBO));
-
-  initialized=true; // turning on the flag for future calls of setupMesh
-}
-
-// function that binds in the vertex and index arrays.
-void wc_BasicMesh::configureBufferObjects(){
-  // feeding in VBO data
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(float), &vertices.front(), GL_STATIC_DRAW);
-
-  // feeding in EBO data
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(unsigned int), &indices.front(), GL_STATIC_DRAW);
-}
-
-void wc_BasicMesh::setupMesh(){
-  // placing the setup function in a subroutine for convenience
-  // and also because we want to avoid registering our objects twice
-  if(!initialized){
-    initializeBufferObjects();
+  
+  if(colors_used){
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sum*sizeof(float), (void*)(vpos*sizeof(float)));
+    glEnableVertexAttribArray(1);
   }
 
-  // setting up the real runtime data
-  glBindVertexArray(VAO);
-  configureBufferObjects(); // feeding in array data from vertex & index arrays
-  setVertexAttributes();    // setting the vertex attributes for our instance
-  glBindVertexArray(0);     // unbinding the VAO
+  if(textures_used){
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sum*sizeof(float), (void*)((vpos+vcol)*sizeof(float)));
+    glEnableVertexAttribArray(2);
+  }
+
+  if(shade_used){
+    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sum*sizeof(float), (void*)((vpos+vcol+vtex)*sizeof(float)));
+    glEnableVertexAttribArray(3);
+  }
+  
+  glBindVertexArray(0);
 }
 
-// function to render our instance of wc_BasicMesh
-// doesnt integrate textures or anything.
-void wc_BasicMesh::renderMesh(){
-  glBindVertexArray(VAO); // uses VAO binds
-  glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0); // render
-  glBindVertexArray(0); // unbinds VAO. simple as
+void mesh_base::render()
+{
+  if(m_shader!=NULL){
+    int val;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &val);
+    if(val!=m_shader->get_id()){
+      m_shader->activate();
+    }
+  }else{
+    std::cerr << "err:w-m_base-render-shader-null" << std::endl;
+  }
+
+  if(m_texture!=NULL){
+    m_texture->texture_object_use();
+  }else{
+    std::cerr << "err:w-m_base-render-texture-null" << std::endl;
+  }
+  
+  glBindVertexArray(m_vao);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+  glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
+  glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void mesh_base::vertices_set(std::vector<float> pvert)
+{
+  m_vertices=pvert;
+}
+
+void mesh_base::indices_set(std::vector<unsigned int> pind)
+{
+  m_indices=pind;
+}
+
+void mesh_base::shader_set(shader* pshader)
+{
+  if(pshader!=NULL){
+    m_shader=pshader;
+  }else{
+    std::cerr << "err:w-mesh_base-shader-null" << std::endl;
+  }
+}
+
+void mesh_base::texture_set(texture* ptexture)
+{
+  if(ptexture!=NULL){
+    m_texture=ptexture;
+  }else{
+    std::cerr << "err:w-mesh_base-texture-null" << std::endl;
+  }
+}
+
+std::vector<float> mesh_base::vertices_get()
+{
+  return m_vertices;
+}
+
+std::vector<unsigned int> mesh_base::indices_get()
+{
+  return m_indices;
+}
+
+shader* mesh_base::shader_get()
+{
+  return m_shader;
+}
+
+texture* mesh_base::texture_get()
+{
+  return m_texture;
+}
+
+mesh_3d::mesh_3d():
+  m_model(matrix::base()),
+  m_position({0, 0, 0}),
+  m_rotation_x(0),
+  m_rotation_y(0),
+  m_rotation_z(0),
+  m_scale(1){
+  
+}
+
+mesh_3d::mesh_3d(std::vector<float> pvert, std::vector<unsigned int> pind, bool colors, bool textures, vector_3d protation, vector_3d ptranslation, float pscale):
+  mesh_base(pvert, pind, colors, textures),
+  m_position(ptranslation),
+  m_rotation_x(protation.x),
+  m_rotation_y(protation.y),
+  m_rotation_z(protation.z),
+  m_scale(pscale),
+  m_model(matrix::base()){
+  model_matrix_form();
+}
+
+void mesh_3d::scale_set(float pscale)
+{
+  m_scale=pscale;
+}
+
+void mesh_3d::rotation_set(vector_3d protation)
+{
+  m_rotation_x=protation.x;
+  m_rotation_y=protation.y;
+  m_rotation_z=protation.z;
+
+  if(m_rotation_x>=2*MATHLIB_PI){m_rotation_x-=2*MATHLIB_PI;}
+  if(m_rotation_y>=2*MATHLIB_PI){m_rotation_y-=2*MATHLIB_PI;}
+  if(m_rotation_z>=2*MATHLIB_PI){m_rotation_z-=2*MATHLIB_PI;}
+
+  if(m_rotation_x<=0){m_rotation_x+=2*MATHLIB_PI;}
+  if(m_rotation_y<=0){m_rotation_y+=2*MATHLIB_PI;}
+  if(m_rotation_z<=0){m_rotation_z+=2*MATHLIB_PI;}
+}
+
+void mesh_3d::position_set(vector_3d ptranslation)
+{
+  m_position=ptranslation;
+}
+
+void mesh_3d::model_matrix_form()
+{
+  m_model=matrix::model(m_rotation_x, m_rotation_y, m_rotation_z, m_scale, m_position);
+}
+
+float mesh_3d::scale_get()
+{
+  return m_scale;
+}
+
+float mesh_3d::rotation_x_get()
+{
+  return m_rotation_x;
+}
+
+float mesh_3d::rotation_y_get()
+{
+  return m_rotation_y;
+}
+
+float mesh_3d::rotation_z_get()
+{
+  return m_rotation_z;
+}
+
+vector_3d mesh_3d::position_get()
+{
+  return m_position;
+}
+
+matrix* mesh_3d::model_matrix_get()
+{
+  return &m_model;
+}
+
+camera::camera(int paspectx, int paspecty, float pfov, float pnear, float pfar, vector_3d pposition, vector_3d protation):
+  c_resolution_x(paspectx),
+  c_resolution_y(paspecty),
+  c_fov(pfov),
+  c_near(pnear),
+  c_far(pfar),
+  c_position(pposition),
+  c_rotation(protation),
+  c_projection(matrix::base()),
+  c_view(matrix::base()){
+  projection_matrix_form();
+  view_matrix_form();
+}
+
+void camera::render_mesh(mesh_3d* mesh)
+{
+  projection_matrix_form();
+  view_matrix_form();
+  mesh->model_matrix_form();
+  
+  mesh->shader_get()->activate();
+  mesh->shader_get()->uniform_set_matrix("mod", &(mesh->model_matrix_get()->m[0][0]), false);
+  mesh->shader_get()->uniform_set_matrix("view", &(c_view.m[0][0]), false);
+  mesh->shader_get()->uniform_set_matrix("proj", &(c_projection.m[0][0]), false);
+  
+  mesh->render();
+}
+
+void camera::resolution_set(float px, float py)
+{
+  c_resolution_x=px;
+  c_resolution_y=py;
+}
+
+void camera::fov_set(float pfov)
+{
+  c_fov=pfov;
+}
+
+void camera::position_set(vector_3d pposition)
+{
+  c_position=pposition;
+}
+
+void camera::rotation_set(vector_3d protation)
+{
+  c_rotation=protation;
+
+  if(c_rotation.x>=2*MATHLIB_PI){c_rotation.x-=2*MATHLIB_PI;}
+  if(c_rotation.y>=2*MATHLIB_PI){c_rotation.y-=2*MATHLIB_PI;}
+  if(c_rotation.z>=2*MATHLIB_PI){c_rotation.z-=2*MATHLIB_PI;}
+
+  if(c_rotation.x<=0){c_rotation.x+=2*MATHLIB_PI;}
+  if(c_rotation.y<=0){c_rotation.y+=2*MATHLIB_PI;}
+  if(c_rotation.z<=0){c_rotation.z+=2*MATHLIB_PI;}
+}
+
+void camera::plane_near_set(float p)
+{
+  c_near=p;
+}
+
+void camera::plane_far_set(float p)
+{
+  c_far=p;
+}
+
+vector_3d camera::position_get()
+{
+  return c_position;
+}
+
+vector_3d camera::rotation_get()
+{
+  return c_rotation;
+}
+
+void camera::projection_matrix_form()
+{
+  float aspect=c_resolution_x/c_resolution_y;
+  c_projection=matrix::projection(c_near, c_far, c_fov, aspect);
+}
+
+void camera::view_matrix_form()
+{
+  quat rotorx(cos(c_rotation.x/2), sin(c_rotation.x/2), 0, 0);
+  quat rotory(cos(c_rotation.y/2), 0, sin(c_rotation.y/2), 0);
+  quat rotorz(cos(c_rotation.z/2), 0, 0, sin(c_rotation.z/2));
+
+  c_view=matrix::multiply(matrix::translation(vector_3d::negate(c_position)), matrix::quaternion(quat::product(rotorz, quat::product(rotorx, rotory))));
+}
+
+int camera::resolution_x_get()
+{
+  return c_resolution_x;
+}
+
+int camera::resolution_y_get()
+{
+  return c_resolution_y;
+}
+
+float camera::fov_get()
+{
+  return c_fov;
+}
+
+float camera::plane_near_get()
+{
+  return c_near;
+}
+
+float camera::plane_far_get()
+{
+  return c_far;
+}
+
+matrix* camera::projection_matrix_get()
+{
+  return &c_projection;
+}
+
+matrix* camera::view_matrix_get()
+{
+  return &c_view;
 }

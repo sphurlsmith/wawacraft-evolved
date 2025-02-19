@@ -1,76 +1,76 @@
 #include "libs.h"
 #include "textures.h"
 
-// function to set generic texture attributes. this is used by wc_Texture
-void nstex::setTextureAttributes(){
-  // function to set the texture attributes before doing things
-  // defaulted to repeat in both axes
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+texture::texture(std::string path, int &width, int &height, int &channels, bool nearest_or_linear)
+{
+  buffers_generate();
 
-  // setting interlacing to linear for our textures
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  texture_object_use();
+  texture_attributes_set(nearest_or_linear);
   
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+  image_load(path, width, height, channels);
+  buffers_bind(width, height, channels);
+  image_free();
 }
 
-// loading raw image data given resolution, number of color channels to
-// interpret by, the path(as std::string not c-string clutz) and the buffer
-// to load the image to.
-void nstex::loadRawImage(int& x, int& y, int ch, std::string n, unsigned char*& buf){
-  // just a wrapper for STB-image
-  buf=stbi_load(n.c_str(), &x, &y, &ch, 0);
+void texture::buffers_generate()
+{
+  glGenTextures(1, &t_object);
+}
 
-  try{
-    if(!buf){
-      throw "failed-image-loading";
+void texture::buffers_bind(int width, int height, int channels)
+{
+  if(t_raw){
+    if(channels==4){
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, t_raw);
+      glGenerateMipmap(GL_TEXTURE_2D);
+    }else if(channels==3){
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, t_raw);
+      glGenerateMipmap(GL_TEXTURE_2D);	
     }
-  }catch(const char* e){
-    std::cout << "Exception approached:" << e << " when trying to load file: " << n << std::endl;
+  }else{
+    std::cerr << "err:texture-buffers_bind-t_raw-invalid" << std::endl;
   }
 }
 
-// wrapper to simply unbind textures to the default
-void nstex::deactivateTextures(){
-  glBindTexture(GL_TEXTURE_2D, 0);
+void texture::texture_attributes_set(bool nearest_or_linear)
+{
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+  if(nearest_or_linear){
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+  }else{
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  }
 }
 
-// freeing texture data off memory
-void nstex::freeTextureMemory(unsigned char*& v){
-  stbi_image_free(v);
+void texture::image_load(std::string path, int &width, int &height, int& channels)
+{
+  stbi_set_flip_vertically_on_load(true);
+  t_raw=stbi_load(path.c_str(), &width, &height, &channels, 0);
 }
 
-// constructor of wc_Texture, which initializes an instance
-// given resolution and path as a std::string.
-wc_Texture::wc_Texture(int px, int py, std::string path):
-  x(px), // initializing x and y to px and py
-  y(py),
-  n(path){
-  // keeping the image
-  nstex::loadRawImage(x, y, 4, path, img); // loading into our img buffer
-  
-  // creating a slot in the state machine for the texture
-  glGenTextures(1, &(this->TID));
-  useTexture(); // binding to our texture
-  nstex::setTextureAttributes(); // setting default attributes
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x,  y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img); // giving openGL the image data
-  glGenerateMipmap(GL_TEXTURE_2D); // generating needed mipmaps
-  nstex::deactivateTextures(); // unbinding
+void texture::image_free()
+{
+  stbi_image_free(t_raw);
 }
 
-wc_Texture::~wc_Texture(){
-  // nstex::freeTextureMemory(img);
+void texture::texture_object_use()
+{
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, t_object);
 }
 
-// instance-specific function to bind the currently used texture to the
-// instance
-void wc_Texture::useTexture(){
-  glBindTexture(GL_TEXTURE_2D, &(this->TID));
-}
-
-// getter function for the openGL object, by reference
-unsigned int& wc_Texture::getTex(){
-  return TID;
+unsigned int* texture::texture_object_get()
+{
+  return &t_object;
 }

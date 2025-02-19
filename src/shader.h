@@ -3,49 +3,27 @@
 
 #include "libs.h"
 
-// shader.h is a header that provides the nsshader utility namespace and the class shader, which
-// provides support to create and manage shaders intelligently
-
-// utility namespace used to read in shader source files (.glsl)
-// mostly used by shader class, but we could find that some other need for this
-namespace nsshader{
-  // returns the string of a complete file given its relative path from the
-  // program's working directory, given as a c-string passed by reference
-  std::string readFile(const char*& path);
-}
-
-// class used to create, manage, and get rid of shaders intelligently. this class
-// allows you to also set uniforms of different variables in the shader source.
-class wc_Shader{
+class shader
+{
  public:
-  // the constructor simply builds a shader object given the path of the vertex
-  // and fragment shader
-  wc_Shader(const char* vertexp, const char* fragmentp);
+  shader(const char* pvertex, const char* pfragment);
+  
+  static void shader_create_vertex(unsigned int& pshid, const char* ps);
+  static void shader_create_fragment(unsigned int& pshid, const char* ps);
 
-  // static functions to compile vertex and fragment shaders given the complete
-  // source code of the said shaders, and the opengl object of which the compiled
-  // source will be attached to, passed by reference
-  static void createVertexShader(unsigned int& shaderet, const char* s);
-  static void createFragmentShader(unsigned int& shaderet, const char* s);
+  static std::string read_file(const char* path);
+  
+  void uniform_set_bool(const char* name, bool val) const;
+  void uniform_set_int(const char* name, int val) const;
+  void uniform_set_float(const char* name, float val) const;
+  void uniform_set_matrix(const char* name, float* matrix, bool transposed) const;
 
-  // an instance specific function used to bind any further rendering to be
-  // binded to the shader
   void activate();
-
-  // setting specific uniform values within a shader given the name and desired
-  // value
-  void setUniformBool(const char* n, bool val) const;
-  void setUniformInt(const char* n, int val) const;
-  void setUniformFloat(const char* n, float val) const;
-  void setUniformMatrix(const char* n, bool transpose, float *m) const;
-
-  // function that returns the ID of a shader(by reference, im not scamming ya!)
-  unsigned int& getID();
-
+  
+  unsigned int& get_id();
+  
  private:
-
-  // the OpenGL ID for the shader program, initialized in the constructor.
-  unsigned int ID;
+  unsigned int shaderid;
 };
 
 #endif

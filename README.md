@@ -24,46 +24,76 @@ of LAN multiplayer, or global multiplayer over the Internet?
 ## Progress with the game
 
 Wawacraft:Evolved is a game that remains in progress, with its initial development 
-beginning since around the beginning of August circa 15/8/24 . It is currently not 
-set for release, however I plan to give the game several development/release stages
+beginning since around the beginning of August circa 15/8/24 . It will almost never 
+be set for release, however I plan to give the game several development/release 
+stages:
 
 * Alpha 
 * Beta
 * Delta
+* Gamma
 * Sigma
+* The whole rest of the greek alphabet
 
 Was this just for the funny idea that a game be versioned Sigma 2.2.0? Yes. Very Much So.
 
 ## Current Version
 
-As of now, the current version is **v0.0.1 Alpha**, also codenamed as the **Evolved Uni Demo
-Release**. Current features include:  
+Wawacraft:Evolved's newest public version is v0.2.11-alpha, Alpha 0.2.11, and has been 
+given the codename Wawacraft:Evolved Spark Release, a nod to the early naming conventions 
+that gave us the Wawacraft Classic Ember Release.
 
-* Added vertical and horizontal rotation
-* Added semi-working movement using WASD and arrow keys
-* Fixed numerous bugs with the view matrix
-* Made the wawa cube an uni cube, and made it rotate.
+The codebase contains now:
 
-TODO for the next version:
+ - A proper chunk management system added in for support with the Wawacraft:Evolved engine.
+ - A working system to use spritesheets for textures in chunks, which I devised on my own,
+   again built-in to the Wawacraft:Evolved engine.
+ - Numerous optimizations to make the game work on low end systems (backface culling, unloading
+   out of distance chunks from memory, lazy chunk loading, hidden face culling)
+ - A series of patches to improve upon previous bugs from the v0.0.1 release of Wawacraft:Evolved
+   engine.
+ - A complete rewrite of the old v0.0.1-alpha engine, which I planned to release as v0.1.1-alpha,
+   but I think it matters not, right? I didn't call it a major release because I still used the
+   same engineering ideas as the older version, so I stacked it in minor releases.
+ - A fresh new set of textures for Wawa and Uni, as well as textures for grass, stone, soil,
+   and wood!!!
+ - A rudimentary terrain generation system that just makes random chunk heights for every chunk
+   and flat land, giving a natural-ish kind of look.
 
-* Fix 'cursed boots' bug where horizontal rotation is either very fast or nonexistent
-  when running the game sometimes
-* Rewrite/refactor EVERYTHING going into the next version
-* Fix the math-related code for the view matrix
+## Performance
 
-Going into the next version(v0.1.1 alpha) however, I will be making a big rewrite of the
-entire project to uphold new standards for the source code(correct naming conventions,
-thought out software architecture, better file structures, etc.). If you want information
-on the project, consider reading my blog, listed below.
+The game runs at an estimate 60FPS on Intel Celeron B820(1.7GHz), 4GB Ram, Integrated graphics.
+I assure you that it will run relatively well on your system, however bad I am at memory management.
+In the future I will try to optimize the game a bit further and make it run well.
 
-## Screenshots
+## Milestones to reach
 
-This section provides a gallery for some cool screenshots taken during development:
+What I plan to add in the future:
 
-![](./arc/screenshots/wawa_cube.png)
-![](./arc/screenshots/v0.0.1-alpha_inside_the_uni.png)
-![](./arc/screenshots/v0.0.1-alpha_uni_rotate2.png)
-![](./arc/screenshots/v0.0.1-alpha_can_you_spot_the_uni.png)
+ - Fixing up the chunk management system up to the coding standards of the other classes and
+   functionalities.
+ - A nice-looking noise function for hills in the terrain.
+ - Ponds, rivers, and lakes.
+ - Mountains
+ - Structures like trees, and perhaps assorted Wawa shrines and Uni shrubs?
+ - Collision and physics systems
+ - A legitimate system for holding game operation and controls all in one. I think that the controls
+   system is very rudimentary and could be expanded upon, and I haven't even touched collision nor
+   physics. This system could hold game states/modes of operation where it moves on a certain loop.
+ - Either text rendering windows that are run by the same program, or a GUI system to run INSIDE the
+   OpenGL framebuffer of the game.
+
+Here are some nice development screenshots which I did not take during development at all! They are 
+all here, and come alongside all the development screenshots recorded in previous versions:
+
+![Set this as your wallpaper?](./arc/screenshots/cliff-v0.2.11-alpha.png)
+![Huh?!](./arc/screenshots/wireframe-v0.2.11-alpha.png)
+![You're not supposed to be here](./arc/screenshots/underside-v0.2.11-alpha.png)
+
+And here is the full set of textures in the game if you want to take a curious gander:
+
+![Game spritesheet](./tex/spritesheet.png)
+
 
 ## The Original Wawacraft
 
