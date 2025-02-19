@@ -94,6 +94,7 @@ And here is the full set of textures in the game if you want to take a curious g
 
 ![Game spritesheet](./tex/spritesheet.png)
 
+
 ## The Original Wawacraft
 
 The original game Wawacraft Classic is available in its latest distribution flavour, 
