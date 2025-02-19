@@ -525,10 +525,6 @@ void chunk_manager::chunk_group_visible(vector_3d camera_position)
 {
   cm_visible.clear();
 
-  camera_position.x=(int)camera_position.x;
-  camera_position.y=(int)camera_position.y;
-  camera_position.z=(int)camera_position.z;
-
   int conversion=chunk::DEFAULT_CHUNK_SIZE*chunk::DEFAULT_BLOCK_SCALE;
   
   int x_location=camera_position.x/conversion;
@@ -539,6 +535,16 @@ void chunk_manager::chunk_group_visible(vector_3d camera_position)
   
   int z_bound_lesser=z_location-DEFAULT_VISIBLE_RADIUS;
   int z_bound_higher=z_location+DEFAULT_VISIBLE_RADIUS;
+
+  for(int x=0; x<cm_data.size(); x++){
+    for(int i=0; i<cm_visible.size(); i++){
+      if(cm_visible[i]!=x){
+	if(i==cm_visible.size()-1){
+	  chunk_unload(x);
+	}
+      }
+    }
+  }
   
   for(int x=x_bound_lesser; x<=x_bound_higher; x++){
     for(int z=z_bound_lesser; z<=z_bound_higher; z++){
@@ -550,18 +556,6 @@ void chunk_manager::chunk_group_visible(vector_3d camera_position)
       chunk_build({x, 0, z});
       
       cm_visible.push_back(chunk_search({x, 0, z}));
-    }
-  }
-
-  for(int x=0; x<cm_data.size(); x++){
-    for(int i=0; i<cm_visible.size(); i++){
-      if(cm_visible[i]!=x){
-	if(i==cm_visible.back()){
-	  chunk_unload(x);
-	}else{
-	  continue;
-	}
-      }
     }
   }
 }
@@ -621,8 +615,8 @@ bool chunk_manager::chunk_init(voxcoord pos)
 
   if(allowed){
     chunk c_new;
+    c_new.position_set(pos);
     cm_data.push_back(c_new);
-    cm_data.back().position_set(pos);
     return true;
   }
 

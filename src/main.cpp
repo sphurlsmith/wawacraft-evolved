@@ -129,7 +129,7 @@ int main()
   test_shd.uniform_set_int("tex", 0);
   test_sh3d.uniform_set_int("tex", 0);
 
-  camera test_camera(800, 600, 60, 0.1, 256, {0, 0, 0}, {0, 0, 0});
+  camera test_camera(800, 600, 60, 0.1, 256, {0, 0, 4}, {0, 0, 0});
 
   chunk_manager chunks(&texpack, &nocol3d);
   
@@ -184,7 +184,7 @@ int main()
       meshes[x]=chunks.cm_data[chunks.cm_visible[x]].mesh_get();
     }
 
-    test_env.screen_run_render_loop_instance(chunks.cm_visible.size(), true);
+    test_env.screen_run_render_loop_instance(chunk_manager::DEFAULT_VISIBLE_AREA, true);
     
     key_callback_execute_press(test.get_reference(), &KEY_ARROW_LEFT, 5, camptrptr);
     key_callback_execute_press(test.get_reference(), &KEY_ARROW_RIGHT, 6, camptrptr);
@@ -204,7 +204,7 @@ int main()
     double delta=glfwGetTime()-previous_frame;
     
     previous_frame=glfwGetTime();
-    std::cout << delta << std::endl;
+    //std::cout << delta << std::endl;
   }
 
   window::kill_glfw();
