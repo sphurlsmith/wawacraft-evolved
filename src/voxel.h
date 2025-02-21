@@ -47,6 +47,7 @@ class voxel{
   static std::vector<float> vertices_form(voxcoord v_position, float v_size, spritecoord psc, bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right);
   static std::vector<unsigned int> indices_form(bool face_top, bool face_bottom, bool face_front, bool face_back, bool face_left, bool face_right);
 
+  voxcoord position_get();
   voxtype type_get();
 
   float size_get();
@@ -79,11 +80,12 @@ class chunk{
   void voxel_set(int x, int y, int z, voxtype ptype);
 
   void mesh_form();
-
+  
   voxcoord position_get();
   
   voxel voxel_get(int x, int y, int z);
-
+  voxcoord voxel_raycast(vector_3d initial_position, vector_3d target, bool current_or_previous=true);
+  
   mesh_3d* mesh_get();
 
   shader* shader_get();
@@ -132,11 +134,16 @@ class chunk_manager{
   
   bool chunk_exists(voxcoord ppos);
 
+  bool block_break(vector_3d initial_position, vector_3d target);
+  bool block_place(vector_3d initial_position, vector_3d target, voxtype type);
+  
   int chunk_search(voxcoord pos);
   
   static const int DEFAULT_VISIBLE_RADIUS;
   static const int DEFAULT_VISIBLE_AREA;
 
+  static const float DEFAULT_RAYCAST_RADIUS;
+  
   texture* default_spritesheet;
   shader* default_shader;
 

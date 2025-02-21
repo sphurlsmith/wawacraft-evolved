@@ -4,5 +4,6 @@ docs/
 bin/*
 # I hate backups getting in the repo too
 /#*#
+/#*
 *~
 *.o

@@ -16,6 +16,8 @@ int CLASSIC_TEXTURE_CHANNELS=3;
 
 int SCLASS_TEXTURE_RESOLUTION=128;
 
+voxtype BUILDING_BLOCK=VOX_SOIL;
+
 float DEFAULT_SPEED=0.1;
 float DEFAULT_TURN=4;
 
@@ -33,6 +35,9 @@ key_callback KEY_ARROW_DOWN;
 
 key_callback KEY_TAB;
 key_callback KEY_ESC;
+
+key_callback KEY_BACKSP;
+key_callback KEY_ENTER;
 
 void render(window* pwint, void* pcmr, int argc, void** pmsh)
 {
@@ -95,15 +100,40 @@ void move_camera(int argc, char** argv)
 
 void tab(int argc, char** argv)
 {
-  static bool wireframed;
+  BUILDING_BLOCK=BUILDING_BLOCK+1;
 
-  if(wireframed){
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  }else{
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  if(BUILDING_BLOCK>VOX_UNI){
+    BUILDING_BLOCK=VOX_GRASS;
   }
+}
 
-  wireframed=!wireframed;
+void blocks(int argc, char** argv){
+  chunk_manager* chunks=(chunk_manager*)argv[0];
+  camera* cam=(camera*)argv[1];
+
+  if(argv!=NULL){
+    if(argc==0){
+      if(chunks!=NULL && cam!=NULL){
+	matrix view=*(cam->view_matrix_get());
+	vector_3d t(view.m[2][0], view.m[2][1], view.m[2][2]);
+	
+	chunks->block_break(cam->position_get(), t);
+      }else{
+	std::cout << "exc:func-blocks-argv-null" << std::endl;
+      }
+    }else{
+      if(chunks!=NULL && cam!=NULL){
+	matrix view=*(cam->view_matrix_get());
+	vector_3d t(view.m[2][0], view.m[2][1], view.m[2][2]);
+	
+	chunks->block_place(cam->position_get(), t, BUILDING_BLOCK);
+      }else{
+	std::cout << "exc:func-blocks-argv-null" << std::endl;
+      }
+    }
+  }else{
+    std::cout << "exc:func-blocks-argv-null" << std::endl;
+  }
 }
 
 int main()
@@ -129,13 +159,13 @@ int main()
   test_shd.uniform_set_int("tex", 0);
   test_sh3d.uniform_set_int("tex", 0);
 
-  camera test_camera(800, 600, 60, 0.1, 256, {0, 0, 4}, {0, 0, 0});
+  camera test_camera(800, 600, 60, 0.1, 256, {0, 1, 0}, {0, 0, 0});
 
   chunk_manager chunks(&texpack, &nocol3d);
   
   mesh_3d* meshes[chunk_manager::DEFAULT_VISIBLE_AREA];
   
-  test.set_title("Wawacraft:Evolved [v0.1.1-alpha indev] [OpenGL 3.3]");
+  test.set_title("Wawacraft:Evolved [v0.2.12-alpha/Spark Release] [OpenGL 3.3]");
 
   KEY_W.keycode=GLFW_KEY_W;
   KEY_W.callback=&move_camera;
@@ -163,6 +193,12 @@ int main()
 
   KEY_TAB.keycode=GLFW_KEY_TAB;
   KEY_TAB.callback=&tab;
+
+  KEY_BACKSP.keycode=GLFW_KEY_BACKSPACE;
+  KEY_BACKSP.callback=&blocks;
+
+  KEY_ENTER.keycode=GLFW_KEY_ENTER;
+  KEY_ENTER.callback=&blocks;
   
   char* camptr=(char*)&test_camera;
   char** camptrptr=&camptr;
@@ -198,6 +234,15 @@ int main()
 
     key_callback_execute_press(test.get_reference(), &KEY_TAB, 0, NULL);
     key_callback_execute_press(test.get_reference(), &KEY_ESC, 1, NULL);
+
+    char* blocks_list[2]=
+      {
+	(char*)&chunks,
+	(char*)camptr
+      };
+    
+    key_callback_execute_press(test.get_reference(), &KEY_BACKSP, 0, blocks_list);
+    key_callback_execute_press(test.get_reference(), &KEY_ENTER, 1, blocks_list);
     
     roll=!roll;
     
