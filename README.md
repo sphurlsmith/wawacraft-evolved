@@ -39,9 +39,9 @@ Was this just for the funny idea that a game be versioned Sigma 2.2.0? Yes. Very
 
 ## Current Version
 
-Wawacraft:Evolved's newest public version is v0.2.11-alpha, Alpha 0.2.11, and has been 
-given the codename Wawacraft:Evolved Spark Release, a nod to the early naming conventions 
-that gave us the Wawacraft Classic Ember Release.
+Wawacraft:Evolved's newest public version is v0.2.12-alpha, Alpha 0.2.12, and has been 
+given the v0.2.11's codename, Wawacraft:Evolved Spark Release, a nod to the early naming 
+conventions that gave us the Wawacraft Classic Ember Release.
 
 The codebase contains now:
 
@@ -59,12 +59,68 @@ The codebase contains now:
    and wood!!!
  - A rudimentary terrain generation system that just makes random chunk heights for every chunk
    and flat land, giving a natural-ish kind of look.
+ - Block placing and deletion through DDA Algorithm variant for raycasting(Amantides and Woo).
 
 ## Performance
 
 The game runs at an estimate 60FPS on Intel Celeron B820(1.7GHz), 4GB Ram, Integrated graphics.
 I assure you that it will run relatively well on your system, however bad I am at memory management.
 In the future I will try to optimize the game a bit further and make it run well.
+
+## Installing the game
+
+This game is built to run on a Linux environment, under the XOrg windowing system, with OpenGL 
+drivers for OpenGL 3.3 minimum. It relies on glibc, GLFW, GLAD, and stb-image as dependencies at the 
+moment. The project also compiles with GNUMake. The other notable "dependencies" include the handwritten 
+math library that the game uses, all built in. Make sure to install the right dependencies for the 
+project from the package manager of your distribution of Linux.
+
+If you would see it useful to port the project to another platform, please feel free to send me a pull 
+request for said platform, so long as we still support the original environment.
+
+To install the game, run the following commands in a POSIX terminal. I personally use bash.
+
+```bash
+user $ git clone https://www.github.com/sphurlsmith/wawacraft-evolved
+user $ cd wawacraft-evolved
+```
+
+Then look through the makefile and alter for your preferences, then compile with make.
+Currently the default build is wawacraft_evolved.
+
+```bash
+user $ make
+```
+
+Finally, to run the game, run this from the project directory:
+
+```bash
+user $ cd bin
+user $ ./wawacraft_evolved
+```
+
+Enjoy!
+
+### Controls & configuration
+
+WASD for movement
+Arrow keys for rotation
+TAB to switch block types
+BACKSPACE for mining blocks
+ENTER to place a block
+
+If you see the game load in with settings not to your preference, such as 
+fast rotation/movement/small blocks/ other such things, the code has been 
+written clearly, and you can go into source code and edit environment variables 
+to your liking, fiddle with it and such.
+
+Then, of course, run ```make``` in your terminal and try the game again.
+
+The game is built so that you can alter it to your liking. If my textures are not 
+nice, create a new spritesheet in tex/ folder, and source it in main.cpp, then run 
+```make```.
+
+Remember: Every copy of Wawacraft:Evolved is personalized.
 
 ## Milestones to reach
 
