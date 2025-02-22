@@ -165,7 +165,7 @@ int main()
   
   mesh_3d* meshes[chunk_manager::DEFAULT_VISIBLE_AREA];
   
-  test.set_title("Wawacraft:Evolved [v0.2.12-alpha/Spark Release] [OpenGL 3.3]");
+  test.set_title("Wawacraft:Evolved [v0.2.14-alpha/Spark Release] [OpenGL 3.3]");
 
   KEY_W.keycode=GLFW_KEY_W;
   KEY_W.callback=&move_camera;
@@ -203,7 +203,7 @@ int main()
   char* camptr=(char*)&test_camera;
   char** camptrptr=&camptr;
 
-  double fps=1; // 1 second;
+  double time_limit=1; // 1 second;
 
   double previous_frame=glfwGetTime();
   
@@ -247,8 +247,12 @@ int main()
     roll=!roll;
     
     double delta=glfwGetTime()-previous_frame;
+
+    if(delta>=time_limit){
+      previous_frame=glfwGetTime();
+      chunks.block_operations_total=0;
+    }
     
-    previous_frame=glfwGetTime();
     //std::cout << delta << std::endl;
   }
 

@@ -39,9 +39,10 @@ Was this just for the funny idea that a game be versioned Sigma 2.2.0? Yes. Very
 
 ## Current Version
 
-Wawacraft:Evolved's newest public version is v0.2.12-alpha, Alpha 0.2.12, and has been 
+Wawacraft:Evolved's newest public version is v0.2.14-alpha, Alpha 0.2.14, and has been 
 given the v0.2.11's codename, Wawacraft:Evolved Spark Release, a nod to the early naming 
-conventions that gave us the Wawacraft Classic Ember Release.
+conventions that gave us the Wawacraft Classic Ember Release. We have skipped patch 
+13 because 13 is UNLUCKY.
 
 The codebase contains now:
 
@@ -60,6 +61,7 @@ The codebase contains now:
  - A rudimentary terrain generation system that just makes random chunk heights for every chunk
    and flat land, giving a natural-ish kind of look.
  - Block placing and deletion through DDA Algorithm variant for raycasting(Amantides and Woo).
+ - A cooldown of 1 block operation per second, allowing the building of intricate structures like the ones in following screenshots
 
 ## Performance
 
@@ -142,9 +144,9 @@ What I plan to add in the future:
 Here are some nice development screenshots which I did not take during development at all! They are 
 all here, and come alongside all the development screenshots recorded in previous versions:
 
-![Set this as your wallpaper?](./arc/screenshots/cliff-v0.2.11-alpha.png)
-![Huh?!](./arc/screenshots/wireframe-v0.2.11-alpha.png)
-![You're not supposed to be here](./arc/screenshots/underside-v0.2.11-alpha.png)
+![The House!!1!!1!1!!](./arc/screenshots/house-v0.2.12_14-alpha.png)
+![A Cave?!](./arc/screenshots/a_secret_cache-v0.2.12_14-alpha.png)
+![Life Is Recreation(Of a previous screenshot)](./arc/screenshots/life_is_pain_yay-v0.2.12_14-alpha.png)
 
 And here is the full set of textures in the game if you want to take a curious gander:
 

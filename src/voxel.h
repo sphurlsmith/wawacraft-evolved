@@ -143,12 +143,16 @@ class chunk_manager{
   static const int DEFAULT_VISIBLE_AREA;
 
   static const float DEFAULT_RAYCAST_RADIUS;
+
+  static int DEFAULT_BLOCK_OPS_PER_FRAME;
   
   texture* default_spritesheet;
   shader* default_shader;
 
   std::vector<int> cm_visible;
   std::vector<chunk> cm_data;
+
+  int block_operations_total;
 };
 
 #endif
