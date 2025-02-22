@@ -159,7 +159,7 @@ int main()
   test_shd.uniform_set_int("tex", 0);
   test_sh3d.uniform_set_int("tex", 0);
 
-  camera test_camera(800, 600, 60, 0.1, 256, {0, 1, 0}, {0, 0, 0});
+  camera test_camera(800, 600, 60, 0.1, 256, {0, 4, 0}, {0, 0, 0});
 
   chunk_manager chunks(&texpack, &nocol3d);
   
