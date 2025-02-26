@@ -33,6 +33,28 @@ class quat
   float k;
 };
 
+class vector
+{
+ public:
+  vector(float px, float py);
+
+  static float norm(vector a);
+
+  static vector negate(vector a);
+  static vector normalize(vector a);
+  static vector scalar(vector a, float l);
+
+  static vector add(vector a, vector b);
+  static vector subtract(vector a, vector b);
+
+  static vector dot(vector a, vector b);
+
+  static float dot_sum(vector a, vector b);
+  
+  float x;
+  float y;
+};
+
 class vector_3d
 {
  public:

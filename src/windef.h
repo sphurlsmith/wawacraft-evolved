@@ -19,6 +19,7 @@ class window
   void set_render_loop_callback(void (*prfc)(window* pwin, void* pcmr, int argc, void** pmsh));
 
   void run_render_loop(void* pcmr, int argc, void** pmsh);
+  void clear_render_loop();
   
   bool is_open();
 

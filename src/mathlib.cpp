@@ -83,6 +83,58 @@ static quat quat::conjugation(quat a, quat b)
   return quat::product(b, quat::product(a, quat::inverse(b)));
 }
 
+vector::vector(float px, float py):
+  x(px),
+  y(py){
+
+}
+
+static float vector::norm(vector a)
+{
+  return (sqrt(a.x*a.x+a.y*a.y));
+}
+
+static vector vector::negate(vector a)
+{
+  vector ret(-a.x, -a.y);
+
+  return ret;
+}
+
+static vector vector::normalize(vector a)
+{
+  float norm=1/vector::norm(a);
+  
+  return vector::scalar(a, norm);
+}
+
+static vector vector::scalar(vector a, float l)
+{
+  return vector(a.x*l, a.y*l);
+}
+
+static vector vector::add(vector a, vector b)
+{
+  vector ret(a.x+b.x, a.y+b.y);
+
+  return ret;
+}
+
+static vector vector::subtract(vector a, vector b)
+{
+  return vector::add(a, vector::negate(b));
+}
+
+static vector vector::dot(vector a, vector b)
+{
+  return vector(a.x*b.x, a.y*b.y);
+}
+
+static float vector::dot_sum(vector a, vector b)
+{
+  return (a.x*b.x+a.y*b.y);
+}
+
 vector_3d::vector_3d(float px, float py, float pz):
   x(px),
   y(py),

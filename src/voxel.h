@@ -3,6 +3,7 @@
 
 #include "libs.h"
 #include "mathlib.h"
+#include "noise.h"
 #include "shader.h"
 #include "textures.h"
 #include "mesh.h"
@@ -74,6 +75,7 @@ class chunk{
   static spritecoord voxel_sprite_location_get(voxtype pv);
 
   static void terrain_flat(chunk& pchunk, int stone_height, int soil_height, int grass_height);
+  static void terrain_perlin(chunk& pchunk);
   
   void shader_set(shader* pshader);
   void position_set(voxcoord pposition);

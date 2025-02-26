@@ -1,5 +1,6 @@
 #include "libs.h"
 #include "mathlib.h"
+#include "noise.h"
 #include "shader.h"
 #include "textures.h"
 #include "mesh.h"
@@ -313,9 +314,9 @@ static spritecoord chunk::voxel_sprite_location_get(voxtype pv)
 
 static void chunk::terrain_flat(chunk& pchunk, int stone_height, int soil_height, int grass_height)
 {
-  for(int x=0; x<chunk::DEFAULT_CHUNK_SIZE; x++){
-    for(int y=0; y<chunk::DEFAULT_CHUNK_SIZE; y++){
-      for(int z=0; z<chunk::DEFAULT_CHUNK_SIZE; z++){
+  for(int x=0; x<DEFAULT_CHUNK_SIZE; x++){
+    for(int y=0; y<DEFAULT_CHUNK_SIZE; y++){
+      for(int z=0; z<DEFAULT_CHUNK_SIZE; z++){
 	if(y<=grass_height){
 	  if(y<=stone_height){
 	    pchunk.voxel_set(x, y, z, VOX_STONE);
@@ -328,6 +329,18 @@ static void chunk::terrain_flat(chunk& pchunk, int stone_height, int soil_height
 	  pchunk.voxel_set(x, y, z, VOX_NONE);
 	}
       }
+    }
+  }
+}
+
+static void chunk::terrain_perlin(chunk& pchunk){
+  perlin c_heightmap(1, 1, 1);
+
+  for(int x=0; x<DEFAULT_CHUNK_SIZE; x++){
+    for(int z=0; z<DEFAULT_CHUNK_SIZE; z++){
+      double y=fmod((c_heightmap.get(x, z)), 4);
+
+      pchunk.voxel_set(x, y, z, VOX_GRASS);
     }
   }
 }
@@ -686,7 +699,7 @@ void chunk_manager::chunk_setup(voxcoord pos){
     cm_data[i].shader_set(default_shader);
     cm_data[i].spritesheet=default_spritesheet;
 
-    chunk::terrain_flat(cm_data[i], h_stone, h_soil, h_grass);
+    chunk::terrain_perlin(cm_data[i]);
     cm_data[i].setup=true;
   }
 }

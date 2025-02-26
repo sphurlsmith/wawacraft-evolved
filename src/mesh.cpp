@@ -10,8 +10,9 @@ mesh_base::mesh_base()
 
 mesh_base::mesh_base(std::vector<float> pvert, std::vector<unsigned int> pind, bool colors, bool textures):
   m_vertices(pvert),
-  m_indices(pind)
-{
+  m_indices(pind),
+  m_shader(NULL),
+  m_texture(NULL){
   buffers_generate();
   
   vertex_attributes_bind(colors, textures);
@@ -86,7 +87,7 @@ void mesh_base::render()
   if(m_texture!=NULL){
     m_texture->texture_object_use();
   }else{
-    std::cerr << "err:w-m_base-render-texture-null" << std::endl;
+    //std::cerr << "err:w-m_base-render-texture-null" << std::endl;
   }
   
   glBindVertexArray(m_vao);
@@ -120,7 +121,7 @@ void mesh_base::texture_set(texture* ptexture)
   if(ptexture!=NULL){
     m_texture=ptexture;
   }else{
-    std::cerr << "err:w-mesh_base-texture-null" << std::endl;
+    //std::cerr << "err:w-mesh_base-texture-null" << std::endl;
   }
 }
 

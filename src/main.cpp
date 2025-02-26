@@ -19,7 +19,7 @@ int SCLASS_TEXTURE_RESOLUTION=128;
 voxtype BUILDING_BLOCK=VOX_SOIL;
 
 float DEFAULT_SPEED=0.1;
-float DEFAULT_TURN=4;
+float DEFAULT_TURN=3;
 
 float DEFAULT_BLOCK_SIZE=(float)1/4;
 
@@ -150,7 +150,7 @@ int main()
   
   render_environment test_env(&test, &render, {0.5, 0.5, 0.7, 1});
 
-  shader test_shd("shd/wac_v_m_default.glsl", "shd/wac_f_m_default.glsl");
+  shader test_shd("shd/wac_v_m_notex.glsl", "shd/wac_f_m_notex.glsl");
   shader test_sh3d("shd/wac_v_m3d_default.glsl", "shd/wac_f_m_default.glsl");
   shader nocol3d("shd/wac_v_m3d_nocol.glsl", "shd/wac_f_m_nocol.glsl");
 
@@ -162,6 +162,19 @@ int main()
   camera test_camera(800, 600, 60, 0.1, 256, {0, 4, 0}, {0, 0, 0});
 
   chunk_manager chunks(&texpack, &nocol3d);
+
+  std::vector<float> CROSSHAIR_VERT=
+    {
+      -0.02, -0.02, 0, 1, 1, 1,
+      0.02, -0.02, 0, 1, 1, 1,
+      0, 0.02, 0, 1, 1, 1
+    };
+  
+  mesh_base crosshair(CROSSHAIR_VERT, {0, 1, 2}, true, false);
+  crosshair.shader_set(&test_shd);
+  crosshair.vertex_attributes_bind(true);
+  
+  mesh_base* gui_list[1]={&crosshair};
   
   mesh_3d* meshes[chunk_manager::DEFAULT_VISIBLE_AREA];
   
@@ -210,6 +223,7 @@ int main()
   bool roll=false;
   while(test.is_open())
   {
+    test_env.mesh=gui_list;
     test_env.mesh_3d=meshes;
     test_env.camera=&test_camera;
 
@@ -220,7 +234,7 @@ int main()
       meshes[x]=chunks.cm_data[chunks.cm_visible[x]].mesh_get();
     }
 
-    test_env.screen_run_render_loop_instance(chunk_manager::DEFAULT_VISIBLE_AREA, true);
+    test_env.screen_run_render_loop_instance(chunk_manager::DEFAULT_VISIBLE_AREA, false, 1);
     
     key_callback_execute_press(test.get_reference(), &KEY_ARROW_LEFT, 5, camptrptr);
     key_callback_execute_press(test.get_reference(), &KEY_ARROW_RIGHT, 6, camptrptr);

@@ -33,8 +33,8 @@ class render_environment
   void (*render_loop_callback_get(void))(window* p);
   
   void screen_clear();
-  void screen_call_render_callback(int argc, bool use_3d);
-  void screen_run_render_loop_instance(int argc, bool use_3d);
+  void screen_call_render_callback(int argc, bool use_3d, int argc_mb);
+  void screen_run_render_loop_instance(int argc, bool use_3d, int argc_mb);
 
   window* target_window_get();
   color4e clear_color_get();

@@ -105,7 +105,10 @@ void window::run_render_loop(void* pcmr, int argc, void** pmsh)
   }
   
   (*rendercallback)((window*)this, pcmr, argc, pmsh);
-  
+}
+
+void window::clear_render_loop()
+{
   glfwSwapBuffers(reference);
   glfwPollEvents();
 }
